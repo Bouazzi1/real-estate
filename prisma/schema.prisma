@@ -1,0 +1,202 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         String     @default("ADMIN") // ADMIN | AGENT
+  avatarUrl    String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+}
+
+model Project {
+  id          String      @id @default(uuid())
+  name        String
+  slug        String      @unique
+  description String
+  location    Json        // { lat: Float, lng: Float, address: String }
+  coverImage  String
+  gallery     String[]
+  status      String      @default("ACTIVE") // PLANNING | ACTIVE | COMPLETED
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  apartments  Apartment[]
+  documents   Document[]
+}
+
+model Apartment {
+  id              String          @id @default(uuid())
+  projectId       String
+  project         Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reference       String          @unique
+  title           String
+  slug            String          @unique
+  description     String
+  price           Float
+  currency        String          @default("EUR")
+  surface         Float
+  rooms           Int
+  bedrooms        Int
+  bathrooms       Int
+  floor           Int
+  orientation     String
+  balcony         Boolean         @default(false)
+  parking         Boolean         @default(false)
+  status          String          @default("AVAILABLE") // AVAILABLE | RESERVED | SOLD
+  featured        Boolean         @default(false)
+  gallery         String[]
+  floorPlanUrl    String?
+  virtualTourUrl  String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  documents       Document[]
+  documentChunks  DocumentChunk[]
+  appointments    Appointment[]
+}
+
+model Document {
+  id           String          @id @default(uuid())
+  apartmentId  String?
+  apartment    Apartment?      @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  projectId    String?
+  project      Project?        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type         String          // BROCHURE | FLOOR_PLAN | DESIGN | PRICE_SHEET | FAQ | LEGAL
+  title        String
+  fileUrl      String
+  mimeType     String
+  sizeBytes    Int
+  indexedAt    DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  chunks       DocumentChunk[]
+}
+
+model DocumentChunk {
+  id           String          @id @default(uuid())
+  documentId   String?
+  document     Document?       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  apartmentId  String?
+  apartment    Apartment?      @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  content      String
+  embedding    Unsupported("vector(2048)") // nemotron-3-embed-1b has 2048 dimensions
+  metadata     Json
+  createdAt    DateTime        @default(now())
+}
+
+model Lead {
+  id                     String         @id @default(uuid())
+  name                   String?
+  email                  String?
+  phone                  String?
+  source                 String         @default("FORM") // CHAT | FORM
+  score                  String         @default("COLD") // HOT | WARM | COLD | UNQUALIFIED
+  budgetMin              Float?
+  budgetMax              Float?
+  urgency                String?        // IMMEDIATE | 3_MONTHS | 6_MONTHS | JustBrowsing
+  financingNeeded        Boolean        @default(false)
+  interestedApartmentIds String[]
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  conversations          Conversation[]
+  appointments           Appointment[]
+  notifications          Notification[]
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  leadId    String?
+  lead      Lead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  sessionId String    @unique
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+  escalated Boolean   @default(false)
+  messages  Message[]
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // USER | ASSISTANT | SYSTEM
+  content        String
+  attachments    Json?        // [{ title: string, url: string, type: string }]
+  createdAt      DateTime     @default(now())
+}
+
+model Appointment {
+  id              String         @id @default(uuid())
+  leadId          String
+  lead            Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  apartmentId     String?
+  apartment       Apartment?     @relation(fields: [apartmentId], references: [id], onDelete: SetNull)
+  requestedSlot   DateTime
+  alternativeSlot DateTime?
+  status          String         @default("PENDING") // PENDING | APPROVED | REJECTED | RESCHEDULED | COMPLETED | NO_SHOW
+  type            String         @default("VISIT") // VISIT | VIDEO_CALL | OFFICE
+  adminNote       String?
+  createdAt       DateTime       @default(now())
+  decidedAt       DateTime?
+  decidedBy       String?
+  notifications   Notification[]
+}
+
+model Notification {
+  id            String       @id @default(uuid())
+  leadId        String
+  lead          Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  channel       String       // EMAIL | PUSH
+  template      String       // APPOINTMENT_CONFIRMED, APPOINTMENT_REQUESTED, etc.
+  status        String       @default("QUEUED") // QUEUED | SENT | FAILED
+  sentAt        DateTime?
+  createdAt     DateTime     @default(now())
+}
+
+model CmsSection {
+  id        String   @id @default(uuid())
+  page      String   @default("LANDING")
+  key       String   // HERO | FEATURED | STATS | TESTIMONIALS | ABOUT | CTA | FOOTER | CUSTOM
+  order     Int
+  enabled   Boolean  @default(true)
+  content   Json
+  draft     Json?
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+model SiteSettings {
+  id             String   @id @default("singleton")
+  logoUrl        String?
+  primaryColor   String   @default("#0f172a")
+  secondaryColor String   @default("#3b82f6")
+  fontFamily     String   @default("Inter")
+  agencyName     String   @default("RealEstate AI Agency")
+  contactEmail   String   @default("contact@agency.com")
+  contactPhone   String   @default("+1234567890")
+  socialLinks    Json?
+  seoTitle       String   @default("Premium Properties - RealEstate AI")
+  seoDescription String   @default("Browse modern apartments and chat with our AI advisor.")
+  ogImage        String?
+  languages      String[] @default(["en", "fr", "ar"])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String
+  diff      Json?
+  createdAt DateTime @default(now())
+}
