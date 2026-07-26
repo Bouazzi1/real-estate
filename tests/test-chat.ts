@@ -3,19 +3,17 @@ import "dotenv/config";
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 async function main() {
-  console.log("🤖 Simulating Client Chat Request to Résidence Aurea AI Advisor...");
-  console.log("Context: Viewing Penthouse Aurea Duplex (Ref: AUR-801)");
-  console.log("Query: 'Quel est le prix du Penthouse Duplex AUR-801 et quelles sont ses prestations ?'\n");
+  console.log("🤖 Simulating Client Chat Request to Résidence Folla AI Advisor...");
+  console.log("Query: 'quels sont les offres disponibles ?'\n");
 
   const url = "http://localhost:3001/api/chat";
   
   const payload = {
     sessionId: `test_session_${Date.now()}`,
-    apartmentReference: "AUR-801",
     messages: [
       {
         role: "user",
-        content: "Quel est le prix du Penthouse Duplex AUR-801 et quelles sont ses prestations ?"
+        content: "quels sont les offres disponibles ?"
       }
     ]
   };

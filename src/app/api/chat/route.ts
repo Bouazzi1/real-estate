@@ -38,28 +38,48 @@ export async function POST(request: NextRequest) {
     
     const contextText = retrievalResults.map((r, i) => `[Source ${i + 1}]: ${r.content}`).join("\n\n");
 
+    // 2b. Fetch full catalog summary to guarantee 100% accurate availability awareness
+    const allApartments = await prisma.apartment.findMany({
+      select: {
+        reference: true,
+        title: true,
+        price: true,
+        surface: true,
+        rooms: true,
+        bedrooms: true,
+        bathrooms: true,
+        floor: true,
+        orientation: true,
+        status: true,
+        description: true,
+      },
+      orderBy: { price: "asc" },
+    });
+
+    const fullCatalogText = allApartments
+      .map(
+        (a) =>
+          `• [Réf: ${a.reference}] ${a.title} | Prix: ${a.price.toLocaleString()} DT (TND) | Surface: ${a.surface} m² | ${a.bedrooms} chambres, ${a.bathrooms} SDB | Étage ${a.floor} (${a.orientation}) | Statut: ${a.status}.\n  Description: ${a.description}`
+      )
+      .join("\n\n");
+
     // 3. Construct System Prompt tailored for Résidence Folla
     const systemPrompt = `Vous êtes le Conseiller Commercial d'Exception pour la Résidence Folla (Les Berges du Lac 2, Tunis).
-Votre mission est d'accueillir chaleureusement les prospects, d'informer sur les caractéristiques d'exception des appartements (L'Atelier Folla, La Suite Panoramique, Le Penthouse Folla Duplex), d'envoyer les brochures et de planifier des visites privées.
+Votre mission est d'accueillir chaleureusement les prospects, de présenter la liste complète des offres et appartements disponibles à la Résidence Folla, d'informer sur leurs caractéristiques d'exception et de planifier des visites privées.
 
-RÈGLES STRICTES DE SÉCURITÉ ET CONVERSATION :
+CATALOGUE OFFICIEL ET DISPONIBILITÉS REELLES — RÉSIDENCE FOLLA (DONNÉES EN DINARS TUNISIENS TND / DT) :
+${fullCatalogText || "Aucun appartement enregistré pour le moment."}
+
+RAG CONTEXT & DOCUMENTS SPÉCIFIQUES :
+${contextText || "Aucun document supplémentaire."}
+${apartmentContextInfo}
+
+RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
 1. LANGUE : Adaptez-vous naturellement à la langue de l'utilisateur (Français, Anglais, Arabe).
-2. FAITS UNIQUEMENT : Répondez STRICTEMENT d'après les faits figurant dans le Contexte RAG et les outils (search_apartments, get_apartment_details, get_documents). Si une information n'est pas connue, indiquez-le poliment et proposez une mise en relation humaine via escalate_to_human. Ne jamais inventer de prix ni de caractéristiques.
-3. QUALIFICATION PROSPECT : Au cours de l'échange, recueillez élégamment les éléments de qualification suivants :
-   - Budget envisagé (en Dinars Tunisiens TND / DT)
-   - Typologie recherchée (Studio, T3, Penthouse Attique)
-   - Calendrier d'acquisition (Immédiat, < 3 mois, > 6 mois, simple curiosité)
-   - Usage prévu (Résidence principale, secondaire, investissement)
-   - Coordonnées de contact (Nom, Email, Téléphone) avec mention de consentement RGPD.
-4. PROTOCOLE DE RÉSERVATION DE VISITE :
-   - Étape 1 : Consulter les créneaux disponibles via l'outil get_available_slots.
-   - Étape 2 : Une fois un créneau sélectionné, demander le nom et les coordonnées (email/téléphone).
-   - Étape 3 : Exécuter l'outil create_appointment.
-   - Étape 4 : Confirmer l'enregistrement : "Votre demande de visite privée pour la Résidence Folla est transmise à notre direction commerciale. Une confirmation vous sera envoyée."
-
-Contexte RAG Résidence Folla :
-${contextText || "Aucune fiche technique spécifique trouvée dans la base de données."}
-${apartmentContextInfo}`;
+2. PRÉSENTATION DES OFFRES : Quand un client demande les offres, les prix ou la liste des appartements disponibles, présentez directement la liste claire des biens de la Résidence Folla ci-dessus avec leurs tarifs en Dinars Tunisiens (DT). Ne dites JAMAIS que vous n'avez pas l'information.
+3. CONVERSATION NATURELLE : N'affichez JAMAIS de code JSON ni de structures techniques dans vos messages au client. Parlez uniquement en langage naturel commercial élégant.
+4. QUALIFICATION CLIENT : Recueillez avec courtoisie le nom, l'email, le téléphone et le budget du prospect.
+5. RÉSERVATION DE VISITE : Pour réserver une visite privée, proposez les créneaux disponibles et utilisez l'outil create_appointment.`;
 
     // 4. Create or Load the Conversation in DB
     let conversation = await prisma.conversation.findUnique({
