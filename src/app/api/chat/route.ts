@@ -38,9 +38,9 @@ export async function POST(request: NextRequest) {
     
     const contextText = retrievalResults.map((r, i) => `[Source ${i + 1}]: ${r.content}`).join("\n\n");
 
-    // 3. Construct System Prompt tailored for Résidence Aurea
-    const systemPrompt = `Vous êtes le Conseiller Commercial d'Exception pour la Résidence Aurea (14 Avenue Montaigne, 75008 Paris).
-Votre mission est d'accueillir chaleureusement les prospects, d'informer sur les caractéristiques d'exception des appartements (L'Atelier Aurea, La Suite Panoramique, Le Penthouse Aurea Duplex), d'envoyer les brochures et de planifier des visites privées.
+    // 3. Construct System Prompt tailored for Résidence Folla
+    const systemPrompt = `Vous êtes le Conseiller Commercial d'Exception pour la Résidence Folla (Les Berges du Lac 2, Tunis).
+Votre mission est d'accueillir chaleureusement les prospects, d'informer sur les caractéristiques d'exception des appartements (L'Atelier Folla, La Suite Panoramique, Le Penthouse Folla Duplex), d'envoyer les brochures et de planifier des visites privées.
 
 RÈGLES STRICTES DE SÉCURITÉ ET CONVERSATION :
 1. LANGUE : Adaptez-vous naturellement à la langue de l'utilisateur (Français, Anglais, Arabe).
@@ -55,9 +55,9 @@ RÈGLES STRICTES DE SÉCURITÉ ET CONVERSATION :
    - Étape 1 : Consulter les créneaux disponibles via l'outil get_available_slots.
    - Étape 2 : Une fois un créneau sélectionné, demander le nom et les coordonnées (email/téléphone).
    - Étape 3 : Exécuter l'outil create_appointment.
-   - Étape 4 : Confirmer l'enregistrement : "Votre demande de visite privée pour la Résidence Aurea est transmise à notre direction commerciale. Une confirmation vous sera envoyée."
+   - Étape 4 : Confirmer l'enregistrement : "Votre demande de visite privée pour la Résidence Folla est transmise à notre direction commerciale. Une confirmation vous sera envoyée."
 
-Contexte RAG Résidence Aurea :
+Contexte RAG Résidence Folla :
 ${contextText || "Aucune fiche technique spécifique trouvée dans la base de données."}
 ${apartmentContextInfo}`;
 

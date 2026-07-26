@@ -32,7 +32,7 @@ export default function ChatWidget() {
     const aptRef = customRef || searchParams.get("apartment");
     const bookIntent = isBooking !== undefined ? isBooking : searchParams.get("book") === "true";
 
-    let greeting = "Bonjour ! Je suis le Conseiller Virtuel pour la Résidence Aurea. Comment puis-je vous accompagner ?";
+    let greeting = "Bonjour ! Je suis le Conseiller Virtuel pour la Résidence Folla. Comment puis-je vous accompagner ?";
     if (aptRef) {
       if (bookIntent) {
         greeting = `Bonjour ! Je serais ravi de vous aider à réserver une visite pour l'appartement ${aptRef}. Consulterons-nous les créneaux disponibles ?`;
@@ -235,7 +235,7 @@ export default function ChatWidget() {
                 type="text"
                 required
                 disabled={loading}
-                placeholder="Posez vos questions sur la Résidence Aurea..."
+                placeholder="Posez vos questions sur la Résidence Folla..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2.5 px-4 text-slate-800 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm"

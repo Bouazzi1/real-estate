@@ -13,12 +13,12 @@ export default async function ChatPage() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
       <Header
-        agencyName={settings?.agencyName || "Résidence Aurea"}
-        logoUrl={settings?.logoUrl || "/uploads/aurea-logo.png"}
+        agencyName={settings?.agencyName || "Résidence Folla"}
+        logoUrl={settings?.logoUrl || "/uploads/folla-logo.png"}
       />
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 flex flex-col">
         <Suspense fallback={<div className="text-center py-20 text-slate-400">Loading AI Sales Advisor...</div>}>
-          <ChatPageClient agencyName={settings?.agencyName || "Résidence Aurea"} />
+          <ChatPageClient agencyName={settings?.agencyName || "Résidence Folla"} />
         </Suspense>
       </main>
     </div>

@@ -9,7 +9,7 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log("Seeding database for Résidence Aurea...");
+  console.log("Seeding database for Résidence Folla...");
 
   // 1. Seed Initial Admin User
   const adminEmail = process.env.ADMIN_INITIAL_EMAIL || "admin@realestate.com";
@@ -25,7 +25,7 @@ async function main() {
       data: {
         email: adminEmail,
         passwordHash,
-        name: "Directeur Commercial Aurea",
+        name: "Directeur Commercial Folla",
         role: "ADMIN",
         avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"
       }
@@ -33,48 +33,48 @@ async function main() {
     console.log(`Created admin account: ${adminEmail}`);
   }
 
-  // 2. Seed Site Settings (Singleton) — Résidence Aurea
+  // 2. Seed Site Settings (Singleton) — Résidence Folla
   await prisma.siteSettings.upsert({
     where: { id: "singleton" },
     update: {
-      agencyName: "Résidence Aurea",
-      logoUrl: "/uploads/aurea-logo.png",
+      agencyName: "Résidence Folla",
+      logoUrl: "/uploads/folla-logo.png",
       primaryColor: "#0f172a", // Dark luxury slate
       secondaryColor: "#d97706", // Amber gold accent
       fontFamily: "Inter",
-      contactEmail: "contact@residence-aurea.fr",
-      contactPhone: "+33 (0)1 42 68 55 00",
+      contactEmail: "contact@residence-folla.tn",
+      contactPhone: "+216 71 123 456",
       socialLinks: {
-        instagram: "https://instagram.com/residence.aurea",
-        linkedin: "https://linkedin.com/company/residence-aurea"
+        instagram: "https://instagram.com/residence.folla",
+        linkedin: "https://linkedin.com/company/residence-folla"
       },
-      seoTitle: "Résidence Aurea | Immobilier d'Exception & Suites Penthouses",
-      seoDescription: "Découvrez la Résidence Aurea, un programme immobilier d'exception alliant architecture contemporaine et services de conciergerie haut de gamme. Échangez avec notre conseiller IA.",
+      seoTitle: "Résidence Folla | Immobilier d'Exception & Suites Penthouses",
+      seoDescription: "Découvrez la Résidence Folla, un programme immobilier d'exception alliant architecture contemporaine et services de conciergerie haut de gamme. Échangez avec notre conseiller IA.",
       ogImage: "/uploads/aurea-exterior.png",
       languages: ["fr", "en", "ar"]
     },
     create: {
       id: "singleton",
-      agencyName: "Résidence Aurea",
-      logoUrl: "/uploads/aurea-logo.png",
+      agencyName: "Résidence Folla",
+      logoUrl: "/uploads/folla-logo.png",
       primaryColor: "#0f172a",
       secondaryColor: "#d97706",
       fontFamily: "Inter",
-      contactEmail: "contact@residence-aurea.fr",
-      contactPhone: "+33 (0)1 42 68 55 00",
+      contactEmail: "contact@residence-folla.tn",
+      contactPhone: "+216 71 123 456",
       socialLinks: {
-        instagram: "https://instagram.com/residence.aurea",
-        linkedin: "https://linkedin.com/company/residence-aurea"
+        instagram: "https://instagram.com/residence.folla",
+        linkedin: "https://linkedin.com/company/residence-folla"
       },
-      seoTitle: "Résidence Aurea | Immobilier d'Exception & Suites Penthouses",
-      seoDescription: "Découvrez la Résidence Aurea, un programme immobilier d'exception alliant architecture contemporaine et services de conciergerie haut de gamme. Échangez avec notre conseiller IA.",
+      seoTitle: "Résidence Folla | Immobilier d'Exception & Suites Penthouses",
+      seoDescription: "Découvrez la Résidence Folla, un programme immobilier d'exception alliant architecture contemporaine et services de conciergerie haut de gamme. Échangez avec notre conseiller IA.",
       ogImage: "/uploads/aurea-exterior.png",
       languages: ["fr", "en", "ar"]
     }
   });
-  console.log("Updated SiteSettings for Résidence Aurea.");
+  console.log("Updated SiteSettings for Résidence Folla.");
 
-  // 3. Seed CMS Sections — Positionnement Premium Résidence Aurea
+  // 3. Seed CMS Sections — Positionnement Premium Résidence Folla
   const sections = [
     {
       key: "HERO",
@@ -82,9 +82,9 @@ async function main() {
       enabled: true,
       content: {
         headline: "L'Élégance Absolue au Cœur de la Ville",
-        subheadline: "La Résidence Aurea réinvente le luxe résidentiel avec des appartements baignés de lumière, des terrasses panoramiques et un conseiller commercial IA disponible 24/7.",
+        subheadline: "La Résidence Folla réinvente le luxe résidentiel avec des appartements baignés de lumière, des terrasses panoramiques et un conseiller commercial IA disponible 24/7.",
         backgroundUrl: "/uploads/aurea-exterior.png",
-        primaryCta: { text: "Découvrir la Résidence Aurea", link: "/catalog" },
+        primaryCta: { text: "Découvrir la Résidence Folla", link: "/catalog" },
         secondaryCta: { text: "Consulter l'Agent IA", link: "#chat" },
         overlayOpacity: 0.55
       }
@@ -117,7 +117,7 @@ async function main() {
       enabled: true,
       content: {
         title: "Un Art de Vivre Rare & Prestigieux",
-        description: "Située dans un quartier hautement prisé, la Résidence Aurea combine lignes architecturales épurées, finitions en marbre et bois précieux, domotique de pointe et service de conciergerie privée.",
+        description: "Située dans un quartier hautement prisé, la Résidence Folla combine lignes architecturales épurées, finitions en marbre et bois précieux, domotique de pointe et service de conciergerie privée.",
         imageUrl: "/uploads/aurea-interior.png",
         features: [
           { icon: "ShieldCheck", title: "Sécurité Renforcée & Conciergerie 24/7" },
@@ -142,7 +142,7 @@ async function main() {
           {
             name: "Alexandre Vaneau",
             photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
-            text: "Résidence Aurea offre un niveau de prestations inédit. L'expérience de réservation fluide et la réactivité de l'équipe ont fait toute la différence.",
+            text: "Résidence Folla offre un niveau de prestations inédit. L'expérience de réservation fluide et la réactivité de l'équipe ont fait toute la différence.",
             rating: 5
           }
         ]
@@ -166,7 +166,7 @@ async function main() {
       content: {
         columns: [
           {
-            title: "Résidence Aurea",
+            title: "Résidence Folla",
             links: [
               { label: "Catalogue des Appartements", url: "/catalog" },
               { label: "Conseiller Virtuel IA", url: "/chat" }
@@ -180,7 +180,7 @@ async function main() {
             ]
           }
         ],
-        copyright: "© 2026 Résidence Aurea. Tous droits réservés."
+        copyright: "© 2026 Résidence Folla. Tous droits réservés."
       }
     }
   ];
@@ -191,23 +191,23 @@ async function main() {
       data: section
     });
   }
-  console.log("Updated CMS Sections for Résidence Aurea.");
+  console.log("Updated CMS Sections for Résidence Folla.");
 
-  // 4. Seed Project "Résidence Aurea" & Luxury Units
+  // 4. Seed Project "Résidence Folla" & Luxury Units
   let project = await prisma.project.findFirst({
-    where: { slug: "residence-aurea" }
+    where: { slug: "residence-folla" }
   });
 
   if (!project) {
     project = await prisma.project.create({
       data: {
-        name: "Résidence Aurea",
-        slug: "residence-aurea",
+        name: "Résidence Folla",
+        slug: "residence-folla",
         description: "Le nouveau fleuron de l'architecture résidentielle haut de gamme. Penthouses d'exception, terrasses plein ciel et finitions luxueuses.",
         location: {
-          lat: 48.8667,
-          lng: 2.3083,
-          address: "14 Avenue Montaigne, 75008 Paris"
+          lat: 36.8400,
+          lng: 10.2800,
+          address: "Les Berges du Lac 2, Tunis"
         },
         coverImage: "/uploads/aurea-exterior.png",
         gallery: [
@@ -220,13 +220,13 @@ async function main() {
     console.log(`Created main project: ${project.name}`);
   }
 
-  // Seed / update luxury apartments for Résidence Aurea
+  // Seed / update luxury apartments for Résidence Folla
   const apartmentsData = [
     {
       projectId: project.id,
-      reference: "AUR-101",
-      title: "L'Atelier Aurea — Studio Prestige",
-      slug: "latelier-aurea-studio-prestige-aur101",
+      reference: "FOL-101",
+      title: "L'Atelier Folla — Studio Prestige",
+      slug: "latelier-folla-studio-prestige-fol101",
       description: "Studio d'exception de 48 m² idéalement agencé avec cuisine en marbre sur mesure, baie vitrée toute hauteur et balcon privé.",
       price: 380000,
       currency: "TND",
@@ -248,9 +248,9 @@ async function main() {
     },
     {
       projectId: project.id,
-      reference: "AUR-302",
-      title: "La Suite Panoramique — T3 d'Élégance",
-      slug: "la-suite-panoramique-t3-delegance-aur302",
+      reference: "FOL-302",
+      title: "La Suite Panoramique — T3 Folla",
+      slug: "la-suite-panoramique-t3-folla-fol302",
       description: "Superbe suite de 95 m² avec 2 chambres master, double séjour baigné de lumière naturelle, dressing privatif et grande terrasse de 18 m².",
       price: 790000,
       currency: "TND",
@@ -272,9 +272,9 @@ async function main() {
     },
     {
       projectId: project.id,
-      reference: "AUR-801",
-      title: "Le Penthouse Aurea Duplex — Attique d'Exception",
-      slug: "le-penthouse-aurea-duplex-attique-dexception-aur801",
+      reference: "FOL-801",
+      title: "Le Penthouse Folla Duplex — Attique d'Exception",
+      slug: "le-penthouse-folla-duplex-attique-dexception-fol801",
       description: "Somptueux Penthouse Duplex en attique de 220 m² offrant des plafonds cathédrale, 4 suites privatives, une vaste terrasse avec jacuzzi chauffé et des vues imprenables.",
       price: 1850000,
       currency: "TND",
@@ -312,7 +312,7 @@ async function main() {
       data: {
         name: "Hélène de Saint-Germain",
         email: "helene.sg@example.com",
-        phone: "+33 6 12 34 56 78",
+        phone: "+216 20 123 456",
         source: "CHAT",
         score: "HOT",
         budgetMin: 1500000,
@@ -326,8 +326,8 @@ async function main() {
             startedAt: new Date(),
             messages: {
               create: [
-                { role: "USER", content: "Bonjour, je suis intéressée par le Penthouse Aurea Duplex." },
-                { role: "ASSISTANT", content: "Bonjour Hélène ! Le Penthouse Duplex AUR-801 offre 220 m² en attique au prix de 1 850 000 DT." },
+                { role: "USER", content: "Bonjour, je suis intéressée par le Penthouse Folla Duplex." },
+                { role: "ASSISTANT", content: "Bonjour Hélène ! Le Penthouse Duplex FOL-801 offre 220 m² en attique au prix de 1 850 000 DT." },
                 { role: "USER", content: "Super ! Je souhaite réserver une visite privée dès ce jeudi." },
                 { role: "ASSISTANT", content: "Parfait ! Votre demande de visite privée pour le jeudi à 14h00 a été soumise avec succès." }
               ]
@@ -341,7 +341,7 @@ async function main() {
       data: {
         name: "Alexandre Vaneau",
         email: "alexandre.vaneau@example.com",
-        phone: "+33 6 98 76 54 32",
+        phone: "+216 22 987 654",
         source: "FORM",
         score: "WARM",
         budgetMin: 700000,
@@ -356,7 +356,7 @@ async function main() {
             messages: {
               create: [
                 { role: "USER", content: "Bonjour, avez-vous des T3 disponibles avec terrasse ?" },
-                { role: "ASSISTANT", content: "Bonjour Alexandre ! Nous proposons La Suite Panoramique (Ref: AUR-302), un T3 de 95 m² avec terrasse de 18 m² au prix de 790 000 DT." }
+                { role: "ASSISTANT", content: "Bonjour Alexandre ! Nous proposons La Suite Panoramique (Ref: FOL-302), un T3 de 95 m² avec terrasse de 18 m² au prix de 790 000 DT." }
               ]
             }
           }
@@ -364,10 +364,10 @@ async function main() {
       }
     });
 
-    console.log("Created sample leads for Résidence Aurea.");
+    console.log("Created sample leads for Résidence Folla.");
   }
 
-  console.log("Seeding for Résidence Aurea completed successfully.");
+  console.log("Seeding for Résidence Folla completed successfully.");
 }
 
 main()
