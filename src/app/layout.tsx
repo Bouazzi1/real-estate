@@ -68,7 +68,9 @@ export default async function RootLayout({
         <AuthProvider>
           <LanguageProvider>
             {children}
-            <ChatWidget />
+            <React.Suspense fallback={null}>
+              <ChatWidget />
+            </React.Suspense>
           </LanguageProvider>
         </AuthProvider>
       </body>
