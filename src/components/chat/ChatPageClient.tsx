@@ -233,7 +233,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
         <div className="px-6 py-4 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-sm font-semibold text-white">Conseiller Virtuel Résidence Folla</span>
+            <span className="text-sm font-semibold text-white">Conseiller Virtuel Résidence WAFA</span>
           </div>
           <button
             onClick={() => startNewSession()}
@@ -266,7 +266,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
             <div className="flex justify-start">
               <div className="bg-slate-900 border border-slate-800 rounded-2xl rounded-bl-none p-4 text-slate-400 flex items-center gap-2 text-sm">
                 <Loader2 className="w-4 h-4 animate-spin text-amber-500" />
-                <span>Recherche dans la base pgvector Résidence Folla...</span>
+                <span>Recherche dans la base pgvector Résidence WAFA...</span>
               </div>
             </div>
           )}

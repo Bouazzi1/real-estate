@@ -9,7 +9,7 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log("Seeding database for Résidence Folla...");
+  console.log("Seeding database for Résidence WAFA...");
 
   // 1. Seed Initial Admin User
   const adminEmail = process.env.ADMIN_INITIAL_EMAIL || "admin@realestate.com";
@@ -25,7 +25,7 @@ async function main() {
       data: {
         email: adminEmail,
         passwordHash,
-        name: "Directeur Commercial Folla",
+        name: "Directeur Commercial WAFA",
         role: "ADMIN",
         avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"
       }
@@ -33,48 +33,48 @@ async function main() {
     console.log(`Created admin account: ${adminEmail}`);
   }
 
-  // 2. Seed Site Settings (Singleton) — Résidence Folla
+  // 2. Seed Site Settings (Singleton) — Résidence WAFA
   await prisma.siteSettings.upsert({
     where: { id: "singleton" },
     update: {
-      agencyName: "Résidence Folla",
+      agencyName: "Résidence WAFA",
       logoUrl: "/uploads/folla-logo.png",
       primaryColor: "#0f172a", // Dark luxury slate
       secondaryColor: "#d97706", // Amber gold accent
       fontFamily: "Inter",
-      contactEmail: "contact@residence-folla.tn",
+      contactEmail: "contact@residence-wafa.tn",
       contactPhone: "+216 71 123 456",
       socialLinks: {
-        instagram: "https://instagram.com/residence.folla",
-        linkedin: "https://linkedin.com/company/residence-folla"
+        instagram: "https://instagram.com/residence.wafa",
+        linkedin: "https://linkedin.com/company/residence-wafa"
       },
-      seoTitle: "Résidence Folla | Immobilier d'Exception & Suites Penthouses",
-      seoDescription: "Découvrez la Résidence Folla, un programme immobilier d'exception alliant architecture contemporaine et services de conciergerie haut de gamme. Échangez avec notre conseiller IA.",
+      seoTitle: "Résidence WAFA | Immobilier d'Exception & Suites Penthouses",
+      seoDescription: "Découvrez la Résidence WAFA, un programme immobilier d'exception alliant architecture contemporaine et services de conciergerie haut de gamme. Échangez avec notre conseiller IA.",
       ogImage: "/uploads/aurea-exterior.png",
       languages: ["fr", "en", "ar"]
     },
     create: {
       id: "singleton",
-      agencyName: "Résidence Folla",
+      agencyName: "Résidence WAFA",
       logoUrl: "/uploads/folla-logo.png",
       primaryColor: "#0f172a",
       secondaryColor: "#d97706",
       fontFamily: "Inter",
-      contactEmail: "contact@residence-folla.tn",
+      contactEmail: "contact@residence-wafa.tn",
       contactPhone: "+216 71 123 456",
       socialLinks: {
-        instagram: "https://instagram.com/residence.folla",
-        linkedin: "https://linkedin.com/company/residence-folla"
+        instagram: "https://instagram.com/residence.wafa",
+        linkedin: "https://linkedin.com/company/residence-wafa"
       },
-      seoTitle: "Résidence Folla | Immobilier d'Exception & Suites Penthouses",
-      seoDescription: "Découvrez la Résidence Folla, un programme immobilier d'exception alliant architecture contemporaine et services de conciergerie haut de gamme. Échangez avec notre conseiller IA.",
+      seoTitle: "Résidence WAFA | Immobilier d'Exception & Suites Penthouses",
+      seoDescription: "Découvrez la Résidence WAFA, un programme immobilier d'exception alliant architecture contemporaine et services de conciergerie haut de gamme. Échangez avec notre conseiller IA.",
       ogImage: "/uploads/aurea-exterior.png",
       languages: ["fr", "en", "ar"]
     }
   });
-  console.log("Updated SiteSettings for Résidence Folla.");
+  console.log("Updated SiteSettings for Résidence WAFA.");
 
-  // 3. Seed CMS Sections — Positionnement Premium Résidence Folla
+  // 3. Seed CMS Sections — Positionnement Premium Résidence WAFA
   const sections = [
     {
       key: "HERO",
@@ -82,9 +82,9 @@ async function main() {
       enabled: true,
       content: {
         headline: "L'Élégance Absolue au Cœur de la Ville",
-        subheadline: "La Résidence Folla réinvente le luxe résidentiel avec des appartements baignés de lumière, des terrasses panoramiques et un conseiller commercial IA disponible 24/7.",
+        subheadline: "La Résidence WAFA réinvente le luxe résidentiel avec des appartements baignés de lumière, des terrasses panoramiques et un conseiller commercial IA disponible 24/7.",
         backgroundUrl: "/uploads/aurea-exterior.png",
-        primaryCta: { text: "Découvrir la Résidence Folla", link: "/catalog" },
+        primaryCta: { text: "Découvrir la Résidence WAFA", link: "/catalog" },
         secondaryCta: { text: "Consulter l'Agent IA", link: "#chat" },
         overlayOpacity: 0.55
       }
@@ -117,7 +117,7 @@ async function main() {
       enabled: true,
       content: {
         title: "Un Art de Vivre Rare & Prestigieux",
-        description: "Située dans un quartier hautement prisé, la Résidence Folla combine lignes architecturales épurées, finitions en marbre et bois précieux, domotique de pointe et service de conciergerie privée.",
+        description: "Située dans un quartier hautement prisé, la Résidence WAFA combine lignes architecturales épurées, finitions en marbre et bois précieux, domotique de pointe et service de conciergerie privée.",
         imageUrl: "/uploads/aurea-interior.png",
         features: [
           { icon: "ShieldCheck", title: "Sécurité Renforcée & Conciergerie 24/7" },
@@ -142,7 +142,7 @@ async function main() {
           {
             name: "Alexandre Vaneau",
             photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
-            text: "Résidence Folla offre un niveau de prestations inédit. L'expérience de réservation fluide et la réactivité de l'équipe ont fait toute la différence.",
+            text: "Résidence WAFA offre un niveau de prestations inédit. L'expérience de réservation fluide et la réactivité de l'équipe ont fait toute la différence.",
             rating: 5
           }
         ]
@@ -166,7 +166,7 @@ async function main() {
       content: {
         columns: [
           {
-            title: "Résidence Folla",
+            title: "Résidence WAFA",
             links: [
               { label: "Catalogue des Appartements", url: "/catalog" },
               { label: "Conseiller Virtuel IA", url: "/chat" }
@@ -180,7 +180,7 @@ async function main() {
             ]
           }
         ],
-        copyright: "© 2026 Résidence Folla. Tous droits réservés."
+        copyright: "© 2026 Résidence WAFA. Tous droits réservés."
       }
     }
   ];
@@ -191,18 +191,18 @@ async function main() {
       data: section
     });
   }
-  console.log("Updated CMS Sections for Résidence Folla.");
+  console.log("Updated CMS Sections for Résidence WAFA.");
 
-  // 4. Seed Project "Résidence Folla" & Luxury Units
+  // 4. Seed Project "Résidence WAFA" & Luxury Units
   let project = await prisma.project.findFirst({
-    where: { slug: "residence-folla" }
+    where: { slug: "residence-wafa" }
   });
 
   if (!project) {
     project = await prisma.project.create({
       data: {
-        name: "Résidence Folla",
-        slug: "residence-folla",
+        name: "Résidence WAFA",
+        slug: "residence-wafa",
         description: "Le nouveau fleuron de l'architecture résidentielle haut de gamme. Penthouses d'exception, terrasses plein ciel et finitions luxueuses.",
         location: {
           lat: 36.8400,
@@ -220,13 +220,13 @@ async function main() {
     console.log(`Created main project: ${project.name}`);
   }
 
-  // Seed / update luxury apartments for Résidence Folla
+  // Seed / update luxury apartments for Résidence WAFA
   const apartmentsData = [
     {
       projectId: project.id,
-      reference: "FOL-101",
-      title: "L'Atelier Folla — Studio Prestige",
-      slug: "latelier-folla-studio-prestige-fol101",
+      reference: "WAF-101",
+      title: "L'Atelier WAFA — Studio Prestige",
+      slug: "latelier-wafa-studio-prestige-waf101",
       description: "Studio d'exception de 48 m² idéalement agencé avec cuisine en marbre sur mesure, baie vitrée toute hauteur et balcon privé.",
       price: 380000,
       currency: "TND",
@@ -248,9 +248,9 @@ async function main() {
     },
     {
       projectId: project.id,
-      reference: "FOL-302",
-      title: "La Suite Panoramique — T3 Folla",
-      slug: "la-suite-panoramique-t3-folla-fol302",
+      reference: "WAF-302",
+      title: "La Suite Panoramique — T3 WAFA",
+      slug: "la-suite-panoramique-t3-wafa-waf302",
       description: "Superbe suite de 95 m² avec 2 chambres master, double séjour baigné de lumière naturelle, dressing privatif et grande terrasse de 18 m².",
       price: 790000,
       currency: "TND",
@@ -272,9 +272,9 @@ async function main() {
     },
     {
       projectId: project.id,
-      reference: "FOL-801",
-      title: "Le Penthouse Folla Duplex — Attique d'Exception",
-      slug: "le-penthouse-folla-duplex-attique-dexception-fol801",
+      reference: "WAF-801",
+      title: "Le Penthouse WAFA Duplex — Attique d'Exception",
+      slug: "le-penthouse-wafa-duplex-attique-dexception-waf801",
       description: "Somptueux Penthouse Duplex en attique de 220 m² offrant des plafonds cathédrale, 4 suites privatives, une vaste terrasse avec jacuzzi chauffé et des vues imprenables.",
       price: 1850000,
       currency: "TND",
@@ -326,8 +326,8 @@ async function main() {
             startedAt: new Date(),
             messages: {
               create: [
-                { role: "USER", content: "Bonjour, je suis intéressée par le Penthouse Folla Duplex." },
-                { role: "ASSISTANT", content: "Bonjour Hélène ! Le Penthouse Duplex FOL-801 offre 220 m² en attique au prix de 1 850 000 DT." },
+                { role: "USER", content: "Bonjour, je suis intéressée par le Penthouse WAFA Duplex." },
+                { role: "ASSISTANT", content: "Bonjour Hélène ! Le Penthouse Duplex WAF-801 offre 220 m² en attique au prix de 1 850 000 DT." },
                 { role: "USER", content: "Super ! Je souhaite réserver une visite privée dès ce jeudi." },
                 { role: "ASSISTANT", content: "Parfait ! Votre demande de visite privée pour le jeudi à 14h00 a été soumise avec succès." }
               ]
@@ -356,7 +356,7 @@ async function main() {
             messages: {
               create: [
                 { role: "USER", content: "Bonjour, avez-vous des T3 disponibles avec terrasse ?" },
-                { role: "ASSISTANT", content: "Bonjour Alexandre ! Nous proposons La Suite Panoramique (Ref: FOL-302), un T3 de 95 m² avec terrasse de 18 m² au prix de 790 000 DT." }
+                { role: "ASSISTANT", content: "Bonjour Alexandre ! Nous proposons La Suite Panoramique (Ref: WAF-302), un T3 de 95 m² avec terrasse de 18 m² au prix de 790 000 DT." }
               ]
             }
           }
@@ -364,10 +364,10 @@ async function main() {
       }
     });
 
-    console.log("Created sample leads for Résidence Folla.");
+    console.log("Created sample leads for Résidence WAFA.");
   }
 
-  console.log("Seeding for Résidence Folla completed successfully.");
+  console.log("Seeding for Résidence WAFA completed successfully.");
 }
 
 main()
