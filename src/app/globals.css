@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --primary-color: #0f172a;
   --secondary-color: #d97706;
@@ -16,6 +18,16 @@
   
   --card: #ffffff;
   --card-foreground: #0f172a;
+}
+
+.dark {
+  --background: #030712;
+  --foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --border: #1e293b;
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
 }
 
 @theme inline {
@@ -35,11 +47,12 @@
 }
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-family);
   overflow-x: hidden;
   scroll-behavior: smooth;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Prestige Display Font */

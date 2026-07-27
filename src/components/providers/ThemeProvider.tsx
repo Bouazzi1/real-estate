@@ -17,22 +17,38 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
   const [mounted, setMounted] = useState(false);
 
+  // Synchronize class on root element & body
+  const applyThemeClass = (effectiveTheme: "light" | "dark") => {
+    const root = document.documentElement;
+    const body = document.body;
+
+    if (effectiveTheme === "dark") {
+      root.classList.add("dark");
+      if (body) body.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+      if (body) body.classList.remove("dark");
+    }
+  };
+
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("elysium_theme") as Theme;
-    if (saved && (saved === "light" || saved === "dark" || saved === "system")) {
-      setThemeState(saved);
-    } else {
-      setThemeState("light");
-    }
+    const initialTheme = (saved && (saved === "light" || saved === "dark" || saved === "system")) ? saved : "light";
+    
+    setThemeState(initialTheme);
+    const effective = initialTheme === "system"
+      ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+      : initialTheme;
+      
+    setResolvedTheme(effective);
+    applyThemeClass(effective);
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
 
-    const root = document.documentElement;
     let effective: "light" | "dark" = "light";
-
     if (theme === "system") {
       effective = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     } else {
@@ -40,17 +56,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
 
     setResolvedTheme(effective);
-
-    if (effective === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    applyThemeClass(effective);
   }, [theme, mounted]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
     localStorage.setItem("elysium_theme", newTheme);
+    const effective = newTheme === "system"
+      ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+      : newTheme;
+    setResolvedTheme(effective);
+    applyThemeClass(effective);
   };
 
   return (
