@@ -158,10 +158,10 @@ export default function ChatWidget() {
       
       {/* Slide-in Chat panel */}
       {isOpen && (
-        <div className="w-[90vw] sm:w-[400px] h-[600px] max-h-[85vh] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-2xl rounded-3xl flex flex-col justify-between overflow-hidden mb-4 backdrop-blur-xl relative">
+        <div className="w-[90vw] sm:w-[400px] h-[600px] max-h-[85vh] bg-white border border-slate-200 shadow-2xl rounded-3xl flex flex-col justify-between overflow-hidden mb-4 backdrop-blur-xl relative">
           
           {/* Header panel */}
-          <div className="px-6 py-4 bg-slate-900 text-slate-100 flex items-center justify-between border-b border-slate-850">
+          <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
             <div className="flex items-center gap-2">
               <div className="p-1.5 bg-amber-500/10 rounded-lg text-amber-500 border border-amber-500/20">
                 <Sparkles className="w-4 h-4" />
@@ -175,14 +175,14 @@ export default function ChatWidget() {
               <button
                 onClick={() => startNewSession()}
                 title="Nouveau Chat (Réinitialiser)"
-                className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span className="text-[10px]">Reset</span>
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -190,14 +190,14 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages Feed */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 dark:bg-slate-900/10">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-4 px-4">
                 <div className="p-3 bg-amber-500/10 text-amber-500 rounded-full border border-amber-500/20">
                   <MessageCircle className="w-6 h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-850 dark:text-white text-sm">Posez vos questions sur nos biens</h4>
+                  <h4 className="font-bold text-slate-900 text-sm">Posez vos questions sur nos biens</h4>
                   <p className="text-[11px] text-slate-500 leading-relaxed max-w-[250px]">
                     Renseignez-vous sur les prix, superficies, brochures, ou planifiez une visite avec notre assistant IA.
                   </p>
@@ -212,7 +212,7 @@ export default function ChatWidget() {
                       className={`max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed text-xs ${
                         isUser
                           ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-semibold shadow-md rounded-br-none"
-                          : "bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-850 text-slate-800 dark:text-slate-200 rounded-bl-none shadow-sm"
+                          : "bg-white border border-slate-200 text-slate-800 shadow-xs rounded-bl-none"
                       }`}
                     >
                       <p className="whitespace-pre-wrap">{m.content}</p>
@@ -223,7 +223,7 @@ export default function ChatWidget() {
             )}
             {loading && messages[messages.length - 1]?.role === "USER" && (
               <div className="flex justify-start">
-                <div className="bg-white dark:bg-slate-855 border border-slate-200 dark:border-slate-850 rounded-2xl rounded-bl-none px-4 py-2 text-slate-400 flex items-center gap-2">
+                <div className="bg-white border border-slate-200 text-slate-600 shadow-xs rounded-2xl rounded-bl-none px-4 py-2 flex items-center gap-2">
                   <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-400" />
                   <span>Recherche dans la base de données...</span>
                 </div>
@@ -233,7 +233,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Form inputs */}
-          <form onSubmit={handleSend} className="p-4 border-t border-slate-200/60 dark:border-slate-800/60 bg-white dark:bg-slate-900 flex flex-col gap-2">
+          <form onSubmit={handleSend} className="p-4 border-t border-slate-200 bg-white flex flex-col gap-2">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -242,7 +242,7 @@ export default function ChatWidget() {
                 placeholder="Posez vos questions sur la Résidence WAFA..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2.5 px-4 text-slate-800 dark:text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 text-sm"
+                className="flex-1 bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white rounded-xl py-2.5 px-4 placeholder-slate-500 focus:outline-none focus:border-amber-500 text-sm"
               />
               <button
                 type="submit"

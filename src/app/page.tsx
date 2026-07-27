@@ -76,7 +76,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
   const agencyEmail = settings?.contactEmail || "sales@elysiumrealestate.com";
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
       {/* Dynamic Header with language switcher */}
       <Header
         agencyName={settings?.agencyName || "Elysium Residences"}
@@ -92,7 +92,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
           switch (section.key) {
             case "HERO":
               return (
-                <section key={section.id} className="relative min-h-[85vh] flex items-center justify-center bg-slate-950 text-white px-6 overflow-hidden">
+                <section key={section.id} className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-b from-slate-100 via-white to-slate-50 text-slate-900 border-b border-slate-200/60 px-6 overflow-hidden">
                   {/* Background cover image */}
                   {content.backgroundUrl && (
                     <div className="absolute inset-0 w-full h-full z-0">
@@ -102,7 +102,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                         className="w-full h-full object-cover opacity-30"
                       />
                       <div
-                        className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/20"
+                        className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-white/30"
                         style={{ opacity: content.overlayOpacity || 0.6 }}
                       />
                     </div>
@@ -110,16 +110,16 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
                   {/* Hero Text */}
                   <div className="max-w-4xl w-full text-center relative z-10 space-y-8 py-20">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-700 text-[10px] font-bold uppercase tracking-widest animate-pulse">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Next-Gen RAG AI Sales Agent Active</span>
                     </div>
                     
-                    <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight font-display animate-slideUp">
+                    <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 leading-tight font-display animate-slideUp">
                       {content.headline}
                     </h1>
                     
-                    <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-lg font-medium leading-relaxed animate-slideUp-delay-1">
+                    <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-lg font-medium leading-relaxed animate-slideUp-delay-1">
                       {content.subheadline}
                     </p>
 
@@ -136,7 +136,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                       {content.secondaryCta && (
                         <Link
                           href="/chat"
-                          className="w-full sm:w-auto flex items-center justify-center gap-2 py-3.5 px-8 bg-slate-900 hover:bg-slate-855 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2 py-3.5 px-8 bg-white hover:bg-slate-100 border border-slate-200/80 text-slate-800 shadow-sm text-xs font-bold rounded-xl transition-colors cursor-pointer"
                         >
                           <MessageCircle className="w-4 h-4 text-amber-400" />
                           <span>{content.secondaryCta.text}</span>
@@ -149,15 +149,15 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
             case "STATS":
               return (
-                <section key={section.id} className="py-12 bg-slate-100 dark:bg-slate-900 border-t border-b border-slate-200/50 dark:border-slate-800/50 relative z-10">
+                <section key={section.id} className="py-12 bg-white border-b border-slate-200/60 shadow-sm relative z-10">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center divide-y sm:divide-y-0 sm:divide-x divide-slate-200 dark:divide-slate-800">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
                       {content.items?.map((item: any, idx: number) => (
                         <div key={idx} className="pt-6 sm:pt-0 sm:px-6 first:pt-0">
-                          <span className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                          <span className="text-4xl font-extrabold text-slate-900 tracking-tight">
                             {item.number}{item.suffix}
                           </span>
-                          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mt-2">
+                          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mt-2">
                             {item.label}
                           </span>
                         </div>
@@ -169,11 +169,11 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
             case "FEATURED":
               return (
-                <section key={section.id} className="py-24 bg-slate-50 dark:bg-slate-950">
+                <section key={section.id} className="py-24 bg-slate-50/70">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                     <div className="text-center max-w-2xl mx-auto space-y-4">
                       <span className="text-xs font-bold uppercase tracking-widest text-amber-500">RÉSIDENCES</span>
-                      <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl tracking-tight">
+                      <h2 className="text-3xl font-extrabold text-slate-900 font-display sm:text-4xl tracking-tight">
                         {content.title || "Premium Listings"}
                       </h2>
                       <p className="text-slate-500 text-sm">
@@ -194,9 +194,9 @@ export default async function LandingPage({ searchParams }: PageProps) {
                           return (
                             <div
                               key={apt.id}
-                              className="group flex flex-col justify-between overflow-hidden bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl hover:border-slate-350 dark:hover:border-slate-700 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/5 backdrop-blur-xl hover:-translate-y-1"
+                              className="group flex flex-col justify-between overflow-hidden bg-white border border-slate-200/80 rounded-3xl transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/60 hover:border-slate-300 hover:-translate-y-1"
                             >
-                              <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
+                              <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
                                 <img
                                   src={coverImage}
                                   alt={apt.title}
@@ -215,7 +215,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                                     <span className="text-[10px] font-bold text-amber-500 tracking-wider">
                                       REF: {apt.reference}
                                     </span>
-                                    <span className="text-base font-bold text-slate-900 dark:text-white">
+                                    <span className="text-base font-bold text-slate-900">
                                       {apt.price.toLocaleString()} DT
                                     </span>
                                   </div>
@@ -226,17 +226,17 @@ export default async function LandingPage({ searchParams }: PageProps) {
                                   </Link>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-2 border-t border-b border-slate-100 dark:border-slate-800/50 py-3 text-[10px] text-slate-500 dark:text-slate-400 text-center">
+                                <div className="grid grid-cols-3 gap-2 border-t border-b border-slate-100 py-3 text-[10px] text-slate-600 text-center">
                                   <div>
-                                    <span className="font-bold text-slate-800 dark:text-slate-200 block">{apt.surface} m²</span>
+                                    <span className="font-bold text-slate-900 block">{apt.surface} m²</span>
                                     <span className="text-[9px] text-slate-500 block mt-0.5">Surface</span>
                                   </div>
                                   <div>
-                                    <span className="font-bold text-slate-800 dark:text-slate-200 block">{apt.bedrooms} Bed</span>
+                                    <span className="font-bold text-slate-900 block">{apt.bedrooms} Bed</span>
                                     <span className="text-[9px] text-slate-500 block mt-0.5">Rooms</span>
                                   </div>
                                   <div>
-                                    <span className="font-bold text-slate-800 dark:text-slate-200 block">{apt.orientation}</span>
+                                    <span className="font-bold text-slate-900 block">{apt.orientation}</span>
                                     <span className="text-[9px] text-slate-500 block mt-0.5">Facing</span>
                                   </div>
                                 </div>
@@ -244,7 +244,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                                 <div className="flex gap-2">
                                   <Link
                                     href={`/apartments/${apt.slug}`}
-                                    className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-950 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                                    className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 shadow-xs text-xs font-semibold rounded-xl transition-colors cursor-pointer"
                                   >
                                     <span>Details</span>
                                     <ArrowRight className="w-3.5 h-3.5" />
@@ -262,13 +262,13 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
             case "ABOUT":
               return (
-                <section key={section.id} id="about" className="py-24 bg-white dark:bg-slate-900/10 border-t border-slate-200/50 dark:border-slate-800/50">
+                <section key={section.id} id="about" className="py-24 bg-white border-t border-slate-200/60">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                       {/* Left: About Text */}
                       <div className="space-y-6">
                         <span className="text-xs font-bold uppercase tracking-widest text-amber-500">QUI SOMMES-NOUS</span>
-                        <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl tracking-tight leading-tight">
+                        <h2 className="text-3xl font-extrabold text-slate-900 font-display sm:text-4xl tracking-tight leading-tight">
                           {content.title}
                         </h2>
                         <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
@@ -279,11 +279,11 @@ export default async function LandingPage({ searchParams }: PageProps) {
                         <div className="space-y-4 pt-4">
                           {content.features?.map((feat: any, idx: number) => (
                             <div key={idx} className="flex items-start gap-3">
-                              <div className="p-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-500 mt-0.5">
+                              <div className="p-1 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-600 mt-0.5">
                                 <ShieldCheck className="w-4 h-4" />
                               </div>
                               <div>
-                                <h4 className="text-sm font-bold text-slate-800 dark:text-white">{feat.title}</h4>
+                                <h4 className="text-sm font-bold text-slate-900">{feat.title}</h4>
                                 <p className="text-xs text-slate-500 mt-0.5">High-fidelity specifications guaranteed in design layout.</p>
                               </div>
                             </div>
@@ -293,7 +293,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
                       {/* Right: Cover Photo */}
                       {content.imageUrl && (
-                        <div className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 aspect-video lg:aspect-square shadow-2xl">
+                        <div className="relative rounded-3xl overflow-hidden border border-slate-200/80 aspect-video lg:aspect-square shadow-xl">
                           <img src={content.imageUrl} alt="About image" className="w-full h-full object-cover" />
                         </div>
                       )}
@@ -304,11 +304,11 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
             case "TESTIMONIALS":
               return (
-                <section key={section.id} id="testimonials" className="py-24 bg-slate-50 dark:bg-slate-950">
+                <section key={section.id} id="testimonials" className="py-24 bg-slate-50/70">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                     <div className="text-center max-w-2xl mx-auto space-y-2">
                       <span className="text-xs font-bold uppercase tracking-widest text-amber-500">AVIS CLIENTS</span>
-                      <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl tracking-tight">
+                      <h2 className="text-3xl font-extrabold text-slate-900 font-display sm:text-4xl tracking-tight">
                         {content.title || "Client Testimonials"}
                       </h2>
                     </div>
@@ -317,7 +317,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                       {content.items?.map((item: any, idx: number) => (
                         <div
                           key={idx}
-                          className="p-8 bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl backdrop-blur-xl flex flex-col justify-between gap-6"
+                          className="p-8 bg-white border border-slate-200/80 rounded-3xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-6"
                         >
                           <p className="text-slate-500 text-sm leading-relaxed italic">
                             "{item.text}"
@@ -327,11 +327,11 @@ export default async function LandingPage({ searchParams }: PageProps) {
                               <img
                                 src={item.photo}
                                 alt={item.name}
-                                className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-800"
+                                className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200"
                               />
                             )}
                             <div>
-                              <h4 className="text-xs font-bold text-slate-800 dark:text-white">{item.name}</h4>
+                              <h4 className="text-xs font-bold text-slate-900">{item.name}</h4>
                               <div className="flex gap-0.5 mt-1 text-amber-500">
                                 {Array.from({ length: item.rating || 5 }).map((_, i) => (
                                   <Star key={i} className="w-3.5 h-3.5 fill-current" />
@@ -348,7 +348,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
             case "CTA":
               return (
-                <section key={section.id} className="py-24 bg-slate-900 text-white relative overflow-hidden">
+                <section key={section.id} className="py-24 bg-slate-900 text-white rounded-3xl my-12 mx-4 sm:mx-8 overflow-hidden shadow-2xl relative">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-amber-900/20 via-slate-900/10 to-transparent" />
                   <div className="max-w-4xl mx-auto px-6 text-center relative z-10 space-y-6">
                     <h2 className="text-3xl font-extrabold text-white sm:text-4xl tracking-tight leading-tight">
@@ -379,11 +379,11 @@ export default async function LandingPage({ searchParams }: PageProps) {
       </div>
 
       {/* Footer block */}
-      <footer className="bg-slate-950 text-slate-400 border-t border-slate-900/50 py-16 px-6 relative z-10">
+      <footer className="bg-white text-slate-600 border-t border-slate-200/80 py-16 px-6 relative z-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Logo brand info */}
           <div className="space-y-4 col-span-1 md:col-span-2">
-            <h3 className="font-extrabold text-white text-lg tracking-tight">
+            <h3 className="font-extrabold text-slate-900 font-display text-lg tracking-tight">
               {settings?.agencyName || "Elysium Residences"}
             </h3>
             <p className="text-xs max-w-sm leading-relaxed text-slate-500">
@@ -404,11 +404,11 @@ export default async function LandingPage({ searchParams }: PageProps) {
           {/* Render footer columns from CMS if exists */}
           {sections.find((s) => s.key === "FOOTER")?.content?.columns?.map((col: any, idx: number) => (
             <div key={idx} className="space-y-4">
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider">{col.title}</h4>
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">{col.title}</h4>
               <ul className="space-y-2 text-xs">
                 {col.links?.map((link: any, i: number) => (
                   <li key={i}>
-                    <Link href={link.url} className="hover:text-white transition-colors">
+                    <Link href={link.url} className="hover:text-amber-600 transition-colors">
                       {link.label}
                     </Link>
                   </li>
@@ -418,24 +418,24 @@ export default async function LandingPage({ searchParams }: PageProps) {
           )) || (
             <>
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Découvrir</h4>
+                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Découvrir</h4>
                 <ul className="space-y-2 text-xs">
-                  <li><Link href="/catalog" className="hover:text-white transition-colors">Catalogue</Link></li>
-                  <li><Link href="/chat" className="hover:text-white transition-colors">Conseiller IA</Link></li>
+                  <li><Link href="/catalog" className="hover:text-amber-600 transition-colors">Catalogue</Link></li>
+                  <li><Link href="/chat" className="hover:text-amber-600 transition-colors">Conseiller IA</Link></li>
                 </ul>
               </div>
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Mentions Légales</h4>
+                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Mentions Légales</h4>
                 <ul className="space-y-2 text-xs">
-                  <li><Link href="/privacy" className="hover:text-white transition-colors">Politique de Confidentialité</Link></li>
-                  <li><Link href="/terms" className="hover:text-white transition-colors">Conditions d'Utilisation</Link></li>
+                  <li><Link href="/privacy" className="hover:text-amber-600 transition-colors">Politique de Confidentialité</Link></li>
+                  <li><Link href="/terms" className="hover:text-amber-600 transition-colors">Conditions d'Utilisation</Link></li>
                 </ul>
               </div>
             </>
           )}
         </div>
 
-        <div className="max-w-7xl mx-auto border-t border-slate-900/60 mt-12 pt-8 text-center text-[10px] text-slate-600">
+        <div className="max-w-7xl mx-auto border-t border-slate-200/60 mt-12 pt-8 text-center text-[10px] text-slate-500">
           <p>{sections.find((s) => s.key === "FOOTER")?.content?.copyright || `© 2026 ${settings?.agencyName || "Elysium Residences"}. All rights reserved.`}</p>
         </div>
       </footer>

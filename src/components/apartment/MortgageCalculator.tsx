@@ -57,20 +57,20 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
   const loanAmt = price - downPaymentAmt;
 
   return (
-    <div className="glass border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 bg-white/40 dark:bg-slate-900/30 backdrop-blur-xl space-y-6">
-      <div className="flex items-center gap-2 border-b border-slate-200/60 dark:border-slate-800/60 pb-4">
+    <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-6">
+      <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
         <Calculator className="w-5 h-5 text-amber-500" />
-        <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Simulateur de Crédit</h3>
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Simulateur de Crédit</h3>
       </div>
 
       <div className="space-y-4">
         {/* Down payment control */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <label className="text-[10px] font-semibold text-slate-600 uppercase tracking-wider">
               Apport Personnel ({downPaymentPct}%)
             </label>
-            <span className="text-xs font-semibold text-slate-800 dark:text-white">
+            <span className="text-xs font-semibold text-slate-900">
               {downPaymentAmt.toLocaleString()} DT
             </span>
           </div>
@@ -82,7 +82,7 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
               step="5"
               value={downPaymentPct}
               onChange={(e) => setDownPaymentPct(parseInt(e.target.value))}
-              className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+              className="flex-1 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
             />
           </div>
         </div>
@@ -90,10 +90,10 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
         {/* Interest rate control */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <label className="text-[10px] font-semibold text-slate-600 uppercase tracking-wider">
               Taux d'Intérêt
             </label>
-            <span className="text-xs font-semibold text-slate-800 dark:text-white">
+            <span className="text-xs font-semibold text-slate-900">
               {interestRate}%
             </span>
           </div>
@@ -105,14 +105,14 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
               step="0.1"
               value={interestRate}
               onChange={(e) => setInterestRate(parseFloat(e.target.value))}
-              className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+              className="flex-1 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
             />
           </div>
         </div>
 
         {/* Duration control */}
         <div>
-          <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+          <label className="block text-[10px] font-semibold text-slate-600 uppercase tracking-wider mb-2">
             Durée du Prêt (Années)
           </label>
           <div className="grid grid-cols-4 gap-2">
@@ -124,7 +124,7 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
                 className={`py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
                   durationYears === y
                     ? "bg-amber-500 text-slate-950"
-                    : "bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800"
+                    : "bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
                 }`}
               >
                 {y} ans
@@ -135,8 +135,8 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
       </div>
 
       {/* Output results */}
-      <div className="bg-slate-100/50 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-850 rounded-2xl p-5 space-y-4">
-        <div className="text-center pb-3 border-b border-slate-200 dark:border-slate-800/80">
+      <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 space-y-4">
+        <div className="text-center pb-3 border-b border-slate-200/60">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Mensualité Estimée</span>
           <span className="text-3xl font-extrabold text-amber-500 mt-1 block">
               {monthlyPayment.toLocaleString(undefined, { maximumFractionDigits: 0 })} DT/mois
@@ -146,11 +146,11 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
         <div className="grid grid-cols-2 gap-4 text-xs">
           <div>
             <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider block">Capital Emprunté</span>
-            <span className="font-bold text-slate-800 dark:text-white mt-0.5 block">{loanAmt.toLocaleString()} DT</span>
+            <span className="font-bold text-slate-900 mt-0.5 block">{loanAmt.toLocaleString()} DT</span>
           </div>
           <div>
             <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider block">Intérêts Totaux</span>
-            <span className="font-bold text-slate-850 dark:text-slate-300 mt-0.5 block">
+            <span className="font-bold text-slate-900 mt-0.5 block">
               {totalInterest.toLocaleString(undefined, { maximumFractionDigits: 0 })} DT
             </span>
           </div>
