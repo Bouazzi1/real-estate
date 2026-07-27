@@ -16,7 +16,7 @@ export default async function ChatPage() {
         agencyName={settings?.agencyName || "Résidence WAFA"}
         logoUrl={settings?.logoUrl || "/uploads/folla-logo.png"}
       />
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 flex flex-col">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-4 sm:py-6 flex flex-col h-[calc(100vh-80px)]">
         <Suspense fallback={<div className="text-center py-20 text-slate-400">Loading AI Sales Advisor...</div>}>
           <ChatPageClient agencyName={settings?.agencyName || "Résidence WAFA"} />
         </Suspense>

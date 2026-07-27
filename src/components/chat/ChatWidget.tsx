@@ -22,7 +22,7 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
-  if (isAdmin) return null;
+  if (isAdmin || pathname === "/chat") return null;
 
   const startNewSession = (customRef?: string, isBooking?: boolean) => {
     const newSid = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
