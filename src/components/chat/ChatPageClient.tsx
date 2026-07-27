@@ -13,14 +13,13 @@ import {
   Plus,
   Copy,
   Check,
-  Bot,
   User,
-  ExternalLink,
   ChevronRight,
   Compass,
-  Zap,
-  Home,
-  MessageSquare
+  Menu,
+  X,
+  Mic,
+  Volume2
 } from "lucide-react";
 
 interface Message {
@@ -42,6 +41,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState("");
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -213,15 +213,35 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
   };
 
   return (
-    <div className="flex-1 flex flex-col md:flex-row gap-4 h-full overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-950 shadow-2xl backdrop-blur-2xl">
+    <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden rounded-none sm:rounded-3xl border-0 sm:border border-slate-800/80 bg-slate-950 shadow-2xl backdrop-blur-2xl relative">
       
-      {/* ── Left Sidebar (ChatGPT / Gemini Drawer) ── */}
-      <div className="w-full md:w-72 bg-slate-900/60 border-b md:border-b-0 md:border-r border-slate-800/80 p-4 flex flex-col justify-between shrink-0">
+      {/* ── Left Sidebar Drawer (Desktop permanent, Mobile overlay) ── */}
+      <div
+        className={`fixed inset-0 z-50 md:relative md:z-auto bg-slate-950/95 md:bg-slate-900/60 border-r border-slate-800/80 p-4 flex flex-col justify-between shrink-0 w-72 transition-transform duration-300 ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
         <div className="space-y-4">
           
+          {/* Header Mobile Drawer Close */}
+          <div className="flex items-center justify-between md:hidden pb-2 border-b border-slate-800">
+            <span className="font-extrabold text-xs text-amber-400 uppercase tracking-widest">
+              {agencyName} AI
+            </span>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-1.5 text-slate-400 hover:text-white rounded-xl bg-slate-900 border border-slate-800 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
           {/* New Chat CTA Button */}
           <button
-            onClick={() => startNewSession()}
+            onClick={() => {
+              startNewSession();
+              setMobileMenuOpen(false);
+            }}
             className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs rounded-2xl shadow-lg shadow-amber-500/15 transition-all duration-300 cursor-pointer active:scale-95 group"
           >
             <div className="flex items-center gap-2.5">
@@ -233,7 +253,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
 
           {/* Active Apartment Context Card */}
           {apartmentRef && (
-            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-1.5 animate-fadeIn">
+            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-1.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 block flex items-center gap-1.5">
                 <Building2 className="w-3 h-3 text-amber-400" />
                 Contexte Biens Actif
@@ -257,7 +277,10 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
               {starterPrompts.map((p, idx) => (
                 <button
                   key={idx}
-                  onClick={() => sendMessageQuery(p.query)}
+                  onClick={() => {
+                    sendMessageQuery(p.query);
+                    setMobileMenuOpen(false);
+                  }}
                   disabled={loading}
                   className="w-full text-left px-3 py-2.5 rounded-xl bg-slate-900/40 hover:bg-slate-850 border border-slate-800/60 hover:border-amber-500/30 text-slate-300 hover:text-white text-xs font-semibold transition-all duration-200 flex items-center justify-between group cursor-pointer"
                 >
@@ -281,12 +304,29 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
         </div>
       </div>
 
-      {/* ── Main Chat Workspace (ChatGPT / Gemini Canvas) ── */}
+      {/* Backdrop overlay for mobile drawer */}
+      {mobileMenuOpen && (
+        <div
+          onClick={() => setMobileMenuOpen(false)}
+          className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 md:hidden"
+        />
+      )}
+
+      {/* ── Main Chat Workspace (ChatGPT / Gemini Fixed Canvas) ── */}
       <div className="flex-1 flex flex-col h-full bg-slate-950/40 overflow-hidden relative">
         
         {/* Top Header Bar */}
-        <div className="px-6 py-3.5 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl flex items-center justify-between z-10">
+        <div className="px-4 sm:px-6 py-3 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-xl flex items-center justify-between shrink-0 z-10">
           <div className="flex items-center gap-3">
+            {/* Mobile Drawer Hamburger Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white cursor-pointer"
+              title="Ouvrir le menu"
+            >
+              <Menu className="w-4 h-4 text-amber-400" />
+            </button>
+
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 p-0.5 flex items-center justify-center shadow-md shadow-amber-500/20">
               <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
@@ -294,13 +334,13 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-sm text-white tracking-tight">{agencyName} AI Advisor</h3>
+                <h3 className="font-extrabold text-xs sm:text-sm text-white tracking-tight">{agencyName} AI</h3>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                   En ligne
                 </span>
               </div>
-              <p className="text-[10px] text-slate-350">Conseiller Commercial d'Exception (IA & RAG)</p>
+              <p className="text-[10px] text-slate-350 hidden sm:block">Conseiller Commercial d'Exception (IA & RAG)</p>
             </div>
           </div>
 
@@ -313,37 +353,37 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
           </button>
         </div>
 
-        {/* Message Stream Area */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6 scrollbar-thin scrollbar-thumb-slate-800">
+        {/* Message Stream Area (The ONLY scrollable region!) */}
+        <div className="flex-1 overflow-y-auto px-3 sm:px-8 py-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-800">
           
           {/* Welcome Card when initial greeting is displayed */}
           {messages.length <= 1 && (
-            <div className="max-w-2xl mx-auto py-6 space-y-6 text-center animate-fadeIn">
-              <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-600 p-0.5 mx-auto shadow-xl shadow-amber-500/20 flex items-center justify-center">
+            <div className="max-w-2xl mx-auto py-4 sm:py-6 space-y-5 text-center animate-fadeIn">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-3xl bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-600 p-0.5 mx-auto shadow-xl shadow-amber-500/20 flex items-center justify-center">
                 <div className="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center">
-                  <Sparkles className="w-8 h-8 text-amber-400" />
+                  <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 text-amber-400" />
                 </div>
               </div>
 
               <div>
-                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                <h2 className="text-lg sm:text-2xl font-black text-white tracking-tight">
                   Bienvenue à la {agencyName}
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-350 max-w-md mx-auto mt-2 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-350 max-w-md mx-auto mt-1.5 leading-relaxed">
                   Posez vos questions sur nos suites, attiques, superficies, tarifs en Dinars Tunisiens (DT) ou planifiez une visite privée.
                 </p>
               </div>
 
               {/* Starter Grid Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left pt-1">
                 {starterPrompts.map((p, idx) => (
                   <button
                     key={idx}
                     onClick={() => sendMessageQuery(p.query)}
                     disabled={loading}
-                    className="p-4 rounded-2xl bg-slate-900/60 hover:bg-slate-850 border border-slate-800/80 hover:border-amber-500/40 transition-all duration-300 group cursor-pointer shadow-lg hover:-translate-y-0.5"
+                    className="p-3.5 rounded-2xl bg-slate-900/60 hover:bg-slate-850 border border-slate-800/80 hover:border-amber-500/40 transition-all duration-300 group cursor-pointer shadow-lg hover:-translate-y-0.5"
                   >
-                    <div className="flex items-center gap-2.5 text-amber-400 font-extrabold text-xs mb-1">
+                    <div className="flex items-center gap-2 text-amber-400 font-extrabold text-xs mb-1">
                       <p.icon className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
                       <span>{p.title}</span>
                     </div>
@@ -358,21 +398,21 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
           {messages.map((m, idx) => (
             <div
               key={idx}
-              className={`flex gap-3.5 max-w-3xl mx-auto ${
+              className={`flex gap-3 max-w-3xl mx-auto ${
                 m.role === "USER" ? "justify-end" : "justify-start"
               } animate-fadeIn`}
             >
               {/* Assistant Avatar */}
               {m.role === "ASSISTANT" && (
-                <div className="w-8 h-8 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 mt-1">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 mt-1">
+                  <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
                 </div>
               )}
 
               {/* Message Content Bubble */}
-              <div className="relative group">
+              <div className="relative group max-w-[88%] sm:max-w-[82%]">
                 <div
-                  className={`rounded-3xl p-5 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap shadow-lg ${
+                  className={`rounded-3xl p-4 sm:p-5 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap shadow-lg ${
                     m.role === "USER"
                       ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-semibold rounded-br-none"
                       : "bg-slate-900/90 border border-slate-800 text-slate-200 rounded-bl-none backdrop-blur-md"
@@ -405,8 +445,8 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
 
               {/* User Avatar */}
               {m.role === "USER" && (
-                <div className="w-8 h-8 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 mt-1">
-                  <User className="w-4 h-4 text-amber-400" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 mt-1">
+                  <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
                 </div>
               )}
             </div>
@@ -414,11 +454,11 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
 
           {/* Loading Typing State */}
           {loading && messages[messages.length - 1]?.role === "USER" && (
-            <div className="flex gap-3.5 max-w-3xl mx-auto justify-start animate-fadeIn">
-              <div className="w-8 h-8 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+            <div className="flex gap-3 max-w-3xl mx-auto justify-start animate-fadeIn">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 animate-spin" />
               </div>
-              <div className="bg-slate-900/90 border border-slate-800 text-slate-400 rounded-3xl rounded-bl-none px-5 py-4 text-xs sm:text-sm flex items-center gap-3">
+              <div className="bg-slate-900/90 border border-slate-800 text-slate-400 rounded-3xl rounded-bl-none px-4 py-3.5 text-xs sm:text-sm flex items-center gap-3">
                 <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
                 <span>Analyse du catalogue & vectorisation pgvector...</span>
               </div>
@@ -428,34 +468,55 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* ── ChatGPT Floating Input Bar ── */}
-        <div className="p-4 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent">
+        {/* ── ChatGPT Mobile & Desktop Sticky Input Bar (Screenshot 2 style) ── */}
+        <div className="p-2 sm:p-4 bg-slate-950 border-t border-slate-800/80 shrink-0 sticky bottom-0 z-20">
           <form
             onSubmit={handleSend}
-            className="max-w-3xl mx-auto relative flex items-center bg-slate-900/90 border border-slate-800 hover:border-slate-700 focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20 rounded-3xl p-2 shadow-2xl backdrop-blur-2xl transition-all duration-300"
+            className="max-w-3xl mx-auto relative flex items-center bg-slate-900/90 border border-slate-800 hover:border-slate-700 focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20 rounded-full p-1.5 sm:p-2 shadow-2xl backdrop-blur-2xl transition-all duration-300"
           >
+            {/* ChatGPT + Plus icon button */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              className="p-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer shrink-0 ml-1"
+              title="Prompts rapides"
+            >
+              <Plus className="w-4 h-4 text-slate-300" />
+            </button>
+
+            {/* Input field */}
             <input
               type="text"
               required
               disabled={loading}
-              placeholder="Posez votre question sur les appartements, prix en DT ou réservez une visite..."
+              placeholder="Répondre à la Résidence WAFA..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 bg-transparent px-4 py-2.5 text-white text-xs sm:text-sm placeholder-slate-350 focus:outline-none"
+              className="flex-1 bg-transparent px-3 sm:px-4 py-2 text-white text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
             />
 
+            {/* Microphone Icon Placeholder (like ChatGPT Mobile) */}
+            <button
+              type="button"
+              className="p-2 rounded-full text-slate-400 hover:text-slate-200 transition-colors hidden sm:block shrink-0"
+              title="Entrée vocale"
+            >
+              <Mic className="w-4 h-4" />
+            </button>
+
+            {/* Send / Audio Action Pill */}
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="p-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold rounded-2xl transition-all duration-200 disabled:opacity-30 cursor-pointer shadow-lg shadow-amber-500/20 active:scale-95 shrink-0"
-              title="Envoyer le message"
+              className="p-2.5 sm:p-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold rounded-full transition-all duration-200 disabled:opacity-30 cursor-pointer shadow-lg shadow-amber-500/20 active:scale-95 shrink-0"
+              title="Envoyer"
             >
               <Send className="w-4 h-4 text-slate-950" />
             </button>
           </form>
 
-          <p className="text-[10px] text-slate-350 text-center mt-2.5">
-            L'IA Résidence WAFA utilise la base de données pgvector officielle. Informations commerciales vérifiées.
+          <p className="text-[10px] text-slate-350 text-center mt-1.5 hidden sm:block">
+            L'IA Résidence WAFA utilise la base pgvector officielle. Réponses commerciales vérifiées.
           </p>
         </div>
 
