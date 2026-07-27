@@ -79,9 +79,9 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const [locale, setLocaleState] = useState<Locale>("fr");
 
-  // Load language from storage if exists
+  // Load language from storage after mount to avoid server/client hydration mismatch
   useEffect(() => {
     const saved = localStorage.getItem("elysium_lang") as Locale;
     if (saved && (saved === "en" || saved === "fr" || saved === "ar")) {

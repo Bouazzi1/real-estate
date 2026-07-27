@@ -42,8 +42,13 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
   const [sessionId, setSessionId] = useState("");
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const starterPrompts = [
     {
@@ -211,6 +216,15 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
     setCopiedIdx(idx);
     setTimeout(() => setCopiedIdx(null), 2000);
   };
+
+  if (!mounted) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center bg-slate-950 text-slate-400 text-xs gap-3 rounded-3xl border border-slate-800/80">
+        <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
+        <span>Chargement du Conseiller Virtuel WAFA...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden rounded-none sm:rounded-3xl border-0 sm:border border-slate-800/80 bg-slate-950 shadow-2xl backdrop-blur-2xl relative">
