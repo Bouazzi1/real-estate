@@ -18,6 +18,7 @@ import {
   DollarSign
 } from "lucide-react";
 import MortgageCalculator from "./MortgageCalculator";
+import Header from "@/components/navigation/Header";
 
 const MapComponent = dynamic(() => import("./MapComponent"), {
   ssr: false,
@@ -84,22 +85,23 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
   const lng = apartment.project?.location?.lng || 2.3522;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 pb-24">
+    <div className="min-h-screen bg-slate-950 text-slate-100 pb-24">
+      <Header agencyName="Résidence WAFA" logoUrl="/uploads/folla-logo.png" />
       {/* Detail Header bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <Link
           href="/catalog"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-blue-500 mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-amber-500 mb-6 transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Catalog</span>
+          <span>Retour au Catalogue</span>
         </Link>
 
         {/* Title and reference */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-850 pb-6">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 text-[10px] font-bold uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[10px] font-bold uppercase tracking-wider">
                 REF: {apartment.reference}
               </span>
               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
@@ -118,7 +120,7 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
             </div>
           </div>
           <div className="text-left md:text-right">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Asking Price</span>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Prix Demandé</span>
             <span className="text-3xl font-black text-slate-900 dark:text-white block mt-1">
               {apartment.price.toLocaleString()} DT
             </span>
@@ -164,22 +166,22 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
             {/* Core specs strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 bg-white dark:bg-slate-900/20 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl backdrop-blur-xl">
               <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50 last:border-none">
-                <Square className="w-5 h-5 text-blue-500 mx-auto mb-2" />
+                <Square className="w-5 h-5 text-amber-500 mx-auto mb-2" />
                 <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Surface Area</span>
                 <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.surface} m²</span>
               </div>
               <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50 last:border-none">
-                <BedDouble className="w-5 h-5 text-blue-500 mx-auto mb-2" />
+                <BedDouble className="w-5 h-5 text-amber-500 mx-auto mb-2" />
                 <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Bedrooms</span>
                 <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.bedrooms} Bed</span>
               </div>
               <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50 last:border-none">
-                <Bath className="w-5 h-5 text-blue-500 mx-auto mb-2" />
+                <Bath className="w-5 h-5 text-amber-500 mx-auto mb-2" />
                 <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Bathrooms</span>
                 <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.bathrooms} Bath</span>
               </div>
               <div className="text-center p-3 last:border-none">
-                <Compass className="w-5 h-5 text-blue-500 mx-auto mb-2" />
+                <Compass className="w-5 h-5 text-amber-500 mx-auto mb-2" />
                 <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Orientation</span>
                 <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.orientation}</span>
               </div>
@@ -187,7 +189,7 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
 
             {/* Description details */}
             <div className="space-y-4">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Property Description</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Description du Bien</h2>
               <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed bg-white dark:bg-slate-900/10 border border-slate-200 dark:border-slate-850 rounded-3xl p-6">
                 {apartment.description}
               </div>
@@ -197,12 +199,12 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
             {apartment.floorPlanUrl && (
               <div className="bg-white dark:bg-slate-900/20 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-bold text-white">Floor Plan Drawing</h3>
+                  <h3 className="text-base font-bold text-white">Plan de l'Appartement</h3>
                   <button
                     onClick={() => setShowFloorPlan(!showFloorPlan)}
-                    className="text-xs font-semibold text-blue-500 hover:text-blue-400 cursor-pointer"
+                    className="text-xs font-semibold text-amber-500 hover:text-amber-400 cursor-pointer"
                   >
-                    {showFloorPlan ? "Hide Layout" : "View Layout"}
+                    {showFloorPlan ? "Masquer le Plan" : "Voir le Plan"}
                   </button>
                 </div>
                 {showFloorPlan && (
@@ -215,7 +217,7 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
 
             {/* Location Map */}
             <div className="space-y-4">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Location Map</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Plan de Localisation</h2>
               <MapComponent lat={lat} lng={lng} address={address} />
             </div>
 
@@ -227,10 +229,10 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
             {/* Action Box */}
             <div className="glass border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 bg-white/40 dark:bg-slate-900/30 backdrop-blur-xl space-y-6">
               <div className="space-y-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Residency Price</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Prix de la Résidence</span>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{apartment.price.toLocaleString()} DT</span>
-                  <span className="text-xs text-slate-500 font-medium">VAT excl.</span>
+                  <span className="text-xs text-slate-500 font-medium">HT</span>
                 </div>
               </div>
 
@@ -238,10 +240,10 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
                 {/* Ask AI Advisor trigger */}
                 <Link
                   href={`/chat?apartment=${apartment.reference}`}
-                  className="w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-600/10 cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-bold rounded-xl transition-all shadow-lg shadow-amber-500/10 cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Consult AI Advisor</span>
+                  <span>Consulter l'Agent IA</span>
                 </Link>
                 
                 {/* Book a visit trigger */}
@@ -249,28 +251,28 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
                   href={`/chat?apartment=${apartment.reference}&book=true`}
                   className="w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                 >
-                  <Calendar className="w-4 h-4 text-blue-500" />
-                  <span>Schedule Site Tour</span>
+                  <Calendar className="w-4 h-4 text-amber-500" />
+                  <span>Planifier une Visite</span>
                 </Link>
               </div>
 
               {/* Special specs lists */}
               <div className="border-t border-slate-200 dark:border-slate-800/80 pt-4 space-y-3 text-[11px] text-slate-500 dark:text-slate-400">
                 <div className="flex justify-between">
-                  <span>Development Project:</span>
+                  <span>Projet Immobilier :</span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200">{apartment.project?.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Building Floor:</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">Floor {apartment.floor}</span>
+                  <span>Étage :</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">Étage {apartment.floor}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Balcony Terrace:</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{apartment.balcony ? "Available" : "None"}</span>
+                  <span>Terrasse / Balcon :</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{apartment.balcony ? "Disponible" : "Non"}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Secure Parking:</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{apartment.parking ? "Included" : "None"}</span>
+                  <span>Parking Sécurisé :</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{apartment.parking ? "Inclus" : "Non"}</span>
                 </div>
               </div>
             </div>
@@ -282,7 +284,7 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
             {apartment.documents && apartment.documents.length > 0 && (
               <div className="glass border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 bg-white/40 dark:bg-slate-900/30 backdrop-blur-xl space-y-4">
                 <div className="flex items-center gap-2 border-b border-slate-200/60 dark:border-slate-800/60 pb-3">
-                  <FileText className="w-4 h-4 text-blue-500" />
+                  <FileText className="w-4 h-4 text-amber-500" />
                   <h3 className="text-xs font-bold text-white uppercase tracking-wider">Brochures & Documents</h3>
                 </div>
                 <div className="space-y-2">

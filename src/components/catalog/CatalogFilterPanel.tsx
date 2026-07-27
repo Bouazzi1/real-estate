@@ -75,15 +75,15 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
     <div className="glass border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 bg-white/40 dark:bg-slate-900/30 backdrop-blur-xl space-y-6">
       <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800/60 pb-4">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal className="w-4 h-4 text-blue-500" />
-          <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Search Filters</h3>
+          <SlidersHorizontal className="w-4 h-4 text-amber-500" />
+          <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Filtres de Recherche</h3>
         </div>
         <button
           onClick={resetFilters}
-          className="text-xs text-slate-500 hover:text-blue-500 flex items-center gap-1 transition-colors cursor-pointer"
+          className="text-xs text-slate-500 hover:text-amber-500 flex items-center gap-1 transition-colors cursor-pointer"
         >
           <RefreshCw className="w-3.5 h-3.5" />
-          <span>Reset</span>
+          <span>Réinitialiser</span>
         </button>
       </div>
 
@@ -91,14 +91,14 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
         {/* Project select */}
         <div>
           <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-            Residential Project
+            Projet Résidentiel
           </label>
           <select
             value={project}
             onChange={(e) => setProject(e.target.value)}
-            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500 cursor-pointer"
           >
-            <option value="">All Projects</option>
+            <option value="">Tous les Projets</option>
             {projects.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
@@ -110,12 +110,12 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
         {/* Status selection */}
         <div>
           <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-            Unit Status
+            Statut du Bien
           </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500 cursor-pointer"
           >
             <option value="AVAILABLE">AVAILABLE</option>
             <option value="RESERVED">RESERVED</option>
@@ -127,24 +127,24 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
         {/* Sort by option */}
         <div>
           <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-            Sort Listings
+            Trier les Biens
           </label>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500 cursor-pointer"
           >
-            <option value="newest">Newest Listings</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
-            <option value="surface_desc">Surface: Large to Small</option>
+            <option value="newest">Plus Récents</option>
+            <option value="price_asc">Prix : Croissant</option>
+            <option value="price_desc">Prix : Décroissant</option>
+            <option value="surface_desc">Superficie : Décroissant</option>
           </select>
         </div>
 
         {/* Price limits */}
         <div>
           <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-            Price Range (DT)
+            Fourchette de Prix (DT)
           </label>
           <div className="flex gap-2">
             <input
@@ -152,14 +152,14 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
               placeholder="Min"
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
-              className="w-1/2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-blue-500"
+              className="w-1/2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500"
             />
             <input
               type="number"
               placeholder="Max"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
-              className="w-1/2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-blue-500"
+              className="w-1/2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500"
             />
           </div>
         </div>
@@ -167,7 +167,7 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
         {/* Surface limits */}
         <div>
           <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-            Surface Range (m²)
+            Fourchette de Superficie (m²)
           </label>
           <div className="flex gap-2">
             <input
@@ -175,14 +175,14 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
               placeholder="Min"
               value={minSurface}
               onChange={(e) => setMinSurface(e.target.value)}
-              className="w-1/2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-blue-500"
+              className="w-1/2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500"
             />
             <input
               type="number"
               placeholder="Max"
               value={maxSurface}
               onChange={(e) => setMaxSurface(e.target.value)}
-              className="w-1/2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-blue-500"
+              className="w-1/2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500"
             />
           </div>
         </div>
@@ -191,26 +191,26 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
         <div className="flex gap-3">
           <div className="w-1/2">
             <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-              Rooms
+              Pièces
             </label>
             <input
               type="number"
               placeholder="Any"
               value={rooms}
               onChange={(e) => setRooms(e.target.value)}
-              className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none"
+              className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500"
             />
           </div>
           <div className="w-1/2">
             <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-              Bedrooms
+              Chambres
             </label>
             <input
               type="number"
               placeholder="Any"
               value={bedrooms}
               onChange={(e) => setBedrooms(e.target.value)}
-              className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none"
+              className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500"
             />
           </div>
         </div>
@@ -225,7 +225,7 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
             placeholder="e.g. South, West..."
             value={orientation}
             onChange={(e) => setOrientation(e.target.value)}
-            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-blue-500"
+            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-700 dark:text-white focus:outline-none focus:border-amber-500"
           />
         </div>
 
@@ -236,27 +236,27 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
               type="checkbox"
               checked={balcony}
               onChange={(e) => setBalcony(e.target.checked)}
-              className="rounded border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-blue-500 focus:ring-0 focus:ring-offset-0 w-4 h-4"
+              className="rounded border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-amber-500 focus:ring-0 focus:ring-offset-0 w-4 h-4"
             />
-            <span>Must have Balcony</span>
+            <span>Balcon requis</span>
           </label>
           <label className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
             <input
               type="checkbox"
               checked={parking}
               onChange={(e) => setParking(e.target.checked)}
-              className="rounded border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-blue-500 focus:ring-0 focus:ring-offset-0 w-4 h-4"
+              className="rounded border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-amber-500 focus:ring-0 focus:ring-offset-0 w-4 h-4"
             />
-            <span>Must have Parking</span>
+            <span>Parking requis</span>
           </label>
         </div>
       </div>
 
       <button
         onClick={applyFilters}
-        className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition-colors shadow-lg shadow-blue-600/10 cursor-pointer"
+        className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold rounded-2xl transition-all shadow-lg shadow-amber-500/20 cursor-pointer"
       >
-        Apply Search Filters
+        Appliquer les Filtres
       </button>
     </div>
   );

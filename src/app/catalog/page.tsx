@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import CatalogFilterPanel from "@/components/catalog/CatalogFilterPanel";
 import Link from "next/link";
 import { Building2, Square, BedDouble, Bath, MapPin, Compass, ArrowRight, MessageCircle } from "lucide-react";
+import Header from "@/components/navigation/Header";
 
 export const revalidate = 0; // Ensure live data updates are fetched on filter change
 
@@ -101,17 +102,24 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     },
   });
 
+  // Fetch site settings for Header
+  let settings: any = null;
+  try {
+    settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+  } catch (e) {}
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 pb-20">
-      
+    <div className="min-h-screen bg-slate-950 text-slate-100 pb-20">
+      <Header agencyName={settings?.agencyName || "Résidence WAFA"} logoUrl={settings?.logoUrl || "/uploads/folla-logo.png"} />
+
       {/* Catalog Banner */}
       <div className="bg-slate-900 border-b border-slate-800 text-slate-100 py-16 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-900/10 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-900/20 via-slate-900/10 to-transparent" />
         <div className="max-w-7xl mx-auto relative z-10 space-y-4">
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-500">Premium Catalog</span>
-          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Available Residences</h1>
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-500">Catalogue Premium</span>
+          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Résidences Disponibles</h1>
           <p className="max-w-2xl text-slate-400 text-sm sm:text-base">
-            Browse our curated collection of architectural masterpieces. Filter by budget, dimensions, and amenities to find your dream suite.
+            Parcourez notre collection de résidences d'exception. Filtrez par budget, superficie et prestations pour trouver votre suite idéale.
           </p>
         </div>
       </div>
@@ -131,16 +139,16 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
           <div className="lg:col-span-3 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-850 pb-4">
               <span className="text-xs font-semibold text-slate-500">
-                Showing <span className="text-slate-800 dark:text-white font-bold">{apartments.length}</span> matching apartments
+                Affichage de <span className="text-white font-bold">{apartments.length}</span> appartements correspondants
               </span>
             </div>
 
             {apartments.length === 0 ? (
-              <div className="py-20 text-center glass border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/40 dark:bg-slate-900/20">
+              <div className="py-20 text-center glass border border-slate-800 rounded-3xl bg-slate-900/20">
                 <Building2 className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-base font-bold text-slate-800 dark:text-white">No Properties Found</h3>
+                <h3 className="text-base font-bold text-white">Aucun Bien Trouvé</h3>
                 <p className="text-xs text-slate-500 mt-2 max-w-sm mx-auto">
-                  We couldn't find any apartments matching your search parameters. Try resetting the filters or broadening your budget.
+                  Aucun appartement ne correspond à vos critères de recherche. Essayez de réinitialiser les filtres ou d'élargir votre budget.
                 </p>
               </div>
             ) : (
@@ -152,7 +160,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                   return (
                     <div
                       key={apt.id}
-                      className="group flex flex-col justify-between overflow-hidden bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl hover:border-slate-350 dark:hover:border-slate-700 transition-all duration-300 hover:shadow-xl dark:hover:shadow-blue-900/5 hover:-translate-y-0.5 backdrop-blur-xl relative"
+                      className="group flex flex-col justify-between overflow-hidden bg-slate-900/30 border border-slate-800/80 rounded-3xl hover:border-slate-700 transition-all duration-300 hover:shadow-xl hover:shadow-amber-900/5 hover:-translate-y-0.5 backdrop-blur-xl relative"
                     >
                       {/* Image Frame */}
                       <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
@@ -180,16 +188,16 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                       <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold tracking-widest text-blue-500 uppercase">
+                            <span className="text-[10px] font-bold tracking-widest text-amber-500 uppercase">
                               REF: {apt.reference}
                             </span>
-                            <span className="text-lg font-bold text-slate-900 dark:text-white">
+                            <span className="text-lg font-bold text-white">
                               {apt.price.toLocaleString()} DT
                             </span>
                           </div>
                           
                           <Link href={`/apartments/${apt.slug}`} className="block group/link">
-                            <h3 className="text-base font-bold text-slate-850 dark:text-slate-100 leading-tight group-hover/link:text-blue-500 transition-colors">
+                            <h3 className="text-base font-bold text-slate-100 leading-tight group-hover/link:text-amber-500 transition-colors">
                               {apt.title}
                             </h3>
                           </Link>
@@ -220,9 +228,9 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         <div className="flex gap-3 pt-2">
                           <Link
                             href={`/apartments/${apt.slug}`}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-150 hover:bg-slate-200 dark:bg-slate-950 dark:hover:bg-slate-900 border border-slate-250 dark:border-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-200 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
                           >
-                            <span>View Details</span>
+                            <span>Voir Détails</span>
                             <ArrowRight className="w-3.5 h-3.5" />
                           </Link>
                           
@@ -230,7 +238,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                           <Link
                             href={`/chat?apartment=${apt.reference}`}
                             title="Chat about this apartment"
-                            className="p-2.5 bg-blue-600/10 hover:bg-blue-600 hover:text-white border border-blue-500/20 text-blue-500 rounded-xl transition-all cursor-pointer inline-flex items-center justify-center"
+                            className="p-2.5 bg-amber-500/10 hover:bg-amber-500 hover:text-white border border-amber-500/20 text-amber-500 rounded-xl transition-all cursor-pointer inline-flex items-center justify-center"
                           >
                             <MessageCircle className="w-4 h-4" />
                           </Link>

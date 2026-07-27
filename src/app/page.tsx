@@ -110,16 +110,16 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
                   {/* Hero Text */}
                   <div className="max-w-4xl w-full text-center relative z-10 space-y-8 py-20">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold uppercase tracking-widest animate-pulse">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Next-Gen RAG AI Sales Agent Active</span>
                     </div>
                     
-                    <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
+                    <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight font-display animate-slideUp">
                       {content.headline}
                     </h1>
                     
-                    <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-lg font-medium leading-relaxed">
+                    <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-lg font-medium leading-relaxed animate-slideUp-delay-1">
                       {content.subheadline}
                     </p>
 
@@ -127,7 +127,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                       {content.primaryCta && (
                         <Link
                           href={content.primaryCta.link || "/catalog"}
-                          className="w-full sm:w-auto flex items-center justify-center py-3.5 px-8 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 group cursor-pointer"
+                          className="w-full sm:w-auto flex items-center justify-center py-3.5 px-8 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold rounded-2xl transition-all shadow-lg shadow-amber-500/20 group cursor-pointer"
                         >
                           <span>{content.primaryCta.text}</span>
                           <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
@@ -138,7 +138,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                           href="/chat"
                           className="w-full sm:w-auto flex items-center justify-center gap-2 py-3.5 px-8 bg-slate-900 hover:bg-slate-855 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                         >
-                          <MessageCircle className="w-4 h-4 text-blue-500" />
+                          <MessageCircle className="w-4 h-4 text-amber-400" />
                           <span>{content.secondaryCta.text}</span>
                         </Link>
                       )}
@@ -172,7 +172,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                 <section key={section.id} className="py-24 bg-slate-50 dark:bg-slate-950">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                     <div className="text-center max-w-2xl mx-auto space-y-4">
-                      <span className="text-xs font-bold uppercase tracking-widest text-blue-500">RESIDENCES</span>
+                      <span className="text-xs font-bold uppercase tracking-widest text-amber-500">RÉSIDENCES</span>
                       <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl tracking-tight">
                         {content.title || "Premium Listings"}
                       </h2>
@@ -194,7 +194,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                           return (
                             <div
                               key={apt.id}
-                              className="group flex flex-col justify-between overflow-hidden bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl hover:border-slate-350 dark:hover:border-slate-700 transition-all duration-300 hover:shadow-xl backdrop-blur-xl"
+                              className="group flex flex-col justify-between overflow-hidden bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl hover:border-slate-350 dark:hover:border-slate-700 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/5 backdrop-blur-xl hover:-translate-y-1"
                             >
                               <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
                                 <img
@@ -212,7 +212,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                               <div className="p-6 space-y-4">
                                 <div className="space-y-1">
                                   <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-bold text-blue-500 tracking-wider">
+                                    <span className="text-[10px] font-bold text-amber-500 tracking-wider">
                                       REF: {apt.reference}
                                     </span>
                                     <span className="text-base font-bold text-slate-900 dark:text-white">
@@ -267,7 +267,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                       {/* Left: About Text */}
                       <div className="space-y-6">
-                        <span className="text-xs font-bold uppercase tracking-widest text-blue-500">WHO WE ARE</span>
+                        <span className="text-xs font-bold uppercase tracking-widest text-amber-500">QUI SOMMES-NOUS</span>
                         <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl tracking-tight leading-tight">
                           {content.title}
                         </h2>
@@ -279,7 +279,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                         <div className="space-y-4 pt-4">
                           {content.features?.map((feat: any, idx: number) => (
                             <div key={idx} className="flex items-start gap-3">
-                              <div className="p-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-500 mt-0.5">
+                              <div className="p-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-500 mt-0.5">
                                 <ShieldCheck className="w-4 h-4" />
                               </div>
                               <div>
@@ -307,7 +307,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                 <section key={section.id} id="testimonials" className="py-24 bg-slate-50 dark:bg-slate-950">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                     <div className="text-center max-w-2xl mx-auto space-y-2">
-                      <span className="text-xs font-bold uppercase tracking-widest text-blue-500">REVIEWS</span>
+                      <span className="text-xs font-bold uppercase tracking-widest text-amber-500">AVIS CLIENTS</span>
                       <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl tracking-tight">
                         {content.title || "Client Testimonials"}
                       </h2>
@@ -349,7 +349,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
             case "CTA":
               return (
                 <section key={section.id} className="py-24 bg-slate-900 text-white relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-blue-900/30 via-slate-900/10 to-transparent" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-amber-900/20 via-slate-900/10 to-transparent" />
                   <div className="max-w-4xl mx-auto px-6 text-center relative z-10 space-y-6">
                     <h2 className="text-3xl font-extrabold text-white sm:text-4xl tracking-tight leading-tight">
                       {content.title}
@@ -361,7 +361,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                       {content.buttonText && (
                         <Link
                           href={content.buttonLink || "/catalog"}
-                          className="inline-flex items-center gap-2 py-3.5 px-8 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg cursor-pointer"
+                          className="inline-flex items-center gap-2 py-3.5 px-8 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold rounded-2xl transition-all shadow-lg cursor-pointer"
                         >
                           <span>{content.buttonText}</span>
                           <ArrowRight className="w-4 h-4" />
@@ -387,15 +387,15 @@ export default async function LandingPage({ searchParams }: PageProps) {
               {settings?.agencyName || "Elysium Residences"}
             </h3>
             <p className="text-xs max-w-sm leading-relaxed text-slate-500">
-              Luxury residential estates designed for modern lifestyles. Backed by our customized vector AI assistant for immediate customer support.
+              Résidences de prestige conçues pour un style de vie moderne. Accompagnement personnalisé par notre assistant IA commercial.
             </p>
             <div className="space-y-2 text-xs font-medium pt-2">
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-blue-500 shrink-0" />
+                <Phone className="w-4 h-4 text-amber-500 shrink-0" />
                 <span>{agencyPhone}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-blue-500 shrink-0" />
+                <Mail className="w-4 h-4 text-amber-500 shrink-0" />
                 <span>{agencyEmail}</span>
               </div>
             </div>
@@ -418,17 +418,17 @@ export default async function LandingPage({ searchParams }: PageProps) {
           )) || (
             <>
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Discover</h4>
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Découvrir</h4>
                 <ul className="space-y-2 text-xs">
-                  <li><Link href="/catalog" className="hover:text-white transition-colors">Catalog</Link></li>
-                  <li><Link href="/chat" className="hover:text-white transition-colors">AI Sales Advisor</Link></li>
+                  <li><Link href="/catalog" className="hover:text-white transition-colors">Catalogue</Link></li>
+                  <li><Link href="/chat" className="hover:text-white transition-colors">Conseiller IA</Link></li>
                 </ul>
               </div>
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Legal</h4>
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Mentions Légales</h4>
                 <ul className="space-y-2 text-xs">
-                  <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                  <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Use</Link></li>
+                  <li><Link href="/privacy" className="hover:text-white transition-colors">Politique de Confidentialité</Link></li>
+                  <li><Link href="/terms" className="hover:text-white transition-colors">Conditions d'Utilisation</Link></li>
                 </ul>
               </div>
             </>

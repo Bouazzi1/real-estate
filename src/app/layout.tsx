@@ -42,10 +42,10 @@ export default async function RootLayout({
   const fontFamily = settings?.fontFamily || "Inter";
 
   // Format font name for Google Fonts url import (e.g. "Plus Jakarta Sans" -> "Plus+Jakarta+Sans")
-  const googleFontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, "+")}:wght@300;400;500;600;700;800&display=swap`;
+  const googleFontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, "+")}:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap`;
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="fr" className="scroll-smooth dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

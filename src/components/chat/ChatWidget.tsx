@@ -143,7 +143,7 @@ export default function ChatWidget() {
     } catch (err: any) {
       setMessages((prev) => [
         ...prev,
-        { role: "ASSISTANT", content: "I'm sorry, I encountered a connection issue. Please try again." },
+        { role: "ASSISTANT", content: "Désolé, un problème de connexion est survenu. Veuillez réessayer." },
       ]);
     } finally {
       setLoading(false);
@@ -163,12 +163,12 @@ export default function ChatWidget() {
           {/* Header panel */}
           <div className="px-6 py-4 bg-slate-900 text-slate-100 flex items-center justify-between border-b border-slate-850">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-blue-500/10 rounded-lg text-blue-500 border border-blue-500/20">
+              <div className="p-1.5 bg-amber-500/10 rounded-lg text-amber-500 border border-amber-500/20">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-extrabold text-sm text-white block">Elysium Advisor</span>
-                <span className="text-[9px] text-slate-500 uppercase font-semibold">RAG-Powered AI Advisor</span>
+                <span className="font-extrabold text-sm text-white block">WAFA Advisor</span>
+                <span className="text-[9px] text-slate-500 uppercase font-semibold">Conseiller Commercial IA</span>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -193,13 +193,13 @@ export default function ChatWidget() {
           <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 dark:bg-slate-900/10">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-4 px-4">
-                <div className="p-3 bg-blue-500/10 text-blue-500 rounded-full border border-blue-500/20">
+                <div className="p-3 bg-amber-500/10 text-amber-500 rounded-full border border-amber-500/20">
                   <MessageCircle className="w-6 h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-850 dark:text-white text-sm">Ask anything about our listings</h4>
+                  <h4 className="font-bold text-slate-850 dark:text-white text-sm">Posez vos questions sur nos biens</h4>
                   <p className="text-[11px] text-slate-500 leading-relaxed max-w-[250px]">
-                    Inquire about prices, surface areas, brochures, or schedule a tour immediately with our RAG agent.
+                    Renseignez-vous sur les prix, superficies, brochures, ou planifiez une visite avec notre assistant IA.
                   </p>
                 </div>
               </div>
@@ -211,7 +211,7 @@ export default function ChatWidget() {
                     <div
                       className={`max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed text-xs ${
                         isUser
-                          ? "bg-blue-600 text-white shadow-md rounded-br-none"
+                          ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-semibold shadow-md rounded-br-none"
                           : "bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-850 text-slate-800 dark:text-slate-200 rounded-bl-none shadow-sm"
                       }`}
                     >
@@ -224,8 +224,8 @@ export default function ChatWidget() {
             {loading && messages[messages.length - 1]?.role === "USER" && (
               <div className="flex justify-start">
                 <div className="bg-white dark:bg-slate-855 border border-slate-200 dark:border-slate-850 rounded-2xl rounded-bl-none px-4 py-2 text-slate-400 flex items-center gap-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500" />
-                  <span>Advisor is searching RAG...</span>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-400" />
+                  <span>Recherche dans la base de données...</span>
                 </div>
               </div>
             )}
@@ -242,12 +242,12 @@ export default function ChatWidget() {
                 placeholder="Posez vos questions sur la Résidence WAFA..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2.5 px-4 text-slate-800 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm"
+                className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2.5 px-4 text-slate-800 dark:text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 text-sm"
               />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center"
+                className="p-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 rounded-xl transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -263,7 +263,7 @@ export default function ChatWidget() {
       {/* Floating Toggle Bubble */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer flex items-center justify-center relative ring-4 ring-blue-500/10"
+        className="p-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 rounded-full shadow-2xl shadow-amber-500/20 transition-all duration-300 hover:scale-105 cursor-pointer flex items-center justify-center relative animate-pulseGold"
       >
         {isOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
       </button>
