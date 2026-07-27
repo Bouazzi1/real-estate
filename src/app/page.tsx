@@ -99,11 +99,11 @@ export default async function LandingPage({ searchParams }: PageProps) {
                       <img
                         src={content.backgroundUrl}
                         alt="Elysium Hero background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-75 dark:opacity-35 transition-opacity"
                       />
                       <div
-                        className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-white/30 dark:from-slate-950 dark:via-slate-950/80 dark:to-slate-950/20"
-                        style={{ opacity: content.overlayOpacity || 0.6 }}
+                        className="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-50/60 to-transparent dark:from-slate-950 dark:via-slate-950/80 dark:to-slate-950/20"
+                        style={{ opacity: content.overlayOpacity ? content.overlayOpacity * 0.7 : 0.4 }}
                       />
                     </div>
                   )}
