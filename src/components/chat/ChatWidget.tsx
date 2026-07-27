@@ -11,7 +11,10 @@ interface Message {
 
 export default function ChatWidget() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const isAdmin = pathname?.startsWith("/admin") || false;
+  const isHidden = isAdmin || pathname === "/chat";
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -20,9 +23,6 @@ export default function ChatWidget() {
   const [sessionId, setSessionId] = useState("");
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const searchParams = useSearchParams();
-
-  if (isAdmin || pathname === "/chat") return null;
 
   const startNewSession = (customRef?: string, isBooking?: boolean) => {
     const newSid = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -51,6 +51,7 @@ export default function ChatWidget() {
 
   // 1. Initialize or load sessionId from localStorage
   useEffect(() => {
+    if (isHidden) return; // Skip initialization when widget is hidden
     let sid = localStorage.getItem("elysium_chat_session");
     const lastApt = localStorage.getItem("elysium_last_apartment_ref");
     const currentApt = searchParams.get("apartment");
@@ -64,7 +65,7 @@ export default function ChatWidget() {
       setSessionId(sid);
       loadChatHistory(sid);
     }
-  }, [searchParams]);
+  }, [searchParams, isHidden]);
 
   // Scroll to bottom
   const scrollToBottom = () => {
@@ -148,6 +149,9 @@ export default function ChatWidget() {
       setLoading(false);
     }
   };
+
+  // Return null AFTER all hooks have been called (React rules-of-hooks)
+  if (isHidden) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end text-xs">
