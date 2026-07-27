@@ -42,10 +42,10 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
           <Link href="/catalog" className="hover:text-amber-400 transition-colors">
             {t("navApartments")}
           </Link>
-          <Link href="#about" className="hover:text-amber-400 transition-colors">
+          <Link href="/#about" className="hover:text-amber-400 transition-colors">
             {t("navAbout")}
           </Link>
-          <Link href="#testimonials" className="hover:text-amber-400 transition-colors">
+          <Link href="/#testimonials" className="hover:text-amber-400 transition-colors">
             {t("navTestimonials")}
           </Link>
           <Link
@@ -119,17 +119,17 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
 
       {/* Mobile drop menu */}
       {isOpen && (
-        <div className="md:hidden bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-850 px-6 py-6 space-y-4 text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-350">
-          <Link href="/catalog" onClick={toggleMenu} className="block py-2 hover:text-blue-500">
+        <div className="md:hidden bg-slate-950 border-b border-slate-800 px-6 py-6 space-y-4 text-xs font-semibold uppercase tracking-wider text-slate-300">
+          <Link href="/catalog" onClick={toggleMenu} className="block py-2 hover:text-amber-400">
             {t("navApartments")}
           </Link>
-          <Link href="#about" onClick={toggleMenu} className="block py-2 hover:text-blue-500">
+          <Link href="/#about" onClick={toggleMenu} className="block py-2 hover:text-amber-400">
             {t("navAbout")}
           </Link>
-          <Link href="#testimonials" onClick={toggleMenu} className="block py-2 hover:text-blue-500">
+          <Link href="/#testimonials" onClick={toggleMenu} className="block py-2 hover:text-amber-400">
             {t("navTestimonials")}
           </Link>
-          <Link href="/chat" onClick={toggleMenu} className="block py-2 hover:text-blue-500 flex items-center gap-1.5 text-blue-500 font-bold">
+          <Link href="/chat" onClick={toggleMenu} className="block py-2 hover:text-amber-400 flex items-center gap-1.5 text-amber-400 font-bold">
             <Sparkles className="w-3.5 h-3.5" />
             <span>{t("navAiAdvisor")}</span>
           </Link>

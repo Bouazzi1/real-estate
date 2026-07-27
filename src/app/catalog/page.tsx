@@ -122,7 +122,9 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
           
           {/* Left Panel: Filters */}
           <div className="lg:col-span-1">
-            <CatalogFilterPanel projects={projects} />
+            <React.Suspense fallback={<div className="p-6 text-xs text-slate-400">Loading filters...</div>}>
+              <CatalogFilterPanel projects={projects} />
+            </React.Suspense>
           </div>
 
           {/* Right Panel: Listings */}
