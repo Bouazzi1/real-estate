@@ -109,16 +109,16 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   } catch (e) {}
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-20">
       <Header agencyName={settings?.agencyName || "Résidence WAFA"} logoUrl={settings?.logoUrl || "/uploads/folla-logo.png"} />
 
       {/* Catalog Banner */}
-      <div className="bg-white border-b border-slate-200/80 text-slate-900 py-16 px-6 relative overflow-hidden shadow-xs">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-500/5 via-slate-50/50 to-transparent" />
+      <div className="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 text-slate-900 dark:text-slate-100 py-16 px-6 relative overflow-hidden shadow-xs">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-500/5 via-slate-50/50 dark:from-amber-900/20 dark:via-slate-900/10 to-transparent" />
         <div className="max-w-7xl mx-auto relative z-10 space-y-4">
           <span className="text-xs font-bold uppercase tracking-widest text-amber-500">Catalogue Premium</span>
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl font-display">Résidences Disponibles</h1>
-          <p className="max-w-2xl text-slate-600 text-sm sm:text-base">
+          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl font-display">Résidences Disponibles</h1>
+          <p className="max-w-2xl text-slate-600 dark:text-slate-400 text-sm sm:text-base">
             Parcourez notre collection de résidences d'exception. Filtrez par budget, superficie et prestations pour trouver votre suite idéale.
           </p>
         </div>
@@ -137,16 +137,16 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
           {/* Right Panel: Listings */}
           <div className="lg:col-span-3 space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-200/80 pb-4">
+            <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
               <span className="text-xs font-semibold text-slate-500">
-                Affichage de <span className="text-slate-900 font-bold">{apartments.length}</span> appartements correspondants
+                Affichage de <span className="text-slate-900 dark:text-white font-bold">{apartments.length}</span> appartements correspondants
               </span>
             </div>
 
             {apartments.length === 0 ? (
-              <div className="py-20 text-center bg-white border border-slate-200 rounded-3xl shadow-sm p-12">
+              <div className="py-20 text-center bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl shadow-xs backdrop-blur-xl p-12">
                 <Building2 className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-base font-bold text-slate-900">Aucun Bien Trouvé</h3>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">Aucun Bien Trouvé</h3>
                 <p className="text-xs text-slate-500 mt-2 max-w-sm mx-auto">
                   Aucun appartement ne correspond à vos critères de recherche. Essayez de réinitialiser les filtres ou d'élargir votre budget.
                 </p>
@@ -160,7 +160,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                   return (
                     <div
                       key={apt.id}
-                      className="group flex flex-col justify-between overflow-hidden bg-white border border-slate-200/80 rounded-3xl transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/60 hover:border-slate-300 hover:-translate-y-1 relative"
+                      className="group flex flex-col justify-between overflow-hidden bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 backdrop-blur-xl relative"
                     >
                       {/* Image Frame */}
                       <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
@@ -197,7 +197,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                           </div>
                           
                           <Link href={`/apartments/${apt.slug}`} className="block group/link">
-                            <h3 className="text-base font-bold text-slate-900 leading-tight group-hover/link:text-amber-500 transition-colors">
+                            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 leading-tight group-hover/link:text-amber-500 transition-colors">
                               {apt.title}
                             </h3>
                           </Link>
@@ -209,7 +209,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         </div>
 
                         {/* Specs Grid */}
-                        <div className="grid grid-cols-3 gap-2 border-t border-b border-slate-100 py-3 text-[11px] text-slate-600">
+                        <div className="grid grid-cols-3 gap-2 border-t border-b border-slate-100 dark:border-slate-800/80 py-3 text-[11px] text-slate-600 dark:text-slate-400">
                           <div className="flex items-center gap-1.5 justify-center">
                             <Square className="w-3.5 h-3.5 text-slate-400" />
                             <span>{apt.surface} m²</span>
@@ -228,7 +228,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         <div className="flex gap-3 pt-2">
                           <Link
                             href={`/apartments/${apt.slug}`}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 shadow-xs text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-xs text-xs font-semibold rounded-xl transition-colors cursor-pointer"
                           >
                             <span>Voir Détails</span>
                             <ArrowRight className="w-3.5 h-3.5" />

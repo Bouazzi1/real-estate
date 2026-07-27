@@ -219,7 +219,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
 
   if (!mounted) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-white text-slate-600 text-xs gap-3 rounded-3xl border border-slate-200 shadow-sm">
+      <div className="flex-1 flex flex-col items-center justify-center bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 text-xs gap-3 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
         <span>Chargement du Conseiller Virtuel WAFA...</span>
       </div>
@@ -227,11 +227,11 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden rounded-none sm:rounded-3xl border-0 sm:border border-slate-200 bg-white shadow-xl relative">
+    <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden rounded-none sm:rounded-3xl border-0 sm:border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-950 shadow-xl backdrop-blur-2xl relative">
       
       {/* ── Left Sidebar Drawer (Desktop permanent, Mobile overlay) ── */}
       <div
-        className={`fixed inset-0 z-50 md:relative md:z-auto bg-white md:bg-slate-50/80 border-r border-slate-200/80 p-4 flex flex-col justify-between shrink-0 w-72 transition-transform duration-300 ${
+        className={`fixed inset-0 z-50 md:relative md:z-auto bg-white dark:bg-slate-955 md:bg-slate-50/80 dark:md:bg-slate-900/60 border-r border-slate-200/80 dark:border-slate-800/80 p-4 flex flex-col justify-between shrink-0 w-72 transition-transform duration-300 ${
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -244,7 +244,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
             </span>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="p-1.5 text-slate-400 hover:text-white rounded-xl bg-slate-100 border border-slate-200 text-slate-700 cursor-pointer"
+              className="p-1.5 text-slate-400 hover:text-white rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -267,12 +267,12 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
 
           {/* Active Apartment Context Card */}
           {apartmentRef && (
-            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200/80 space-y-1.5">
+            <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/80 dark:border-amber-500/25 space-y-1.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 block flex items-center gap-1.5">
                 <Building2 className="w-3 h-3 text-amber-400" />
                 Contexte Biens Actif
               </span>
-              <p className="text-xs font-extrabold text-slate-900">Appartement {apartmentRef}</p>
+              <p className="text-xs font-extrabold text-slate-900 dark:text-white">Appartement {apartmentRef}</p>
               {bookIntent === "true" && (
                 <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                   <Calendar className="w-3 h-3" />
@@ -296,7 +296,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
                     setMobileMenuOpen(false);
                   }}
                   disabled={loading}
-                  className="w-full text-left px-3 py-2.5 rounded-xl bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-300 text-slate-700 hover:text-slate-900 shadow-xs text-xs font-semibold transition-all duration-200 flex items-center justify-between group cursor-pointer"
+                  className="w-full text-left px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900/40 hover:bg-amber-50/50 dark:hover:bg-slate-850 border border-slate-200/80 dark:border-slate-800/60 hover:border-amber-300 dark:hover:border-amber-500/30 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-all duration-200 flex items-center justify-between group cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5 truncate">
                     <p.icon className="w-3.5 h-3.5 text-amber-400 shrink-0 group-hover:scale-110 transition-transform" />
@@ -310,8 +310,8 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
         </div>
 
         {/* Footer Info */}
-        <div className="pt-4 border-t border-slate-200/80 space-y-2">
-          <div className="flex items-center gap-2 px-2 text-[11px] font-medium text-slate-600">
+        <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80 space-y-2">
+          <div className="flex items-center gap-2 px-2 text-[11px] font-medium text-slate-600 dark:text-slate-400">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span>NVIDIA Nemotron-3 RAG • Llama 3.1</span>
           </div>
@@ -327,15 +327,15 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
       )}
 
       {/* ── Main Chat Workspace (ChatGPT / Gemini Fixed Canvas) ── */}
-      <div className="flex-1 flex flex-col h-full bg-slate-50/50 overflow-hidden relative">
+      <div className="flex-1 flex flex-col h-full bg-slate-50/50 dark:bg-slate-950/40 overflow-hidden relative">
         
         {/* Top Header Bar */}
-        <div className="px-4 sm:px-6 py-3 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl shadow-xs flex items-center justify-between shrink-0 z-10">
+        <div className="px-4 sm:px-6 py-3 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl shadow-xs flex items-center justify-between shrink-0 z-10">
           <div className="flex items-center gap-3">
             {/* Mobile Drawer Hamburger Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 cursor-pointer"
+              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 cursor-pointer"
               title="Ouvrir le menu"
             >
               <Menu className="w-4 h-4 text-amber-400" />
@@ -348,19 +348,19 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 tracking-tight">{agencyName} AI</h3>
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white tracking-tight">{agencyName} AI</h3>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                   En ligne
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 hidden sm:block">Conseiller Commercial d'Exception (IA & RAG)</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 hidden sm:block">Conseiller Commercial d'Exception (IA & RAG)</p>
             </div>
           </div>
 
           <button
             onClick={() => startNewSession()}
-            className="text-xs text-slate-700 hover:text-slate-900 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all cursor-pointer"
+            className="text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 transition-all cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden sm:inline">Effacer la session</span>
@@ -380,10 +380,10 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
               </div>
 
               <div>
-                <h2 className="text-lg sm:text-2xl font-black text-slate-900 font-display tracking-tight">
+                <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">
                   Bienvenue à la {agencyName}
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mt-1.5 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto mt-1.5 leading-relaxed">
                   Posez vos questions sur nos suites, attiques, superficies, tarifs en Dinars Tunisiens (DT) ou planifiez une visite privée.
                 </p>
               </div>
@@ -395,13 +395,13 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
                     key={idx}
                     onClick={() => sendMessageQuery(p.query)}
                     disabled={loading}
-                    className="p-3.5 rounded-2xl bg-white hover:bg-amber-50/40 border border-slate-200/80 hover:border-amber-300 shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer hover:-translate-y-0.5"
+                    className="p-3.5 rounded-2xl bg-white dark:bg-slate-900/60 hover:bg-amber-50/40 dark:hover:bg-slate-850 border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-300 dark:hover:border-amber-500/40 shadow-xs hover:shadow-md transition-all duration-300 group cursor-pointer hover:-translate-y-0.5"
                   >
                     <div className="flex items-center gap-2 text-amber-400 font-extrabold text-xs mb-1">
                       <p.icon className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
                       <span>{p.title}</span>
                     </div>
-                    <p className="text-[11px] text-slate-600 leading-snug">{p.subtitle}</p>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">{p.subtitle}</p>
                   </button>
                 ))}
               </div>
@@ -429,7 +429,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
                   className={`rounded-3xl p-4 sm:p-5 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap shadow-lg ${
                     m.role === "USER"
                       ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-semibold rounded-br-none"
-                      : "bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-sm"
+                      : "bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none shadow-xs backdrop-blur-md"
                   }`}
                 >
                   {m.content}
@@ -439,7 +439,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
                 {m.role === "ASSISTANT" && m.content && (
                   <button
                     onClick={() => copyToClipboard(m.content, idx)}
-                    className="absolute -bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-[10px] text-slate-600 flex items-center gap-1 cursor-pointer shadow-md"
+                    className="absolute -bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-[10px] flex items-center gap-1 cursor-pointer shadow-md"
                     title="Copier la réponse"
                   >
                     {copiedIdx === idx ? (
@@ -459,7 +459,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
 
               {/* User Avatar */}
               {m.role === "USER" && (
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0 mt-1">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center shrink-0 mt-1">
                   <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
                 </div>
               )}
@@ -472,7 +472,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
                 <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 animate-spin" />
               </div>
-              <div className="bg-white border border-slate-200 text-slate-600 shadow-sm rounded-3xl rounded-bl-none px-4 py-3.5 text-xs sm:text-sm flex items-center gap-3">
+              <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 shadow-xs rounded-3xl rounded-bl-none px-4 py-3.5 text-xs sm:text-sm flex items-center gap-3">
                 <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
                 <span>Analyse du catalogue & vectorisation pgvector...</span>
               </div>
@@ -483,16 +483,16 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
         </div>
 
         {/* ── ChatGPT Mobile & Desktop Sticky Input Bar (Screenshot 2 style) ── */}
-        <div className="p-2 sm:p-4 bg-white border-t border-slate-200/80 shrink-0 sticky bottom-0 z-20">
+        <div className="p-2 sm:p-4 bg-white dark:bg-slate-950 border-t border-slate-200/80 dark:border-slate-800/80 shrink-0 sticky bottom-0 z-20">
           <form
             onSubmit={handleSend}
-            className="max-w-3xl mx-auto relative flex items-center bg-slate-50 border border-slate-200/90 focus-within:border-amber-500 focus-within:bg-white shadow-md rounded-full p-1.5 sm:p-2 transition-all duration-300"
+            className="max-w-3xl mx-auto relative flex items-center bg-slate-50 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 focus-within:border-amber-500 focus-within:bg-white dark:focus-within:bg-slate-900 shadow-md transition-all rounded-full p-1.5 sm:p-2 duration-300"
           >
             {/* ChatGPT + Plus icon button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-700 transition-colors cursor-pointer shrink-0 ml-1"
+              className="p-2 rounded-full bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer shrink-0 ml-1"
               title="Prompts rapides"
             >
               <Plus className="w-4 h-4 text-slate-300" />
@@ -506,7 +506,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
               placeholder="Répondre à la Résidence WAFA..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 bg-transparent px-3 sm:px-4 py-2 text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
+              className="flex-1 bg-transparent px-3 sm:px-4 py-2 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none text-xs sm:text-sm"
             />
 
             {/* Microphone Icon Placeholder (like ChatGPT Mobile) */}
@@ -529,7 +529,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
             </button>
           </form>
 
-          <p className="text-[10px] text-slate-500 text-center mt-1.5 hidden sm:block">
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 text-center mt-1.5 hidden sm:block">
             L'IA Résidence WAFA utilise la base pgvector officielle. Réponses commerciales vérifiées.
           </p>
         </div>

@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 import AuthProvider from "@/components/providers/SessionProvider";
 import ChatWidget from "@/components/chat/ChatWidget";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
-import React from "react";
+import React, { Suspense } from "react";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -66,12 +67,14 @@ export default async function RootLayout({
       </head>
       <body className="antialiased">
         <AuthProvider>
-          <LanguageProvider>
-            {children}
-            <React.Suspense fallback={null}>
-              <ChatWidget />
-            </React.Suspense>
-          </LanguageProvider>
+          <ThemeProvider>
+            <LanguageProvider>
+              {children}
+              <Suspense fallback={null}>
+                <ChatWidget />
+              </Suspense>
+            </LanguageProvider>
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
