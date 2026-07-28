@@ -1,17 +1,17 @@
 import { prisma } from "./prisma";
 
-// Generate available slots (Monday-Friday, 9 AM - 6 PM, hourly)
+// Generate available slots (7 days a week: Mon-Fri 9 AM - 6 PM, Sat-Sun 10 AM - 5 PM)
 export async function getAvailableSlotsForDate(date: Date): Promise<Date[]> {
-  const dayOfWeek = date.getDay();
+  const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
   
-  // Weekend check: 0 = Sunday, 6 = Saturday
-  if (dayOfWeek === 0 || dayOfWeek === 6) {
-    return [];
-  }
+  // Set start and end hours according to weekday vs weekend
+  let startHour = 9;  // 9:00 AM
+  let endHour = 18;   // 6:00 PM
 
-  // Set start and end hours
-  const startHour = 9;  // 9:00 AM
-  const endHour = 18;   // 6:00 PM (last slot starts at 5:00 PM)
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    startHour = 10;   // 10:00 AM on weekends
+    endHour = 17;     // 5:00 PM on weekends
+  }
 
   const slots: Date[] = [];
   const baseDate = new Date(date);
@@ -24,10 +24,8 @@ export async function getAvailableSlotsForDate(date: Date): Promise<Date[]> {
     const slotDate = new Date(baseDate);
     slotDate.setHours(hour);
     
-    // Only include future slots
-    if (slotDate.getTime() > Date.now()) {
-      slots.push(slotDate);
-    }
+    // Only include future slots (or slots for target future dates)
+    slots.push(slotDate);
   }
 
   if (slots.length === 0) return [];

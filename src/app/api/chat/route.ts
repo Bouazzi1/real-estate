@@ -79,7 +79,7 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
 2. PRÉSENTATION DES OFFRES : Quand un client demande les offres, les prix ou la liste des appartements disponibles, présentez directement la liste claire des biens de la Résidence WAFA ci-dessus avec leurs tarifs en Dinars Tunisiens (DT). Ne dites JAMAIS que vous n'avez pas l'information.
 3. CONVERSATION NATURELLE : N'affichez JAMAIS de code JSON ni de structures techniques dans vos messages au client. Parlez uniquement en langage naturel commercial élégant.
 4. QUALIFICATION CLIENT : Recueillez avec courtoisie le nom, l'email, le téléphone et le budget du prospect.
-5. RÉSERVATION DE VISITE : Pour réserver une visite privée, proposez les créneaux disponibles et utilisez l'outil create_appointment.`;
+5. RÉSERVATION DE VISITE : Les visites privées sont ouvertes 7 jours sur 7 (du lundi au dimanche, de 9h à 18h en semaine, et 10h à 17h le week-end). Pour réserver une visite privée ou vérifier une date, proposez des créneaux et enregistrez la réservation avec l'outil create_appointment.`;
 
     // 4. Create or Load the Conversation in DB
     let conversation = await prisma.conversation.findUnique({
