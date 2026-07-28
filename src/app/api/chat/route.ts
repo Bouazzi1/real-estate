@@ -117,13 +117,30 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
 
     const llm = getLLMProvider();
 
-    // Map conversation history
+    const normalizeRole = (r: string): "user" | "assistant" | "system" => {
+      const lower = (r || "").toLowerCase();
+      if (lower === "assistant" || lower === "bot") return "assistant";
+      if (lower === "system") return "system";
+      return "user";
+    };
+
+    // Map conversation history safely for Gemini/OpenAI spec
     const apiMessages: ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
-      ...messages.map((m: any) => ({
-        role: m.role as any,
-        content: m.content,
-      })),
+      ...messages.map((m: any): ChatCompletionMessageParam => {
+        const lower = (m.role || "").toLowerCase();
+        if (lower === "tool") {
+          return {
+            role: "tool",
+            tool_call_id: m.tool_call_id || "call_default",
+            content: typeof m.content === "string" ? m.content : String(m.content || ""),
+          };
+        }
+        return {
+          role: normalizeRole(m.role),
+          content: typeof m.content === "string" ? m.content : String(m.content || ""),
+        };
+      }),
     ];
 
     // Set up SSE response stream headers
