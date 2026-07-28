@@ -17,6 +17,85 @@ export interface LLMProvider {
   getChatModelName(): string;
 }
 
+export class GeminiProvider implements LLMProvider {
+  private client: OpenAI;
+  private chatModel: string;
+  private apiKey: string;
+
+  constructor() {
+    this.apiKey = process.env.GEMINI_API_KEY || "";
+    this.chatModel = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+
+    this.client = new OpenAI({
+      apiKey: this.apiKey,
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+    });
+  }
+
+  async generateEmbedding(text: string, inputType: "query" | "passage" = "passage"): Promise<number[]> {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${this.apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "models/gemini-embedding-001",
+            content: { parts: [{ text }] },
+          }),
+        }
+      );
+      const data = (await res.json()) as any;
+      if (data.embedding?.values) {
+        return data.embedding.values;
+      }
+      throw new Error(data.error?.message || "Failed to generate Gemini embedding");
+    } catch (e) {
+      console.error("Gemini Embedding failure:", e);
+      throw e;
+    }
+  }
+
+  async chatCompletion(
+    messages: ChatCompletionMessageParam[],
+    tools?: ChatCompletionTool[]
+  ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+    try {
+      return await this.client.chat.completions.create({
+        model: this.chatModel,
+        messages,
+        tools: tools && tools.length > 0 ? tools : undefined,
+        temperature: 0.2,
+      });
+    } catch (e) {
+      console.error("Gemini Chat Completion failure:", e);
+      throw e;
+    }
+  }
+
+  async chatStream(
+    messages: ChatCompletionMessageParam[],
+    tools?: ChatCompletionTool[]
+  ): Promise<Stream<ChatCompletionChunk>> {
+    try {
+      return await this.client.chat.completions.create({
+        model: this.chatModel,
+        messages,
+        tools: tools && tools.length > 0 ? tools : undefined,
+        temperature: 0.2,
+        stream: true,
+      });
+    } catch (e) {
+      console.error("Gemini Chat Stream failure:", e);
+      throw e;
+    }
+  }
+
+  getChatModelName(): string {
+    return this.chatModel;
+  }
+}
+
 export class NvidiaNimProvider implements LLMProvider {
   private client: OpenAI;
   private chatModel: string;
@@ -41,7 +120,7 @@ export class NvidiaNimProvider implements LLMProvider {
         model: this.embeddingModel,
         input: text,
         input_type: inputType,
-      } as any); // using cast since extra body params are typed specifically in OpenAI package
+      } as any);
 
       if (!response.data || response.data.length === 0) {
         throw new Error("No embedding data returned from NVIDIA NIM");
@@ -94,5 +173,8 @@ export class NvidiaNimProvider implements LLMProvider {
 }
 
 export function getLLMProvider(): LLMProvider {
+  if (process.env.GEMINI_API_KEY) {
+    return new GeminiProvider();
+  }
   return new NvidiaNimProvider();
 }
