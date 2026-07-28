@@ -5,8 +5,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const API_KEY = process.env.GEMINI_API_KEY || "AIzaSyAEvbzUtNAwzgaUqJZ7BxxlkhZV7cgIV2M";
 
-async function testAssistantFirstInHistory() {
-  console.log("🔍 Testing Assistant message FIRST in history against Gemini...");
+async function testEmptyContent() {
+  console.log("🔍 Testing empty content message against Gemini...");
 
   try {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
@@ -19,17 +19,18 @@ async function testAssistantFirstInHistory() {
         model: "gemini-3.6-flash",
         messages: [
           { role: "system", content: "Vous êtes le Conseiller Commercial." },
-          { role: "assistant", content: "Bonjour et bienvenue à la Résidence WAFA ! Comment puis-je vous aider ?" }, // ASSISTANT BEFORE USER!
-          { role: "user", content: "je veux reserver un rendez-vous le 1er aout 2026" }
+          { role: "user", content: "" }, // Empty user message!
+          { role: "assistant", content: "Bonjour !" },
+          { role: "user", content: "Réservation" }
         ]
       })
     });
 
-    console.log("Assistant First Status:", res.status);
-    console.log("Assistant First Body:", await res.text());
+    console.log("Empty Content Status:", res.status);
+    console.log("Empty Content Body:", await res.text());
   } catch (e: any) {
     console.error("Error:", e);
   }
 }
 
-testAssistantFirstInHistory();
+testEmptyContent();

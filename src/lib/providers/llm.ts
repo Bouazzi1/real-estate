@@ -21,10 +21,12 @@ export class GeminiProvider implements LLMProvider {
   private client: OpenAI;
   private chatModel: string;
   private apiKey: string;
+  private fallbackProvider: NvidiaNimProvider;
 
   constructor() {
     this.apiKey = process.env.GEMINI_API_KEY || "";
     this.chatModel = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+    this.fallbackProvider = new NvidiaNimProvider();
 
     this.client = new OpenAI({
       apiKey: this.apiKey,
@@ -49,10 +51,10 @@ export class GeminiProvider implements LLMProvider {
       if (data.embedding?.values) {
         return data.embedding.values;
       }
-      throw new Error(data.error?.message || "Failed to generate Gemini embedding");
+      return await this.fallbackProvider.generateEmbedding(text, inputType);
     } catch (e) {
-      console.error("Gemini Embedding failure:", e);
-      throw e;
+      console.warn("Gemini Embedding failure, falling back to NVIDIA NIM:", e);
+      return await this.fallbackProvider.generateEmbedding(text, inputType);
     }
   }
 
@@ -67,9 +69,9 @@ export class GeminiProvider implements LLMProvider {
         tools: tools && tools.length > 0 ? tools : undefined,
         temperature: 0.2,
       });
-    } catch (e) {
-      console.error("Gemini Chat Completion failure:", e);
-      throw e;
+    } catch (e: any) {
+      console.warn(`Gemini Chat Completion failed (${e.status || e.message}), falling back to NVIDIA NIM Llama 3.1 70B...`);
+      return await this.fallbackProvider.chatCompletion(messages, tools);
     }
   }
 
@@ -85,14 +87,14 @@ export class GeminiProvider implements LLMProvider {
         temperature: 0.2,
         stream: true,
       });
-    } catch (e) {
-      console.error("Gemini Chat Stream failure:", e);
-      throw e;
+    } catch (e: any) {
+      console.warn(`Gemini Chat Stream failed (${e.status || e.message}), falling back to NVIDIA NIM Llama 3.1 70B...`);
+      return await this.fallbackProvider.chatStream(messages, tools);
     }
   }
 
   getChatModelName(): string {
-    return this.chatModel;
+    return `${this.chatModel} (with NVIDIA NIM Fallback)`;
   }
 }
 
