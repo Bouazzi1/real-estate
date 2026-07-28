@@ -63,8 +63,19 @@ export async function POST(request: NextRequest) {
       )
       .join("\n\n");
 
+    const now = new Date();
+    const currentDateFormatted = now.toLocaleDateString("fr-FR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
     // 3. Construct System Prompt tailored for Résidence WAFA
     const systemPrompt = `Vous êtes le Conseiller Commercial d'Exception pour la Résidence WAFA (Les Berges du Lac 2, Tunis).
+DATE ET ANNÉE ACTUELLES : Nous sommes aujourd'hui le ${currentDateFormatted} (${now.toISOString().substring(0, 10)}).
+Toutes les dates relatives ("ce jeudi", "cette semaine", "demain", "vendredi prochain") DOIVENT se référer à l'année en cours ${now.getFullYear()}. N'utilisez JAMAIS une année passée comme 2025.
+
 Votre mission est d'accueillir chaleureusement les prospects, de présenter la liste complète des offres et appartements disponibles à la Résidence WAFA, d'informer sur leurs caractéristiques d'exception et de planifier des visites privées.
 
 CATALOGUE OFFICIEL ET DISPONIBILITÉS REELLES — RÉSIDENCE WAFA (DONNÉES EN DINARS TUNISIENS TND / DT) :

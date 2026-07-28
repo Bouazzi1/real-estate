@@ -107,6 +107,57 @@ export const agentTools = [
   },
 ];
 
+function resolveRelativeDate(input?: string, timeStr?: string): Date {
+  const now = new Date();
+  if (!input || input.trim() === "") {
+    const d = new Date(now);
+    d.setDate(d.getDate() + 1);
+    d.setHours(10, 0, 0, 0);
+    return d;
+  }
+
+  const directParse = new Date(input);
+  if (!isNaN(directParse.getTime()) && directParse.getFullYear() >= 2026) {
+    if (timeStr) {
+      const match = timeStr.match(/(\d{1,2})[h:]?(\d{2})?/i);
+      if (match) {
+        directParse.setHours(parseInt(match[1], 10), parseInt(match[2] || "0", 10), 0, 0);
+      }
+    }
+    return directParse;
+  }
+
+  const lower = input.toLowerCase().trim();
+  const dayNames = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+  const targetDayIdx = dayNames.findIndex((day) => lower.includes(day));
+
+  if (targetDayIdx !== -1) {
+    const currentDayIdx = now.getDay();
+    let diff = targetDayIdx - currentDayIdx;
+    if (diff <= 0) diff += 7;
+
+    const targetDate = new Date(now);
+    targetDate.setDate(now.getDate() + diff);
+
+    if (timeStr) {
+      const match = timeStr.match(/(\d{1,2})[h:]?(\d{2})?/i);
+      if (match) {
+        targetDate.setHours(parseInt(match[1], 10), parseInt(match[2] || "0", 10), 0, 0);
+      } else {
+        targetDate.setHours(10, 0, 0, 0);
+      }
+    } else {
+      targetDate.setHours(10, 0, 0, 0);
+    }
+    return targetDate;
+  }
+
+  const fallback = new Date(now);
+  fallback.setDate(fallback.getDate() + 1);
+  fallback.setHours(10, 0, 0, 0);
+  return fallback;
+}
+
 // 2. Tool Execution routing logic
 export async function executeAgentTool(name: string, args: any): Promise<any> {
   console.log(`Executing Agent Tool [${name}] with args:`, args);
@@ -179,9 +230,8 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
     }
 
     case "get_available_slots": {
-      const date = new Date(args.date);
-      if (isNaN(date.getTime())) return { error: "Invalid date format" };
-      const slots = await getAvailableSlotsForDate(date);
+      const targetDate = resolveRelativeDate(args.date);
+      const slots = await getAvailableSlotsForDate(targetDate);
       return slots.map((s) => s.toISOString());
     }
 
@@ -191,30 +241,10 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
       const phone = args.phone || args.clientPhone || null;
       const aptInput = args.apartmentId || args.apartmentRef || args.reference || null;
 
-      // Date parsing logic
-      let requestedSlot: Date;
-      if (args.slot && !isNaN(new Date(args.slot).getTime())) {
-        requestedSlot = new Date(args.slot);
-      } else if (args.date) {
-        const timeStr = args.time || args.timeSlot || "10:00";
-        const cleanTime = timeStr.includes(":") ? timeStr : `${timeStr}:00`;
-        requestedSlot = new Date(`${args.date}T${cleanTime}`);
-        if (isNaN(requestedSlot.getTime())) {
-          requestedSlot = new Date(args.date);
-        }
-      } else {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(10, 0, 0, 0);
-        requestedSlot = tomorrow;
-      }
-
-      if (isNaN(requestedSlot.getTime())) {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(10, 0, 0, 0);
-        requestedSlot = tomorrow;
-      }
+      // Smart relative date parsing
+      const dateInput = args.slot || args.date || "";
+      const timeInput = args.time || args.timeSlot || "";
+      const requestedSlot = resolveRelativeDate(dateInput, timeInput);
 
       // Resolve apartment ID
       let resolvedApartmentId: string | null = null;
