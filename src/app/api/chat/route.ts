@@ -155,10 +155,10 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
               // Handle tool calling
               if (choice.delta?.tool_calls) {
                 for (const toolDelta of choice.delta.tool_calls) {
-                  const idx = toolDelta.index;
+                  const idx = typeof toolDelta.index === "number" ? toolDelta.index : 0;
                   if (!toolCallsToExecute[idx]) {
                     toolCallsToExecute[idx] = {
-                      id: toolDelta.id || "",
+                      id: toolDelta.id || `call_${Date.now()}_${idx}`,
                       type: "function",
                       function: { name: toolDelta.function?.name || "", arguments: "" },
                     };
@@ -175,6 +175,9 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
                 }
               }
             }
+
+            // Filter out sparse array elements if any
+            toolCallsToExecute = toolCallsToExecute.filter(Boolean);
 
             // Execute tool calls if any are requested
             if (toolCallsToExecute.length > 0) {

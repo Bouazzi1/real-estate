@@ -74,18 +74,19 @@ export const agentTools = [
     type: "function" as const,
     function: {
       name: "create_appointment",
-      description: "Book and reserve a viewing slot. This is a low-friction action. Propose slots FIRST using get_available_slots before creating the appointment.",
+      description: "Réserve et enregistre une visite privée ou un rendez-vous prospect pour la Résidence WAFA dans le tableau de bord Admin.",
       parameters: {
         type: "object",
         properties: {
-          slot: { type: "string", description: "Target ISO date-time slot string (e.g. 2026-07-16T10:00:00.000Z)" },
-          type: { type: "string", enum: ["VISIT", "VIDEO_CALL", "OFFICE"], description: "Type of the visit" },
-          name: { type: "string", description: "Client full name" },
-          email: { type: "string", description: "Client email address" },
-          phone: { type: "string", description: "Client phone number" },
-          apartmentId: { type: "string", description: "Optional apartment ID or reference code (e.g. AUR-302 or A-101) that client is interested in" },
+          slot: { type: "string", description: "Date et heure du rendez-vous (ex: 2026-07-30T14:00:00.000Z)" },
+          date: { type: "string", description: "Date au format YYYY-MM-DD" },
+          time: { type: "string", description: "Heure (ex: 14:00)" },
+          type: { type: "string", enum: ["VISIT", "VIDEO_CALL", "OFFICE"], description: "Type de la visite (par défaut VISIT)" },
+          name: { type: "string", description: "Nom du prospect" },
+          email: { type: "string", description: "Adresse e-mail du prospect" },
+          phone: { type: "string", description: "Numéro de téléphone du prospect" },
+          apartmentId: { type: "string", description: "Référence (ex: WAF-101) ou ID de l'appartement" },
         },
-        required: ["slot", "type", "name"],
       },
     },
   },
@@ -185,19 +186,41 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
     }
 
     case "create_appointment": {
-      const requestedSlot = new Date(args.slot);
-      if (isNaN(requestedSlot.getTime())) return { error: "Invalid slot date format" };
+      const name = args.name || args.clientName || "Prospect Résidence WAFA";
+      const email = args.email || args.clientEmail || null;
+      const phone = args.phone || args.clientPhone || null;
+      const aptInput = args.apartmentId || args.apartmentRef || args.reference || null;
 
-      // Validate email/phone
-      if (!args.email && !args.phone) {
-        return { error: "Please provide either your email or phone number so we can register the visit." };
+      // Date parsing logic
+      let requestedSlot: Date;
+      if (args.slot && !isNaN(new Date(args.slot).getTime())) {
+        requestedSlot = new Date(args.slot);
+      } else if (args.date) {
+        const timeStr = args.time || args.timeSlot || "10:00";
+        const cleanTime = timeStr.includes(":") ? timeStr : `${timeStr}:00`;
+        requestedSlot = new Date(`${args.date}T${cleanTime}`);
+        if (isNaN(requestedSlot.getTime())) {
+          requestedSlot = new Date(args.date);
+        }
+      } else {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(10, 0, 0, 0);
+        requestedSlot = tomorrow;
       }
 
-      // Resolve apartment ID by UUID, reference code (e.g. AUR-302), or slug
+      if (isNaN(requestedSlot.getTime())) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(10, 0, 0, 0);
+        requestedSlot = tomorrow;
+      }
+
+      // Resolve apartment ID
       let resolvedApartmentId: string | null = null;
-      if (args.apartmentId) {
+      if (aptInput) {
         const aptById = await prisma.apartment.findUnique({
-          where: { id: args.apartmentId },
+          where: { id: aptInput },
         });
         if (aptById) {
           resolvedApartmentId = aptById.id;
@@ -205,8 +228,8 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
           const aptByRef = await prisma.apartment.findFirst({
             where: {
               OR: [
-                { reference: { equals: args.apartmentId, mode: "insensitive" } },
-                { slug: { equals: args.apartmentId, mode: "insensitive" } },
+                { reference: { equals: aptInput, mode: "insensitive" } },
+                { slug: { equals: aptInput, mode: "insensitive" } },
               ],
             },
           });
@@ -218,11 +241,11 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
 
       // Upsert Lead
       let lead = null;
-      if (args.email) {
-        lead = await prisma.lead.findFirst({ where: { email: args.email } });
+      if (email) {
+        lead = await prisma.lead.findFirst({ where: { email } });
       }
-      if (!lead && args.phone) {
-        lead = await prisma.lead.findFirst({ where: { phone: args.phone } });
+      if (!lead && phone) {
+        lead = await prisma.lead.findFirst({ where: { phone } });
       }
 
       const interestedIds = resolvedApartmentId ? [resolvedApartmentId] : [];
@@ -230,11 +253,11 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
       if (!lead) {
         lead = await prisma.lead.create({
           data: {
-            name: args.name,
-            email: args.email || null,
-            phone: args.phone || null,
+            name,
+            email,
+            phone,
             source: "CHAT",
-            score: "WARM",
+            score: "HOT",
             interestedApartmentIds: interestedIds,
           },
         });
@@ -245,22 +268,16 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
         lead = await prisma.lead.update({
           where: { id: lead.id },
           data: {
-            name: args.name,
+            name: name !== "Prospect Résidence WAFA" ? name : lead.name,
+            email: email || lead.email,
+            phone: phone || lead.phone,
             interestedApartmentIds: updatedInterested,
-            score: "WARM",
+            score: "HOT",
           },
         });
       }
 
-      // Conflict check
-      const conflict = await prisma.appointment.findFirst({
-        where: { status: "APPROVED", requestedSlot },
-      });
-      if (conflict) {
-        return { error: "This slot is no longer available. Please choose a different hour." };
-      }
-
-      // Book
+      // Book Appointment
       const appt = await prisma.appointment.create({
         data: {
           leadId: lead.id,
@@ -281,25 +298,21 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
         },
       });
 
-      // Send Request Email
-      try {
-        const emailProvider = getEmailProvider();
-        const html = `
-          <h3>Viewing Appointment Scheduled</h3>
-          <p>Dear ${lead.name},</p>
-          <p>Your request for a property viewing on <strong>${requestedSlot.toLocaleString()}</strong> has been submitted.</p>
-          <p>We will confirm this slot shortly.</p>
-        `;
-        if (lead.email) {
-          await emailProvider.sendEmail(lead.email, "Visit Request Received", html);
-        }
-      } catch (err) {
-        console.error("Email notification sending failed in agent tool:", err);
-      }
+      const formattedDate = requestedSlot.toLocaleDateString("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      const formattedTime = requestedSlot.toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
 
       return {
         success: true,
-        message: "Your request is submitted, you'll receive a confirmation once validated by our team.",
+        message: `Rendez-vous de visite créé et enregistré dans le tableau de bord Admin pour ${name} le ${formattedDate} à ${formattedTime}.`,
+        appointmentId: appt.id,
         appointment: appt,
       };
     }
