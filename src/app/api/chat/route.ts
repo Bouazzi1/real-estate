@@ -165,11 +165,37 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
 
         try {
           while (continueStreaming) {
-            // Initiate the stream from NIM
-            const chatStreamInstance = await llm.chatStream(activeMessages, agentTools);
+            // Initiate the stream from LLM
+            let chatStreamInstance;
+            try {
+              chatStreamInstance = await llm.chatStream(activeMessages, agentTools);
+            } catch (streamErr: any) {
+              // If the LLM rejects our messages (e.g., after tool results), fall back gracefully
+              console.error("LLM stream initiation failed:", streamErr.status, streamErr.message);
+              
+              // Try again without tools (simple completion) using only the original messages
+              try {
+                const fallbackMessages: ChatCompletionMessageParam[] = [
+                  activeMessages[0], // system prompt
+                  ...messages.map((m: any): ChatCompletionMessageParam => ({
+                    role: normalizeRole(m.role),
+                    content: typeof m.content === "string" ? m.content : String(m.content || ""),
+                  })),
+                ];
+                chatStreamInstance = await llm.chatStream(fallbackMessages);
+              } catch (fallbackErr: any) {
+                console.error("Fallback stream also failed:", fallbackErr.message);
+                const fallbackText = "Je vous prie de m'excuser, un problème technique est survenu. Pourriez-vous reformuler votre demande ?";
+                finalAssistantText = fallbackText;
+                controller.enqueue(encoder.encode(fallbackText));
+                continueStreaming = false;
+                break;
+              }
+            }
+
             let toolCallsToExecute: any[] = [];
 
-            for await (const chunk of chatStreamInstance) {
+            for await (const chunk of chatStreamInstance!) {
               const choice = chunk.choices[0];
               if (!choice) continue;
 
@@ -227,7 +253,39 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
               for (const tc of toolCallsToExecute) {
                 let toolResult;
                 try {
-                  const args = JSON.parse(tc.function.arguments || "{}");
+                  // Robust JSON parsing: Gemini streaming can produce concatenated/malformed JSON
+                  let rawArgs = tc.function.arguments || "{}";
+                  
+                  // Sanitize: extract the first valid JSON object from the string
+                  let args: any;
+                  try {
+                    args = JSON.parse(rawArgs);
+                  } catch (parseErr) {
+                    console.warn(`Initial JSON parse failed for tool ${tc.function.name}, attempting sanitization. Raw: "${rawArgs}"`);
+                    // Try extracting the first JSON object via brace matching
+                    const firstBrace = rawArgs.indexOf("{");
+                    if (firstBrace !== -1) {
+                      let depth = 0;
+                      let endIdx = -1;
+                      for (let i = firstBrace; i < rawArgs.length; i++) {
+                        if (rawArgs[i] === "{") depth++;
+                        else if (rawArgs[i] === "}") depth--;
+                        if (depth === 0) {
+                          endIdx = i;
+                          break;
+                        }
+                      }
+                      if (endIdx !== -1) {
+                        const cleanJson = rawArgs.substring(firstBrace, endIdx + 1);
+                        args = JSON.parse(cleanJson);
+                      } else {
+                        args = {};
+                      }
+                    } else {
+                      args = {};
+                    }
+                  }
+
                   // Inject active sessionId for escalation context
                   if (tc.function.name === "escalate_to_human") {
                     args.sessionId = sessionId;
@@ -237,8 +295,10 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
                     args.apartmentId = apartmentId;
                   }
 
+                  console.log(`Executing tool [${tc.function.name}] with parsed args:`, JSON.stringify(args));
                   const result = await executeAgentTool(tc.function.name, args);
-                  toolResult = JSON.stringify(result);
+                  // Ensure toolResult is a simple string for Gemini compatibility
+                  toolResult = typeof result === "string" ? result : JSON.stringify(result);
                 } catch (e: any) {
                   console.error(`Tool execution error: ${tc.function.name}`, e);
                   toolResult = JSON.stringify({ error: e.message || "Failed to execute tool" });
