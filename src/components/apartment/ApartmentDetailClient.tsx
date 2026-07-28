@@ -243,7 +243,7 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
                   className="w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-bold rounded-xl transition-all shadow-lg shadow-amber-500/10 cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Consulter l'Agent IA</span>
+                  <span>Contacter le Conseiller Virtuel</span>
                 </Link>
                 
                 {/* Book a visit trigger */}

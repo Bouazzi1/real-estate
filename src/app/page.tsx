@@ -94,25 +94,23 @@ export default async function LandingPage({ searchParams }: PageProps) {
               return (
                 <section key={section.id} className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-b from-slate-100 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 text-slate-900 dark:text-white border-b border-slate-200/60 dark:border-slate-800/80 px-6 overflow-hidden">
                   {/* Background cover image */}
-                  {content.backgroundUrl && (
-                    <div className="absolute inset-0 w-full h-full z-0">
-                      <img
-                        src={content.backgroundUrl}
-                        alt="Elysium Hero background"
-                        className="w-full h-full object-cover opacity-75 dark:opacity-35 transition-opacity"
-                      />
-                      <div
-                        className="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-50/60 to-transparent dark:from-slate-950 dark:via-slate-950/80 dark:to-slate-950/20"
-                        style={{ opacity: content.overlayOpacity ? content.overlayOpacity * 0.7 : 0.4 }}
-                      />
-                    </div>
-                  )}
+                  <div className="absolute inset-0 w-full h-full z-0">
+                    <img
+                      src={content.backgroundUrl || "http://groupelamiri.com/wp-content/uploads/2024/05/acda6e58-5225-4fac-ab33-03ed8fddf39e.jpg"}
+                      alt="Résidence WAFA Hero background"
+                      className="w-full h-full object-cover opacity-75 dark:opacity-40 transition-opacity"
+                    />
+                    <div
+                      className="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-50/60 to-transparent dark:from-slate-950 dark:via-slate-950/80 dark:to-slate-950/20"
+                      style={{ opacity: content.overlayOpacity ? content.overlayOpacity * 0.7 : 0.4 }}
+                    />
+                  </div>
 
                   {/* Hero Text */}
                   <div className="max-w-4xl w-full text-center relative z-10 space-y-8 py-20">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200/80 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-[10px] font-bold uppercase tracking-widest animate-pulse">
                       <Sparkles className="w-3.5 h-3.5" />
-                      <span>Next-Gen RAG AI Sales Agent Active</span>
+                      <span>Conseiller Commercial Dédié 24/7</span>
                     </div>
                     
                     <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-tight font-display animate-slideUp">

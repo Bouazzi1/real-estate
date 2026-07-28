@@ -82,10 +82,10 @@ async function main() {
       enabled: true,
       content: {
         headline: "L'Élégance Absolue au Cœur de la Ville",
-        subheadline: "La Résidence WAFA réinvente le luxe résidentiel avec des appartements baignés de lumière, des terrasses panoramiques et un conseiller commercial IA disponible 24/7.",
-        backgroundUrl: "/uploads/aurea-exterior.png",
+        subheadline: "La Résidence WAFA réinvente le luxe résidentiel avec des appartements baignés de lumière, des terrasses panoramiques et un conseiller commercial disponible 24/7.",
+        backgroundUrl: "http://groupelamiri.com/wp-content/uploads/2024/05/acda6e58-5225-4fac-ab33-03ed8fddf39e.jpg",
         primaryCta: { text: "Découvrir la Résidence WAFA", link: "/catalog" },
-        secondaryCta: { text: "Consulter l'Agent IA", link: "#chat" },
+        secondaryCta: { text: "Consulter le Conseiller Virtuel", link: "/chat" },
         overlayOpacity: 0.55
       }
     },

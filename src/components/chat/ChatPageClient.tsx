@@ -313,7 +313,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
         <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80 space-y-2">
           <div className="flex items-center gap-2 px-2 text-[11px] font-medium text-slate-600 dark:text-slate-400">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span>NVIDIA Nemotron-3 RAG • Llama 3.1</span>
+            <span>Conseiller Commercial Virtuel • Résidence WAFA</span>
           </div>
         </div>
       </div>
@@ -348,13 +348,13 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white tracking-tight">{agencyName} AI</h3>
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white tracking-tight">{agencyName} — Conseiller Commercial</h3>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                   En ligne
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 hidden sm:block">Conseiller Commercial d'Exception (IA & RAG)</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 hidden sm:block">Conseiller Commercial Privé 24/7</p>
             </div>
           </div>
 
