@@ -137,26 +137,26 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
       {/* Title */}
       <div>
         <h2 className="text-2xl font-bold text-white">Gestionnaire des Visites Privées</h2>
-        <p className="text-slate-400 text-xs mt-1">Validez les demandes de visites et consultez le calendrier des rendez-vous confirmés</p>
+        <p className="text-slate-300 text-xs font-medium mt-1">Validez les demandes de visites et consultez le calendrier des rendez-vous confirmés</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left column: Pending requests list */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-850 pb-3">
+          <div className="border border-slate-700/80 rounded-3xl p-6 bg-slate-900/90 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Clock className="w-4 h-4 text-amber-500" />
+                <Clock className="w-4 h-4 text-amber-400" />
                 <span>Demandes en Attente</span>
               </h3>
-              <span className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-extrabold">
                 {pendingQueue.length}
               </span>
             </div>
 
             {pendingQueue.length === 0 ? (
-              <div className="py-12 text-center text-slate-500 text-xs">
+              <div className="py-12 text-center text-slate-400 text-xs font-medium">
                 Aucune demande de visite en attente.
               </div>
             ) : (
@@ -173,37 +173,37 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                   return (
                     <div
                       key={appt.id}
-                      className="p-4 bg-slate-950/60 border border-slate-850 rounded-2xl space-y-3 relative group"
+                      className="p-4 bg-slate-950 border border-slate-700/80 rounded-2xl space-y-3 relative group shadow-md"
                     >
-                      <div className="space-y-1">
-                        <span className="text-[10px] text-amber-400 font-bold block capitalize">{dateStr}</span>
-                        <h4 className="text-xs font-bold text-white flex items-center gap-1">
-                          <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                      <div className="space-y-1.5">
+                        <span className="text-xs text-amber-400 font-extrabold block capitalize">{dateStr}</span>
+                        <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                          <User className="w-4 h-4 text-amber-400 shrink-0" />
                           <span className="truncate">{appt.lead.name || "Client Anonyme"}</span>
                         </h4>
                         {appt.apartment && (
-                          <div className="flex items-center gap-1 text-[10px] text-slate-400 truncate">
-                            <Building className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                            <span className="truncate">Réf: {appt.apartment.reference} - {appt.apartment.title}</span>
+                          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 truncate">
+                            <Building className="w-4 h-4 text-amber-400 shrink-0" />
+                            <span className="truncate">Réf: <strong className="text-white">{appt.apartment.reference}</strong> - {appt.apartment.title}</span>
                           </div>
                         )}
-                        <div className="text-[10px] text-slate-500 space-y-0.5 mt-1 border-t border-slate-900 pt-1">
-                          {appt.lead.email && <div className="truncate flex items-center gap-1"><Mail className="w-3 h-3 text-slate-600 shrink-0" /> <span className="truncate">{appt.lead.email}</span></div>}
-                          {appt.lead.phone && <div className="truncate flex items-center gap-1"><Phone className="w-3 h-3 text-slate-600 shrink-0" /> <span>{appt.lead.phone}</span></div>}
+                        <div className="text-xs text-slate-200 space-y-1 mt-2 border-t border-slate-800 pt-2 font-medium">
+                          {appt.lead.email && <div className="truncate flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" /> <span className="truncate">{appt.lead.email}</span></div>}
+                          {appt.lead.phone && <div className="truncate flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" /> <span className="font-semibold text-white">{appt.lead.phone}</span></div>}
                         </div>
                       </div>
 
                       {/* Quick Decisions controls */}
-                      <div className="flex gap-2 border-t border-slate-900 pt-3">
+                      <div className="flex gap-2 border-t border-slate-800 pt-3">
                         <button
                           onClick={() => handleDecision(appt.id, "APPROVED")}
                           disabled={processingId === appt.id}
-                          className="flex-1 flex items-center justify-center py-1.5 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-600 hover:text-white text-emerald-400 text-[10px] font-bold rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                          className="flex-1 flex items-center justify-center py-2 bg-emerald-500/20 border border-emerald-500/40 hover:bg-emerald-500 hover:text-slate-950 text-emerald-300 text-xs font-extrabold rounded-xl transition-all cursor-pointer disabled:opacity-50"
                         >
                           {processingId === appt.id ? (
-                            <Loader2 className="w-3 h-3 animate-spin" />
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
                           ) : (
-                            <Check className="w-3 h-3 mr-1" />
+                            <Check className="w-3.5 h-3.5 mr-1" />
                           )}
                           <span>Approuver</span>
                         </button>
@@ -213,9 +213,9 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                             setRejectReason("");
                             setShowRejectModal(true);
                           }}
-                          className="flex-1 flex items-center justify-center py-1.5 bg-red-500/10 border border-red-500/20 hover:bg-red-600 hover:text-white text-red-400 text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
+                          className="flex-1 flex items-center justify-center py-2 bg-red-500/20 border border-red-500/40 hover:bg-red-500 hover:text-white text-red-300 text-xs font-extrabold rounded-xl transition-all cursor-pointer"
                         >
-                          <X className="w-3 h-3 mr-1" />
+                          <X className="w-3.5 h-3.5 mr-1" />
                           <span>Annuler</span>
                         </button>
                       </div>
@@ -229,26 +229,26 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
 
         {/* Right column: Interactive calendar */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-6">
+          <div className="border border-slate-700/80 rounded-3xl p-6 bg-slate-900/90 shadow-xl space-y-6">
             
             {/* Calendar header switcher */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CalendarIcon className="w-5 h-5 text-amber-500" />
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                <CalendarIcon className="w-5 h-5 text-amber-400" />
+                <h3 className="text-base font-bold text-white uppercase tracking-wider">
                   {monthNames[month]} {year}
                 </h3>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={handlePrevMonth}
-                  className="p-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                  className="p-2 bg-slate-950 border border-slate-700 hover:border-amber-500 text-slate-200 hover:text-white rounded-xl transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleNextMonth}
-                  className="p-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                  className="p-2 bg-slate-950 border border-slate-700 hover:border-amber-500 text-slate-200 hover:text-white rounded-xl transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -256,10 +256,10 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-2 text-center text-xs">
+            <div className="grid grid-cols-7 gap-2.5 text-center text-xs">
               {/* Day Headers */}
               {["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"].map((day) => (
-                <div key={day} className="py-2 font-bold text-slate-500 text-[10px] uppercase tracking-wider">
+                <div key={day} className="py-2 font-extrabold text-amber-400 text-xs uppercase tracking-wider">
                   {day}
                 </div>
               ))}
@@ -283,13 +283,13 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                     onClick={() => setSelectedDateStr(isSelected ? null : dayStr)}
                     className={`aspect-square relative rounded-xl border flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-amber-500 border-amber-400 text-slate-950 font-extrabold shadow-lg shadow-amber-500/10"
-                        : "bg-slate-950/40 border-slate-850 text-slate-400 hover:border-slate-700"
+                        ? "bg-amber-500 border-amber-400 text-slate-950 font-black shadow-lg shadow-amber-500/20 scale-105"
+                        : "bg-slate-950 border-slate-700 text-slate-100 font-bold hover:border-amber-500 hover:text-white hover:bg-slate-800"
                     }`}
                   >
-                    <span className="font-bold text-xs">{day}</span>
+                    <span className="font-extrabold text-sm">{day}</span>
                     {hasAppts && (
-                      <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-slate-950" : "bg-amber-500"}`} />
+                      <span className={`w-2 h-2 rounded-full ${isSelected ? "bg-slate-950" : "bg-amber-400"}`} />
                     )}
                   </button>
                 );
@@ -299,13 +299,13 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
 
           {/* Active day detailed list */}
           {selectedDateStr && (
-            <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <div className="border border-slate-700/80 rounded-3xl p-6 bg-slate-900/90 shadow-xl space-y-4">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-widest">
                 Visites Confirmées le : <span className="text-white font-bold">{new Date(selectedDateStr).toLocaleDateString("fr-FR", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
               </h3>
 
               {selectedDayAppts.length === 0 ? (
-                <div className="py-6 text-center text-slate-500 text-xs">
+                <div className="py-6 text-center text-slate-300 text-xs font-medium">
                   Aucune visite confirmée pour cette journée.
                 </div>
               ) : (
@@ -319,24 +319,24 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                     return (
                       <div
                         key={appt.id}
-                        className="p-4 bg-slate-950/40 border border-slate-850 rounded-2xl space-y-2 text-xs"
+                        className="p-4 bg-slate-950 border border-slate-700 rounded-2xl space-y-2 text-xs"
                       >
-                        <div className="flex justify-between items-center border-b border-slate-900 pb-2 mb-2">
-                          <span className="font-bold text-amber-400">{timeStr}</span>
-                          <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase">
+                        <div className="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
+                          <span className="font-extrabold text-amber-400 text-sm">{timeStr}</span>
+                          <span className="text-[10px] font-extrabold text-emerald-300 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30 uppercase">
                             {appt.type}
                           </span>
                         </div>
                         <div className="space-y-1">
-                          <div className="font-semibold text-white">{appt.lead.name || "Client anonyme"}</div>
+                          <div className="font-bold text-white text-sm">{appt.lead.name || "Client anonyme"}</div>
                           {appt.apartment && (
-                            <div className="text-[10px] text-slate-400 truncate">
-                              Réf: {appt.apartment.reference} · {appt.apartment.title}
+                            <div className="text-xs text-slate-300 font-medium truncate">
+                              Réf: <strong className="text-white">{appt.apartment.reference}</strong> · {appt.apartment.title}
                             </div>
                           )}
-                          <div className="text-[10px] text-slate-500 pt-1">
-                            {appt.lead.email && <p className="truncate">Email: {appt.lead.email}</p>}
-                            {appt.lead.phone && <p>Tél: {appt.lead.phone}</p>}
+                          <div className="text-xs text-slate-300 space-y-0.5 pt-1.5 font-medium border-t border-slate-800 mt-1">
+                            {appt.lead.email && <p className="truncate text-slate-300">Email: <span className="text-white font-semibold">{appt.lead.email}</span></p>}
+                            {appt.lead.phone && <p className="text-slate-300">Tél: <span className="text-white font-semibold">{appt.lead.phone}</span></p>}
                           </div>
                         </div>
                       </div>
@@ -352,22 +352,22 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
 
       {/* Reject Modal */}
       {showRejectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md shadow-2xl p-6 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl p-6 space-y-4">
             <h3 className="text-base font-bold text-white">Annuler la Demande de Visite</h3>
-            <p className="text-slate-400 text-xs">Spécifiez un motif d'annulation. Un e-mail d'information expliquant la raison sera envoyé au client.</p>
+            <p className="text-slate-300 text-xs font-medium">Spécifiez un motif d'annulation. Un e-mail d'information expliquant la raison sera envoyé au client.</p>
             <textarea
               rows={3}
               placeholder="ex: Le créneau demandé tombe un jour de fermeture de la résidence. Veuillez choisir un autre horaire."
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500"
+              className="w-full bg-slate-950 border border-slate-700 rounded-xl py-2.5 px-3.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 font-medium"
             />
             <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setShowRejectModal(false)}
-                className="px-4 py-2 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                className="px-4 py-2 border border-slate-700 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
               >
                 Fermer
               </button>
@@ -375,7 +375,7 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                 type="button"
                 onClick={() => handleDecision(activeApptId!, "REJECTED", { adminNote: rejectReason })}
                 disabled={processingId === activeApptId}
-                className="flex items-center justify-center px-5 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-semibold rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex items-center justify-center px-5 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {processingId === activeApptId ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
