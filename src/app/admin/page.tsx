@@ -47,7 +47,7 @@ export default async function AdminDashboardOverview() {
 
   const stats = [
     {
-      name: "Active Listings",
+      name: "Appartements au Catalogue",
       value: totalApartments,
       icon: Building2,
       color: "text-blue-500",
@@ -56,7 +56,7 @@ export default async function AdminDashboardOverview() {
       href: "/admin/apartments",
     },
     {
-      name: "Pending Appointments",
+      name: "Visites en Attente",
       value: pendingAppointmentsCount,
       icon: Calendar,
       color: "text-amber-500",
@@ -65,7 +65,7 @@ export default async function AdminDashboardOverview() {
       href: "/admin/appointments",
     },
     {
-      name: "Captured Leads",
+      name: "Prospects Enregistrés",
       value: totalLeads,
       icon: Users,
       color: "text-emerald-500",
@@ -74,7 +74,7 @@ export default async function AdminDashboardOverview() {
       href: "/admin/leads",
     },
     {
-      name: "AI Chats Started",
+      name: "Discussions IA Initiées",
       value: totalConversations,
       icon: MessageSquare,
       color: "text-purple-500",
@@ -89,8 +89,8 @@ export default async function AdminDashboardOverview() {
       {/* Welcome header banner */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">Agency Dashboard</h1>
-          <p className="text-slate-400 text-sm mt-1">Real-time metrics, AI conversations, and listing manager</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">Tableau de Bord Administration</h1>
+          <p className="text-slate-400 text-sm mt-1">Statistiques en temps réel, visites et gestion des appartements Résidence WAFA</p>
         </div>
       </div>
 
@@ -111,7 +111,7 @@ export default async function AdminDashboardOverview() {
                   <span className="text-3xl font-bold text-white">{stat.value}</span>
                 </div>
                 <div className="absolute bottom-2 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-xs text-slate-400">
-                  <span>Manage</span>
+                  <span>Gérer</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </div>
               </div>
@@ -128,17 +128,17 @@ export default async function AdminDashboardOverview() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Flame className="w-5 h-5 text-red-500" />
-              <h2 className="text-lg font-bold text-white">Recent Leads</h2>
+              <h2 className="text-lg font-bold text-white">Derniers Prospects & Contacts</h2>
             </div>
             <Link href="/admin/leads" className="text-xs text-blue-500 hover:text-blue-400 flex items-center gap-1">
-              <span>View all leads</span>
+              <span>Voir tous les prospects</span>
               <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
 
           {hotLeads.length === 0 ? (
             <div className="py-12 text-center text-slate-500 text-sm">
-              No leads captured yet. They will appear here once visitors contact the AI advisor or fill out forms.
+              Aucun prospect enregistré pour le moment. Ils apparaîtront dès qu'un visiteur contacte le conseiller ou remplit un formulaire.
             </div>
           ) : (
             <div className="divide-y divide-slate-800/50">
@@ -154,8 +154,8 @@ export default async function AdminDashboardOverview() {
                         {lead.name ? lead.name[0] : "?"}
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-white">{lead.name || "Anonymous Lead"}</h4>
-                        <p className="text-xs text-slate-500 mt-0.5">{lead.email || lead.phone || "No contact info"}</p>
+                        <h4 className="text-sm font-semibold text-white">{lead.name || "Prospect Anonyme"}</h4>
+                        <p className="text-xs text-slate-500 mt-0.5">{lead.email || lead.phone || "Aucun contact"}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
@@ -176,7 +176,7 @@ export default async function AdminDashboardOverview() {
                         isCold ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" :
                         "bg-slate-500/10 text-slate-400 border border-slate-500/20"
                       }`}>
-                        {lead.score}
+                        {lead.score === "HOT" ? "CHAUD 🔥" : lead.score === "WARM" ? "TIÈDE ☀️" : lead.score === "COLD" ? "FROID ❄️" : lead.score}
                       </span>
                     </div>
                   </div>
@@ -191,22 +191,23 @@ export default async function AdminDashboardOverview() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-blue-500" />
-              <h2 className="text-lg font-bold text-white">Upcoming Visits</h2>
+              <h2 className="text-lg font-bold text-white">Prochaines Visites Privées</h2>
             </div>
             <Link href="/admin/appointments" className="text-xs text-blue-500 hover:text-blue-400 flex items-center gap-1">
-              <span>Calendar</span>
+              <span>Calendrier</span>
               <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
 
           {recentAppointments.length === 0 ? (
             <div className="py-12 text-center text-slate-500 text-sm">
-              No upcoming appointments. Approved slot bookings will show up here.
+              Aucune visite programmée pour le moment. Les demandes de créneaux apparaîtront ici.
             </div>
           ) : (
             <div className="space-y-4">
               {recentAppointments.map((appt) => {
-                const dateStr = new Date(appt.requestedSlot).toLocaleDateString("en-US", {
+                const dateStr = new Date(appt.requestedSlot).toLocaleDateString("fr-FR", {
+                  weekday: "short",
                   month: "short",
                   day: "numeric",
                   hour: "2-digit",
@@ -221,14 +222,14 @@ export default async function AdminDashboardOverview() {
                         appt.status === "PENDING" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
                         "bg-slate-500/10 text-slate-400 border border-slate-500/20"
                       }`}>
-                        {appt.status}
+                        {appt.status === "APPROVED" ? "CONFIRMÉ" : appt.status === "PENDING" ? "EN ATTENTE" : appt.status === "CANCELLED" ? "ANNULÉ" : appt.status}
                       </span>
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-white truncate">{appt.lead.name || "Anonymous client"}</h4>
+                      <h4 className="text-xs font-bold text-white truncate">{appt.lead.name || "Client anonyme"}</h4>
                       {appt.apartment && (
                         <p className="text-[10px] text-slate-500 mt-0.5 truncate">
-                          Ref: <span className="text-slate-400">{appt.apartment.reference}</span> — {appt.apartment.title}
+                          Réf: <span className="text-slate-400">{appt.apartment.reference}</span> — {appt.apartment.title}
                         </p>
                       )}
                     </div>
