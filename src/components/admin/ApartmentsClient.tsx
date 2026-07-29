@@ -15,7 +15,8 @@ import {
   AlertCircle,
   Loader2,
   Image as ImageIcon,
-  Building
+  Building,
+  Eye
 } from "lucide-react";
 import { formatPrice } from "@/lib/formatters";
 
@@ -46,6 +47,7 @@ interface Apartment {
   gallery: string[];
   floorPlanUrl: string | null;
   virtualTourUrl: string | null;
+  views?: number;
   project: Project;
 }
 
@@ -409,14 +411,15 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                 <th className="py-4 px-6">Prix</th>
                 <th className="py-4 px-6">Superficie</th>
                 <th className="py-4 px-6">Caractéristiques</th>
+                <th className="py-4 px-6">Visites</th>
                 <th className="py-4 px-6">Statut</th>
                 <th className="py-4 px-6 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/50 text-xs">
+            <tbody className="divide-y divide-slate-800/60 text-xs">
               {filteredApartments.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-500">
+                  <td colSpan={9} className="py-12 text-center text-slate-500 font-medium">
                     Aucun appartement trouvé pour cette recherche.
                   </td>
                 </tr>
@@ -441,6 +444,12 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                     <td className="py-4 px-6 text-slate-400">{apt.surface} m²</td>
                     <td className="py-4 px-6 text-slate-400">
                       {apt.rooms} pièces · {apt.bedrooms} ch. · {apt.bathrooms} sdb
+                    </td>
+                    <td className="py-4 px-6 text-slate-300 font-mono font-semibold">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[11px]">
+                        <Eye className="w-3 h-3 shrink-0" />
+                        <span>{apt.views || 0}</span>
+                      </span>
                     </td>
                     <td className="py-4 px-6">
                       <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${

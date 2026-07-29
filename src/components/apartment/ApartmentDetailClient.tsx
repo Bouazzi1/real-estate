@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
@@ -76,6 +76,11 @@ interface ApartmentDetailClientProps {
 export default function ApartmentDetailClient({ apartment, similarApartments }: ApartmentDetailClientProps) {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [showFloorPlan, setShowFloorPlan] = useState(false);
+
+  useEffect(() => {
+    // Record page view asynchronously
+    fetch(`/api/apartments/${apartment.slug}/view`, { method: "POST" }).catch(console.error);
+  }, [apartment.slug]);
 
   const images = apartment.gallery.length > 0 
     ? apartment.gallery 

@@ -10,7 +10,9 @@ import {
   ArrowUpRight,
   Flame,
   UserCheck,
-  CalendarCheck2
+  CalendarCheck2,
+  Eye,
+  Trophy
 } from "lucide-react";
 import Link from "next/link";
 import { formatPrice } from "@/lib/formatters";
@@ -34,6 +36,18 @@ export default async function AdminDashboardOverview() {
   const totalLeads = await prisma.lead.count();
   const totalConversations = await prisma.conversation.count();
 
+  // Aggregate total views and fetch top 5 most visited apartments
+  const totalViewsAggregate = await prisma.apartment.aggregate({
+    _sum: { views: true },
+  });
+  const totalViews = totalViewsAggregate._sum.views || 0;
+
+  const topVisitedApartments = await prisma.apartment.findMany({
+    orderBy: { views: "desc" },
+    take: 5,
+    include: { project: true },
+  });
+
   // Fetch top 5 hot leads
   const hotLeads = await prisma.lead.findMany({
     orderBy: { updatedAt: "desc" },
@@ -55,6 +69,10 @@ export default async function AdminDashboardOverview() {
     take: 5,
   });
 
+  const maxViews = topVisitedApartments.length > 0 && topVisitedApartments[0].views > 0
+    ? topVisitedApartments[0].views
+    : 1;
+
   const stats = [
     {
       name: "Appartements au Catalogue",
@@ -63,6 +81,15 @@ export default async function AdminDashboardOverview() {
       color: "text-blue-400",
       bg: "bg-blue-500/20",
       border: "border-blue-500/40",
+      href: "/admin/apartments",
+    },
+    {
+      name: "Consultations Fiches",
+      value: totalViews,
+      icon: Eye,
+      color: "text-rose-400",
+      bg: "bg-rose-500/20",
+      border: "border-rose-500/40",
       href: "/admin/apartments",
     },
     {
@@ -108,56 +135,126 @@ export default async function AdminDashboardOverview() {
       {/* Welcome header banner */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">Tableau de Bord Administration</h1>
-          <p className="text-slate-300 text-xs font-medium mt-1">Statistiques en temps réel, visites et gestion des appartements Résidence WAFA</p>
+          <h1 className="text-2xl font-black text-white tracking-tight">Vue d'ensemble Commerciale</h1>
+          <p className="text-xs text-slate-400 mt-1">Supervision en temps réel des propriétés, rendez-vous et statistiques de consultation.</p>
         </div>
       </div>
 
-      {/* Stats Cards grid (5 columns) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        {stats.map((stat) => {
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <Link key={stat.name} href={stat.href} className="block group">
-              <div className={`p-5 bg-slate-900/90 rounded-3xl border ${stat.border} hover:border-amber-400 transition-all duration-200 shadow-xl relative overflow-hidden`}>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-slate-200 leading-tight">{stat.name}</span>
-                  <div className={`p-2.5 rounded-2xl ${stat.bg} ${stat.color} shrink-0`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
+            <Link
+              key={idx}
+              href={stat.href}
+              className="group p-5 bg-slate-900/90 border border-slate-700/80 hover:border-slate-500 rounded-3xl transition-all duration-200 shadow-xl hover:-translate-y-1 block"
+            >
+              <div className="flex items-center justify-between">
+                <div className={`w-10 h-10 rounded-2xl ${stat.bg} border ${stat.border} flex items-center justify-center`}>
+                  <Icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className="text-3xl font-extrabold text-white">{stat.value}</span>
-                </div>
-                <div className="absolute bottom-2 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-[11px] text-amber-400 font-bold">
-                  <span>Accéder</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </div>
+                <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
+              </div>
+              <div className="mt-4">
+                <span className="text-2xl font-black text-white block">{stat.value}</span>
+                <span className="text-[11px] font-semibold text-slate-400 block mt-0.5">{stat.name}</span>
               </div>
             </Link>
           );
         })}
       </div>
 
-      {/* Grid of Leads & Appointments */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Top Visited Apartments Widget */}
+      <div className="bg-slate-900/90 border border-slate-700/80 rounded-3xl p-6 shadow-xl space-y-6">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-amber-400" />
+            <h2 className="text-base font-bold text-white">Top 5 — Appartements les Plus Visités</h2>
+          </div>
+          <Link href="/admin/apartments" className="text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1">
+            <span>Voir tout le catalogue</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {topVisitedApartments.length === 0 ? (
+          <div className="py-8 text-center text-slate-400 text-xs font-medium">
+            Aucune donnée de consultation disponible pour le moment.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {topVisitedApartments.map((apt, idx) => {
+              const pct = Math.round((apt.views / maxViews) * 100);
+
+              return (
+                <div key={apt.id} className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-3 hover:border-slate-700 transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-3">
+                      <span className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${
+                        idx === 0 ? "bg-amber-500 text-slate-950" :
+                        idx === 1 ? "bg-slate-300 text-slate-950" :
+                        idx === 2 ? "bg-amber-700 text-white" :
+                        "bg-slate-800 text-slate-400"
+                      }`}>
+                        #{idx + 1}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Link href={`/apartments/${apt.slug}`} className="font-bold text-sm text-white hover:text-amber-400 transition-colors">
+                            {apt.title}
+                          </Link>
+                          <span className="text-[10px] font-bold font-mono text-amber-400 px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
+                            {apt.reference}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-0.5 font-medium">
+                          {apt.project?.name} · <strong className="text-white">{formatPrice(apt.price)} DT</strong>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-right">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold">
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>{apt.views} visites</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-rose-500 to-amber-500 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${Math.max(pct, 5)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Grid Section: Prospects & Visites */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
-        {/* Left 2 Columns: Hot Leads */}
-        <div className="lg:col-span-2 bg-slate-900/90 border border-slate-700/80 rounded-3xl p-6 shadow-xl space-y-6">
+        {/* Left 1 Column: Hot Prospects */}
+        <div className="bg-slate-900/90 border border-slate-700/80 rounded-3xl p-6 shadow-xl space-y-6">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <div className="flex items-center gap-2">
-              <Flame className="w-5 h-5 text-red-500" />
-              <h2 className="text-base font-bold text-white">Derniers Prospects & Contacts</h2>
+              <Flame className="w-5 h-5 text-amber-400" />
+              <h2 className="text-base font-bold text-white">Derniers Prospects Qualifiés</h2>
             </div>
             <Link href="/admin/leads" className="text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1">
-              <span>Voir tous les prospects</span>
+              <span>Voir tout ({totalLeads})</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           {hotLeads.length === 0 ? (
             <div className="py-12 text-center text-slate-300 text-xs font-medium">
-              Aucun prospect enregistré pour le moment. Ils apparaîtront dès qu'un visiteur contacte le conseiller ou remplit un formulaire.
+              Aucun prospect qualifié enregistré pour le moment.
             </div>
           ) : (
             <div className="divide-y divide-slate-800/80">
@@ -189,13 +286,12 @@ export default async function AdminDashboardOverview() {
                       )}
 
                       {/* Score Badge */}
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                      <span className={`px-2.5 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${
                         isHot ? "bg-red-500/20 text-red-300 border border-red-500/40" :
                         isWarm ? "bg-amber-500/20 text-amber-300 border border-amber-500/40" :
-                        isCold ? "bg-blue-500/20 text-blue-300 border border-blue-500/40" :
                         "bg-slate-500/20 text-slate-300 border border-slate-500/40"
                       }`}>
-                        {lead.score === "HOT" ? "CHAUD 🔥" : lead.score === "WARM" ? "TIÈDE ☀️" : lead.score === "COLD" ? "FROID ❄️" : lead.score}
+                        {isHot ? "CHAUD 🔥" : isWarm ? "TIÈDE ⚡" : "FROID ❄️"}
                       </span>
                     </div>
                   </div>
