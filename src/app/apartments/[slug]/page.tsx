@@ -41,6 +41,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ApartmentDetailsPage({ params }: PageProps) {
   const { slug } = await params;
 
+  // Increment view counter directly in server component upon visit
+  try {
+    await prisma.apartment.update({
+      where: { slug },
+      data: { views: { increment: 1 } },
+    });
+  } catch (e) {
+    // Non-blocking catch
+  }
+
   // Query database for target apartment
   const apartment = await prisma.apartment.findUnique({
     where: { slug },
