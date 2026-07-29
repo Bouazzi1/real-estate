@@ -488,7 +488,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
           <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 lg:p-8 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <h3 className="text-lg font-bold text-white">
-                {editingApt ? `Edit Apartment: ${editingApt.reference}` : "Add New Apartment"}
+                {editingApt ? `Modifier l'Appartement : ${editingApt.reference}` : "Ajouter un Nouvel Appartement"}
               </h3>
               <button
                 onClick={() => setIsFormOpen(false)}
@@ -510,7 +510,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                    Project Location
+                    Projet / Résidence
                   </label>
                   <select
                     value={projectId}
@@ -527,12 +527,12 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                    Reference Code
+                    Code de Référence
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. A-101"
+                    placeholder="ex: WAF-101"
                     value={reference}
                     onChange={(e) => setReference(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
@@ -541,12 +541,12 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                    Title
+                    Titre
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Executive 2-Bedroom Suite"
+                    placeholder="ex: Appartement S+2 de Luxe"
                     value={title}
                     onChange={(e) => handleTitleChange(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
@@ -555,12 +555,12 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                    Slug
+                    Identifiant URL (Slug)
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. executive-2-bedroom-suite-a101"
+                    placeholder="ex: appartement-s2-luxe-waf101"
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
@@ -569,12 +569,12 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                    Price (DT)
+                    Prix (DT)
                   </label>
                   <input
                     type="number"
                     required
-                    placeholder="e.g. 450000"
+                    placeholder="ex: 450000"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
@@ -589,7 +589,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                     type="number"
                     step="0.1"
                     required
-                    placeholder="e.g. 88.5"
+                    placeholder="ex: 88.5"
                     value={surface}
                     onChange={(e) => setSurface(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
@@ -600,7 +600,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                 <div className="grid grid-cols-4 gap-3 md:col-span-2">
                   <div>
                     <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-                      Rooms
+                      Pièces
                     </label>
                     <input
                       type="number"
@@ -612,7 +612,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   </div>
                   <div>
                     <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-                      Bedrooms
+                      Chambres
                     </label>
                     <input
                       type="number"
@@ -624,7 +624,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   </div>
                   <div>
                     <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-                      Bathrooms
+                      Salles de Bain
                     </label>
                     <input
                       type="number"
@@ -636,7 +636,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   </div>
                   <div>
                     <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-                      Floor
+                      Étage
                     </label>
                     <input
                       type="number"
@@ -655,7 +655,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   <input
                     type="text"
                     required
-                    placeholder="e.g. South-West"
+                    placeholder="ex: Sud-Ouest"
                     value={orientation}
                     onChange={(e) => setOrientation(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
@@ -664,16 +664,16 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                    Status
+                    Statut
                   </label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
                   >
-                    <option value="AVAILABLE">AVAILABLE</option>
-                    <option value="RESERVED">RESERVED</option>
-                    <option value="SOLD">SOLD</option>
+                    <option value="AVAILABLE">DISPONIBLE</option>
+                    <option value="RESERVED">RÉSERVÉ</option>
+                    <option value="SOLD">VENDU</option>
                   </select>
                 </div>
 
@@ -686,7 +686,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                       onChange={(e) => setBalcony(e.target.checked)}
                       className="rounded border-slate-800 bg-slate-950 text-blue-500 focus:ring-0 focus:ring-offset-0 w-4 h-4"
                     />
-                    <span>Has Balcony</span>
+                    <span>Balcon inclus</span>
                   </label>
                   <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer">
                     <input
@@ -695,7 +695,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                       onChange={(e) => setParking(e.target.checked)}
                       className="rounded border-slate-800 bg-slate-950 text-blue-500 focus:ring-0 focus:ring-offset-0 w-4 h-4"
                     />
-                    <span>Has Private Parking</span>
+                    <span>Parking privé inclus</span>
                   </label>
                   <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer">
                     <input
@@ -704,7 +704,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                       onChange={(e) => setFeatured(e.target.checked)}
                       className="rounded border-slate-800 bg-slate-950 text-blue-500 focus:ring-0 focus:ring-offset-0 w-4 h-4"
                     />
-                    <span className="text-amber-400 font-bold">Featured Listing</span>
+                    <span className="text-amber-400 font-bold">Mettre en Vedette</span>
                   </label>
                 </div>
 
@@ -714,7 +714,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   </label>
                   <textarea
                     rows={4}
-                    placeholder="Provide a premium layout description detailing views, finishes, materials, and amenities..."
+                    placeholder="Description détaillée de l'appartement, finitions, matériaux, vue et commodités..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
@@ -725,8 +725,8 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                 <div className="md:col-span-2 border-t border-slate-800/60 pt-6">
                   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-bold text-white">Floor Plan Drawing</h4>
-                      <p className="text-slate-500 text-[10px] mt-0.5">Upload a vector layout or high-quality image</p>
+                      <h4 className="text-sm font-bold text-white">Plan de l'Appartement (2D/3D)</h4>
+                      <p className="text-slate-500 text-[10px] mt-0.5">Téléverser un plan d'architecte ou une image de haute qualité</p>
                     </div>
                     <div className="relative">
                       <input
@@ -745,7 +745,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                         ) : (
                           <Upload className="w-4 h-4 text-blue-500" />
                         )}
-                        <span>Upload Floor Plan</span>
+                        <span>Téléverser le Plan</span>
                       </label>
                     </div>
                   </div>
@@ -770,8 +770,8 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                 <div className="md:col-span-2 border-t border-slate-800/60 pt-6">
                   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-bold text-white">Gallery Images</h4>
-                      <p className="text-slate-500 text-[10px] mt-0.5">Add premium photos showcasing interior and exterior features</p>
+                      <h4 className="text-sm font-bold text-white">Galerie de Photos</h4>
+                      <p className="text-slate-500 text-[10px] mt-0.5">Ajouter des photos montrant les finitions intérieures et extérieures</p>
                     </div>
                     <div className="relative">
                       <input
@@ -790,7 +790,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                         ) : (
                           <Plus className="w-4 h-4 text-blue-500" />
                         )}
-                        <span>Add Photo</span>
+                        <span>Ajouter une Photo</span>
                       </label>
                     </div>
                   </div>
@@ -822,7 +822,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   onClick={() => setIsFormOpen(false)}
                   className="px-4 py-2 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="submit"
@@ -836,7 +836,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   ) : (
                     <Plus className="w-4 h-4 mr-2" />
                   )}
-                  <span>{editingApt ? "Save Changes" : "Create Listing"}</span>
+                  <span>{editingApt ? "Enregistrer les Modifications" : "Créer l'Appartement"}</span>
                 </button>
               </div>
             </form>
@@ -849,7 +849,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl shadow-2xl p-6 lg:p-8 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <h3 className="text-lg font-bold text-white">Bulk CSV Import</h3>
+              <h3 className="text-lg font-bold text-white">Importation Massive CSV</h3>
               <button
                 onClick={() => setIsImportOpen(false)}
                 className="p-1 text-slate-500 hover:text-white rounded-lg cursor-pointer"
@@ -868,7 +868,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
             <form onSubmit={handleImportCSV} className="space-y-6">
               <div>
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                  Target Project
+                  Projet Cible
                 </label>
                 <select
                   value={projectId}
@@ -885,7 +885,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
 
               <div>
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                  Select CSV File
+                  Sélectionner le Fichier CSV
                 </label>
                 <input
                   type="file"
@@ -898,20 +898,20 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
 
               {/* Sample format helper */}
               <div className="p-4 bg-slate-950/60 border border-slate-800/80 rounded-2xl text-[10px] text-slate-400 space-y-2 leading-relaxed">
-                <p className="font-semibold text-slate-300">Expected CSV Header Format:</p>
+                <p className="font-semibold text-slate-300">Format des Entêtes CSV Requis :</p>
                 <code className="block bg-slate-950 p-2 rounded border border-slate-850 font-mono text-[9px] truncate">
                   reference,title,slug,price,surface,rooms,bedrooms,bathrooms,floor,orientation,balcony,parking,featured,description,gallery,floorplanurl
                 </code>
-                <p>Note: Separate gallery URLs using a semicolon (`;`). Boolean values should be `true` or `false` (or `1` / `0`).</p>
+                <p>Note : Séparez les URL des galeries par un point-virgule (`;`). Les valeurs booléennes doivent être `true` ou `false` (ou `1` / `0`).</p>
               </div>
 
               {/* Results display */}
               {importResults && (
                 <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl space-y-2">
-                  <h4 className="text-xs font-bold text-emerald-400">Import Report:</h4>
+                  <h4 className="text-xs font-bold text-emerald-400">Rapport d'Importation :</h4>
                   <p className="text-[11px] text-slate-300">
-                    Successfully imported: <span className="font-bold text-white">{importResults.importedCount}</span> listings.
-                    Skipped/Failed: <span className="font-bold text-white">{importResults.skippedCount}</span> rows.
+                    Importés avec succès : <span className="font-bold text-white">{importResults.importedCount}</span> appartements.
+                    Ignorés / Échecs : <span className="font-bold text-white">{importResults.skippedCount}</span> lignes.
                   </p>
                   {importResults.errors?.length > 0 && (
                     <div className="max-h-24 overflow-y-auto text-[9px] text-red-400/90 font-mono space-y-1 mt-2 bg-slate-950 p-2 rounded border border-slate-850">
@@ -930,7 +930,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   onClick={() => setIsImportOpen(false)}
                   className="px-4 py-2 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
                 >
-                  Close
+                  Annuler
                 </button>
                 <button
                   type="submit"
@@ -940,9 +940,9 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
                   ) : (
-                    <FileSpreadsheet className="w-4 h-4 mr-2" />
+                    <Upload className="w-4 h-4 mr-2" />
                   )}
-                  <span>Start Import</span>
+                  <span>Importer les Données CSV</span>
                 </button>
               </div>
             </form>
