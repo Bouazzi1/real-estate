@@ -169,7 +169,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to upload file");
+      if (!res.ok) throw new Error(data.error || "Échec du téléversement de l'image");
 
       if (type === "gallery") {
         setGallery((prev) => [...prev, data.url]);
@@ -177,7 +177,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
         setFloorPlanUrl(data.url);
       }
     } catch (err: any) {
-      setError(err.message || "File upload failed");
+      setError(err.message || "Erreur lors du téléversement de l'image");
     } finally {
       setUploading(false);
     }

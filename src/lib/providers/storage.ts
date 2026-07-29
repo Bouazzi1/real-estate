@@ -9,16 +9,22 @@ export interface StorageProvider {
 
 export class LocalStorageProvider implements StorageProvider {
   async uploadFile(file: Buffer, filename: string, mimeType: string): Promise<string> {
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await fs.mkdir(uploadDir, { recursive: true });
+    try {
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      await fs.mkdir(uploadDir, { recursive: true });
 
-    const fileExt = path.extname(filename);
-    const baseName = path.basename(filename, fileExt).replace(/[^a-zA-Z0-9]/g, "-");
-    const uniqueFilename = `${baseName}-${Date.now()}${fileExt}`;
-    const filePath = path.join(uploadDir, uniqueFilename);
+      const safeFilename = filename || "image.png";
+      const fileExt = path.extname(safeFilename) || ".png";
+      const baseName = path.basename(safeFilename, fileExt).replace(/[^a-zA-Z0-9_-]/g, "-") || "file";
+      const uniqueFilename = `${baseName}-${Date.now()}${fileExt}`;
+      const filePath = path.join(uploadDir, uniqueFilename);
 
-    await fs.writeFile(filePath, file);
-    return `/uploads/${uniqueFilename}`;
+      await fs.writeFile(filePath, file);
+      return `/uploads/${uniqueFilename}`;
+    } catch (err: any) {
+      console.error("LocalStorageProvider upload error:", err);
+      throw new Error(`Erreur d'écriture sur le disque local: ${err?.message || err}`);
+    }
   }
 
   async deleteFile(fileUrl: string): Promise<void> {
