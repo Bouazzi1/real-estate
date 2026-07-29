@@ -130,8 +130,8 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Site Settings</h2>
-        <p className="text-slate-400 text-xs mt-1">Configure agency contact details, branding colors, dynamic fonts, and SEO parameters</p>
+        <h2 className="text-2xl font-bold text-white">Paramètres du Site</h2>
+        <p className="text-slate-400 text-xs mt-1">Configurez les coordonnées de la résidence, les couleurs de la marque, la typographie et le référencement naturel (SEO)</p>
       </div>
 
       {success && (
@@ -151,55 +151,55 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
         {/* Section 1: Agency Brand Details */}
         <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-850 pb-3">
-            <Settings className="w-4 h-4 text-blue-500" />
-            <h3 className="text-sm font-bold text-white">Agency Branding</h3>
+            <Settings className="w-4 h-4 text-amber-500" />
+            <h3 className="text-sm font-bold text-white">Identité de la Résidence / Agence</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Agency Name
+                Nom de la Résidence / Agence
               </label>
               <input
                 type="text"
                 required
                 value={agencyName}
                 onChange={(e) => setAgencyName(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:border-blue-500"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:border-amber-500"
               />
             </div>
 
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Contact Phone
+                Téléphone de Contact
               </label>
               <input
                 type="text"
                 required
                 value={contactPhone}
                 onChange={(e) => setContactPhone(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:border-amber-500"
               />
             </div>
 
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Contact Email
+                Adresse E-mail de Contact
               </label>
               <input
                 type="email"
                 required
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:border-amber-500"
               />
             </div>
 
             {/* Logo Image */}
             <div className="flex items-center justify-between gap-4 md:col-span-2 border-t border-slate-850 pt-6">
               <div>
-                <h4 className="text-xs font-bold text-white">Agency Logo</h4>
-                <p className="text-slate-500 text-[10px] mt-0.5">Upload a square image to represent the agency brand</p>
+                <h4 className="text-xs font-bold text-white">Logo Officiel</h4>
+                <p className="text-slate-500 text-[10px] mt-0.5">Téléversez le visuel ou logo représentant la résidence</p>
               </div>
               <div className="flex items-center gap-4">
                 {logoUrl && (
@@ -218,11 +218,11 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                     className="flex items-center gap-2 px-3.5 py-2 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 text-[11px] font-semibold rounded-xl transition-all cursor-pointer"
                   >
                     {uploading ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" />
                     ) : (
-                      <Upload className="w-3.5 h-3.5 text-blue-500" />
+                      <Upload className="w-3.5 h-3.5 text-amber-500" />
                     )}
-                    <span>Change Logo</span>
+                    <span>Changer le Logo</span>
                   </label>
                 </div>
               </div>
@@ -233,15 +233,15 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
         {/* Section 2: Visual Style Configuration */}
         <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-850 pb-3">
-            <Palette className="w-4 h-4 text-blue-500" />
-            <h3 className="text-sm font-bold text-white">Visual Customization</h3>
+            <Palette className="w-4 h-4 text-amber-500" />
+            <h3 className="text-sm font-bold text-white">Personnalisation Visuelle</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Primary color picker */}
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Primary Brand Color
+                Couleur Principale
               </label>
               <div className="flex items-center gap-3">
                 <input
@@ -262,7 +262,7 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
             {/* Secondary color picker */}
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Secondary Brand Color
+                Couleur Secondaire
               </label>
               <div className="flex items-center gap-3">
                 <input
@@ -283,7 +283,7 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
             {/* Font selector */}
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Active Font Family
+                Police de Caractères
               </label>
               <select
                 value={fontFamily}
@@ -303,33 +303,33 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
         {/* Section 3: SEO Configuration */}
         <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-850 pb-3">
-            <Globe className="w-4 h-4 text-blue-500" />
-            <h3 className="text-sm font-bold text-white">Search Engine Optimization</h3>
+            <Globe className="w-4 h-4 text-amber-500" />
+            <h3 className="text-sm font-bold text-white">Référencement Naturel (SEO)</h3>
           </div>
 
           <div className="space-y-4">
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Default Meta Title
+                Titre Méta par Défaut
               </label>
               <input
                 type="text"
                 required
                 value={seoTitle}
                 onChange={(e) => setSeoTitle(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:border-amber-500"
               />
             </div>
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Default Meta Description
+                Description Méta par Défaut
               </label>
               <textarea
                 rows={3}
                 required
                 value={seoDescription}
                 onChange={(e) => setSeoDescription(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white focus:outline-none"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white focus:outline-none focus:border-amber-500"
               />
             </div>
           </div>
@@ -338,45 +338,45 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
         {/* Section 4: Social Links */}
         <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-850 pb-3">
-            <LinkIcon className="w-4 h-4 text-blue-500" />
-            <h3 className="text-sm font-bold text-white">Social Networks</h3>
+            <LinkIcon className="w-4 h-4 text-amber-500" />
+            <h3 className="text-sm font-bold text-white">Réseaux Sociaux</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Facebook URL
+                Lien Facebook
               </label>
               <input
                 type="text"
                 value={facebook}
                 onChange={(e) => setFacebook(e.target.value)}
                 placeholder="https://facebook.com/..."
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:border-amber-500"
               />
             </div>
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Instagram URL
+                Lien Instagram
               </label>
               <input
                 type="text"
                 value={instagram}
                 onChange={(e) => setInstagram(e.target.value)}
                 placeholder="https://instagram.com/..."
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:border-amber-500"
               />
             </div>
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                LinkedIn URL
+                Lien LinkedIn
               </label>
               <input
                 type="text"
                 value={linkedin}
                 onChange={(e) => setLinkedin(e.target.value)}
                 placeholder="https://linkedin.com/..."
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:border-amber-500"
               />
             </div>
           </div>
@@ -387,14 +387,14 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
           <button
             type="submit"
             disabled={submitting}
-            className="flex items-center justify-center py-3 px-8 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition-all shadow-lg cursor-pointer"
+            className="flex items-center justify-center py-3 px-8 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl transition-all shadow-lg cursor-pointer"
           >
             {submitting ? (
               <Loader2 className="w-4 h-4 animate-spin mr-2" />
             ) : (
               <Check className="w-4 h-4 mr-2" />
             )}
-            <span>Save Settings Changes</span>
+            <span>Enregistrer les Paramètres</span>
           </button>
         </div>
       </form>

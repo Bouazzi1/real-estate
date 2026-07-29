@@ -336,8 +336,8 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
       {/* Title Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white">Apartment Listings</h2>
-          <p className="text-slate-400 text-xs mt-1">Manage individual residential units and import bulk datasets</p>
+          <h2 className="text-2xl font-bold text-white">Catalogue des Appartements</h2>
+          <p className="text-slate-400 text-xs mt-1">Gérez la liste des logements disponibles, modifiez leurs tarifs ou importez un fichier CSV</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -351,14 +351,14 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
             className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all cursor-pointer"
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
-            <span>Bulk CSV Import</span>
+            <span>Import CSV en Masse</span>
           </button>
           <button
             onClick={handleOpenAdd}
-            className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/10 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl transition-all shadow-lg shadow-amber-500/10 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Add Apartment</span>
+            <span>Ajouter un Appartement</span>
           </button>
         </div>
       </div>
@@ -371,10 +371,10 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
           </span>
           <input
             type="text"
-            placeholder="Search by reference or title..."
+            placeholder="Rechercher par référence ou désignation..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 pl-9 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 pl-9 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-colors"
           />
         </div>
         <div className="flex gap-4">
@@ -385,7 +385,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
               onChange={(e) => setProjectFilter(e.target.value)}
               className="bg-transparent border-none text-slate-300 focus:outline-none text-xs cursor-pointer py-1"
             >
-              <option value="all">All Projects</option>
+              <option value="all">Tous les Projets</option>
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -402,13 +402,13 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-800/80 text-[10px] font-bold text-slate-500 uppercase tracking-wider bg-slate-950/20">
-                <th className="py-4 px-6">Reference</th>
-                <th className="py-4 px-6">Title</th>
-                <th className="py-4 px-6">Project</th>
-                <th className="py-4 px-6">Price</th>
-                <th className="py-4 px-6">Surface</th>
-                <th className="py-4 px-6">Specs</th>
-                <th className="py-4 px-6">Status</th>
+                <th className="py-4 px-6">Référence</th>
+                <th className="py-4 px-6">Désignation</th>
+                <th className="py-4 px-6">Projet</th>
+                <th className="py-4 px-6">Prix</th>
+                <th className="py-4 px-6">Superficie</th>
+                <th className="py-4 px-6">Caractéristiques</th>
+                <th className="py-4 px-6">Statut</th>
                 <th className="py-4 px-6 text-right">Actions</th>
               </tr>
             </thead>
@@ -416,19 +416,19 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
               {filteredApartments.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-slate-500">
-                    No apartments found matching the query.
+                    Aucun appartement trouvé pour cette recherche.
                   </td>
                 </tr>
               ) : (
                 filteredApartments.map((apt) => (
                   <tr key={apt.id} className="hover:bg-slate-800/20 transition-colors group">
-                    <td className="py-4 px-6 font-mono font-bold text-blue-400">{apt.reference}</td>
+                    <td className="py-4 px-6 font-mono font-bold text-amber-400">{apt.reference}</td>
                     <td className="py-4 px-6">
                       <div>
                         <div className="font-semibold text-white">{apt.title}</div>
                         {apt.featured && (
                           <span className="inline-flex mt-1 items-center px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[9px] font-bold">
-                            FEATURED
+                            EN VEDETTE
                           </span>
                         )}
                       </div>
@@ -439,7 +439,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                     </td>
                     <td className="py-4 px-6 text-slate-400">{apt.surface} m²</td>
                     <td className="py-4 px-6 text-slate-400">
-                      {apt.rooms} rooms · {apt.bedrooms} bed · {apt.bathrooms} bath
+                      {apt.rooms} pièces · {apt.bedrooms} ch. · {apt.bathrooms} sdb
                     </td>
                     <td className="py-4 px-6">
                       <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
@@ -447,7 +447,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                         apt.status === "RESERVED" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
                         "bg-red-500/10 text-red-400 border border-red-500/20"
                       }`}>
-                        {apt.status}
+                        {apt.status === "AVAILABLE" ? "DISPONIBLE" : apt.status === "RESERVED" ? "RÉSERVÉ" : apt.status === "SOLD" ? "VENDU" : apt.status}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-right space-x-2">

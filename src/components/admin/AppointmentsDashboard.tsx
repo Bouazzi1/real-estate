@@ -60,10 +60,6 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
   const [rejectReason, setRejectReason] = useState("");
   const [activeApptId, setActiveApptId] = useState<string | null>(null);
 
-  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
-  const [newDate, setNewDate] = useState("");
-  const [newTime, setNewTime] = useState("10:00");
-
   const pendingQueue = appointments.filter((a) => a.status === "PENDING");
   const approvedList = appointments.filter((a) => a.status === "APPROVED");
 
@@ -74,29 +70,26 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          status: status === "RESCHEDULED" ? "PENDING" : status, // Rescheduling sets it back to pending with new date
+          status: status === "RESCHEDULED" ? "PENDING" : status,
           ...extraBody,
         }),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to make decision");
+      if (!res.ok) throw new Error(data.error || "Impossible d'enregistrer la décision");
 
-      // Update state
       setAppointments((prev) =>
         prev.map((a) => (a.id === id ? data : a))
       );
       
       setShowRejectModal(false);
-      setShowRescheduleModal(false);
     } catch (err: any) {
-      alert(err.message || "Failed to save appointment update");
+      alert(err.message || "Une erreur est survenue lors de la mise à jour");
     } finally {
       setProcessingId(null);
     }
   };
 
-  // Calendar logic helpers
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
 
@@ -113,14 +106,13 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const daysInMonth = getDaysInMonth(year, month);
-  const firstDayIndex = getFirstDayOfMonth(year, month); // 0 = Sun, 1 = Mon, etc.
+  const firstDayIndex = getFirstDayOfMonth(year, month);
 
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
   ];
 
-  // Helper to check if a day has approved appointments
   const getApptsOnDay = (day: number) => {
     return approvedList.filter((a) => {
       const d = new Date(a.requestedSlot);
@@ -128,7 +120,6 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
     });
   };
 
-  // Format date key
   const getDateStr = (day: number) => {
     return `${year}-${(month + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
   };
@@ -145,19 +136,19 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
     <div className="space-y-6">
       {/* Title */}
       <div>
-        <h2 className="text-2xl font-bold text-white">Appointment Scheduler</h2>
-        <p className="text-slate-400 text-xs mt-1">Approve client visits and track approved tours inside the calendar view</p>
+        <h2 className="text-2xl font-bold text-white">Gestionnaire des Visites Privées</h2>
+        <p className="text-slate-400 text-xs mt-1">Validez les demandes de visites et consultez le calendrier des rendez-vous confirmés</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Left column: Pending requests list (4 columns) */}
+        {/* Left column: Pending requests list */}
         <div className="lg:col-span-4 space-y-6">
           <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-850 pb-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Clock className="w-4 h-4 text-amber-500" />
-                <span>Pending Queue</span>
+                <span>Demandes en Attente</span>
               </h3>
               <span className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold">
                 {pendingQueue.length}
@@ -166,12 +157,13 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
 
             {pendingQueue.length === 0 ? (
               <div className="py-12 text-center text-slate-500 text-xs">
-                No pending appointment requests in queue.
+                Aucune demande de visite en attente.
               </div>
             ) : (
               <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
                 {pendingQueue.map((appt) => {
-                  const dateStr = new Date(appt.requestedSlot).toLocaleDateString("en-US", {
+                  const dateStr = new Date(appt.requestedSlot).toLocaleDateString("fr-FR", {
+                    weekday: "short",
                     month: "short",
                     day: "numeric",
                     hour: "2-digit",
@@ -184,15 +176,15 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                       className="p-4 bg-slate-950/60 border border-slate-850 rounded-2xl space-y-3 relative group"
                     >
                       <div className="space-y-1">
-                        <span className="text-[10px] text-blue-400 font-bold block">{dateStr}</span>
+                        <span className="text-[10px] text-amber-400 font-bold block capitalize">{dateStr}</span>
                         <h4 className="text-xs font-bold text-white flex items-center gap-1">
                           <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                          <span className="truncate">{appt.lead.name || "Anonymous Client"}</span>
+                          <span className="truncate">{appt.lead.name || "Client Anonyme"}</span>
                         </h4>
                         {appt.apartment && (
                           <div className="flex items-center gap-1 text-[10px] text-slate-400 truncate">
                             <Building className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                            <span className="truncate">Ref: {appt.apartment.reference} - {appt.apartment.title}</span>
+                            <span className="truncate">Réf: {appt.apartment.reference} - {appt.apartment.title}</span>
                           </div>
                         )}
                         <div className="text-[10px] text-slate-500 space-y-0.5 mt-1 border-t border-slate-900 pt-1">
@@ -206,14 +198,14 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                         <button
                           onClick={() => handleDecision(appt.id, "APPROVED")}
                           disabled={processingId === appt.id}
-                          className="flex-1 flex items-center justify-center py-1.5 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-600 hover:text-white text-emerald-500 text-[10px] font-bold rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                          className="flex-1 flex items-center justify-center py-1.5 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-600 hover:text-white text-emerald-400 text-[10px] font-bold rounded-lg transition-colors cursor-pointer disabled:opacity-50"
                         >
                           {processingId === appt.id ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
                           ) : (
                             <Check className="w-3 h-3 mr-1" />
                           )}
-                          <span>Approve</span>
+                          <span>Approuver</span>
                         </button>
                         <button
                           onClick={() => {
@@ -221,10 +213,10 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                             setRejectReason("");
                             setShowRejectModal(true);
                           }}
-                          className="flex-1 flex items-center justify-center py-1.5 bg-red-500/10 border border-red-500/20 hover:bg-red-600 hover:text-white text-red-500 text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
+                          className="flex-1 flex items-center justify-center py-1.5 bg-red-500/10 border border-red-500/20 hover:bg-red-600 hover:text-white text-red-400 text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
                         >
                           <X className="w-3 h-3 mr-1" />
-                          <span>Reject</span>
+                          <span>Annuler</span>
                         </button>
                       </div>
                     </div>
@@ -235,14 +227,14 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
           </div>
         </div>
 
-        {/* Right column: Interactive calendar and schedule listing (8 columns) */}
+        {/* Right column: Interactive calendar */}
         <div className="lg:col-span-8 space-y-6">
           <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-6">
             
             {/* Calendar header switcher */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CalendarIcon className="w-5 h-5 text-blue-500" />
+                <CalendarIcon className="w-5 h-5 text-amber-500" />
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">
                   {monthNames[month]} {year}
                 </h3>
@@ -266,7 +258,7 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-2 text-center text-xs">
               {/* Day Headers */}
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+              {["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"].map((day) => (
                 <div key={day} className="py-2 font-bold text-slate-500 text-[10px] uppercase tracking-wider">
                   {day}
                 </div>
@@ -291,13 +283,13 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                     onClick={() => setSelectedDateStr(isSelected ? null : dayStr)}
                     className={`aspect-square relative rounded-xl border flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/10"
+                        ? "bg-amber-500 border-amber-400 text-slate-950 font-extrabold shadow-lg shadow-amber-500/10"
                         : "bg-slate-950/40 border-slate-850 text-slate-400 hover:border-slate-700"
                     }`}
                   >
                     <span className="font-bold text-xs">{day}</span>
                     {hasAppts && (
-                      <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white" : "bg-blue-500"}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-slate-950" : "bg-amber-500"}`} />
                     )}
                   </button>
                 );
@@ -309,17 +301,17 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
           {selectedDateStr && (
             <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-4">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                Tours Booked on: <span className="text-white font-bold">{new Date(selectedDateStr).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}</span>
+                Visites Confirmées le : <span className="text-white font-bold">{new Date(selectedDateStr).toLocaleDateString("fr-FR", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
               </h3>
 
               {selectedDayAppts.length === 0 ? (
                 <div className="py-6 text-center text-slate-500 text-xs">
-                  No confirmed visits scheduled on this day.
+                  Aucune visite confirmée pour cette journée.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {selectedDayAppts.map((appt) => {
-                    const timeStr = new Date(appt.requestedSlot).toLocaleTimeString("en-US", {
+                    const timeStr = new Date(appt.requestedSlot).toLocaleTimeString("fr-FR", {
                       hour: "2-digit",
                       minute: "2-digit",
                     });
@@ -330,21 +322,21 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                         className="p-4 bg-slate-950/40 border border-slate-850 rounded-2xl space-y-2 text-xs"
                       >
                         <div className="flex justify-between items-center border-b border-slate-900 pb-2 mb-2">
-                          <span className="font-bold text-blue-400">{timeStr}</span>
+                          <span className="font-bold text-amber-400">{timeStr}</span>
                           <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase">
                             {appt.type}
                           </span>
                         </div>
                         <div className="space-y-1">
-                          <div className="font-semibold text-white">{appt.lead.name || "Anonymous"}</div>
+                          <div className="font-semibold text-white">{appt.lead.name || "Client anonyme"}</div>
                           {appt.apartment && (
                             <div className="text-[10px] text-slate-400 truncate">
-                              Ref: {appt.apartment.reference} · {appt.apartment.title}
+                              Réf: {appt.apartment.reference} · {appt.apartment.title}
                             </div>
                           )}
                           <div className="text-[10px] text-slate-500 pt-1">
                             {appt.lead.email && <p className="truncate">Email: {appt.lead.email}</p>}
-                            {appt.lead.phone && <p>Phone: {appt.lead.phone}</p>}
+                            {appt.lead.phone && <p>Tél: {appt.lead.phone}</p>}
                           </div>
                         </div>
                       </div>
@@ -362,14 +354,14 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
       {showRejectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md shadow-2xl p-6 space-y-4">
-            <h3 className="text-base font-bold text-white">Decline Viewing Request</h3>
-            <p className="text-slate-400 text-xs">Specify a brief explanation. An email notification detailing this reasoning will be sent to the client.</p>
+            <h3 className="text-base font-bold text-white">Annuler la Demande de Visite</h3>
+            <p className="text-slate-400 text-xs">Spécifiez un motif d'annulation. Un e-mail d'information expliquant la raison sera envoyé au client.</p>
             <textarea
               rows={3}
-              placeholder="e.g. The requested slot falls outside of our agent's holiday calendar. Please select another slot."
+              placeholder="ex: Le créneau demandé tombe un jour de fermeture de la résidence. Veuillez choisir un autre horaire."
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500"
             />
             <div className="flex justify-end gap-3 pt-2">
               <button
@@ -377,7 +369,7 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                 onClick={() => setShowRejectModal(false)}
                 className="px-4 py-2 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
               >
-                Cancel
+                Fermer
               </button>
               <button
                 type="button"
@@ -390,7 +382,7 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
                 ) : (
                   <X className="w-4 h-4 mr-2" />
                 )}
-                <span>Decline Tour</span>
+                <span>Confirmer l'Annulation</span>
               </button>
             </div>
           </div>

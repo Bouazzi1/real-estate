@@ -241,17 +241,17 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
       {/* Title Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Document Repository</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">Banque de Documents</h1>
           <p className="text-slate-400 text-sm mt-1">
-            Manage brochures, floor plans, and legal sheets. PDFs are automatically parsed and indexed for the RAG AI Sales Assistant.
+            Gérez les brochures, plans et fiches techniques. Les PDF sont automatiquement analysés et indexés pour le conseiller commercial virtuel.
           </p>
         </div>
         <button
           onClick={() => setIsUploadOpen(true)}
-          className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/15 cursor-pointer self-start md:self-auto group"
+          className="flex items-center justify-center gap-2 px-5 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all shadow-lg shadow-amber-500/15 cursor-pointer self-start md:self-auto group"
         >
           <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          <span>Upload Document</span>
+          <span>Téléverser un Document</span>
         </button>
       </div>
 
@@ -261,10 +261,10 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
             type="text"
-            placeholder="Search documents by title, type, reference..."
+            placeholder="Rechercher par titre, type, référence..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-colors"
           />
         </div>
       </div>
@@ -273,8 +273,8 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
       <div className="bg-slate-900/50 border border-slate-800 rounded-3xl shadow-xl overflow-hidden backdrop-blur-xl">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3 text-slate-400">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-            <span className="text-sm">Loading document entries...</span>
+            <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+            <span className="text-sm">Chargement des documents...</span>
           </div>
         ) : filteredDocs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-4">
@@ -282,9 +282,9 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
               <FileText className="w-8 h-8 text-slate-600" />
             </div>
             <div className="text-center space-y-1">
-              <h3 className="font-semibold text-white">No documents found</h3>
+              <h3 className="font-semibold text-white">Aucun document trouvé</h3>
               <p className="text-sm text-slate-400">
-                {searchQuery ? "No matches found for your filter query." : "Upload a PDF brochure to index RAG context."}
+                {searchQuery ? "Aucun résultat ne correspond à votre recherche." : "Téléversez une brochure PDF pour enrichir les connaissances du conseiller virtuel."}
               </p>
             </div>
           </div>
@@ -293,11 +293,11 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-800 bg-slate-950/40 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  <th className="py-4 px-6">Document Info</th>
+                  <th className="py-4 px-6">Informations Document</th>
                   <th className="py-4 px-6">Type</th>
                   <th className="py-4 px-6">Association</th>
-                  <th className="py-4 px-6">File Size</th>
-                  <th className="py-4 px-6">Vector Ingestion</th>
+                  <th className="py-4 px-6">Taille</th>
+                  <th className="py-4 px-6">Indexation Vectorielle</th>
                   <th className="py-4 px-6 text-right">Actions</th>
                 </tr>
               </thead>
@@ -309,7 +309,7 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                       {/* Doc Title & Link */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                          <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
                             <FileText className="w-5 h-5" />
                           </div>
                           <div>
@@ -317,13 +317,13 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                               href={doc.fileUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="font-medium text-white hover:text-blue-400 flex items-center gap-1 transition-colors"
+                              className="font-medium text-white hover:text-amber-400 flex items-center gap-1 transition-colors"
                             >
                               <span>{doc.title}</span>
                               <ExternalLink className="w-3.5 h-3.5" />
                             </a>
                             <span className="text-xs text-slate-500 mt-0.5 block">
-                              Uploaded {new Date(doc.createdAt).toLocaleDateString()}
+                              Ajouté le {new Date(doc.createdAt).toLocaleDateString("fr-FR")}
                             </span>
                           </div>
                         </div>
@@ -341,7 +341,7 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                       <td className="py-4 px-6">
                         {doc.apartment ? (
                           <div className="space-y-0.5">
-                            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 border border-blue-500/10">
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/10">
                               {doc.apartment.reference}
                             </span>
                             <span className="block text-xs text-slate-400 truncate max-w-[150px]">
@@ -354,7 +354,7 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                             <span className="font-medium truncate max-w-[150px]">{doc.project.name}</span>
                           </div>
                         ) : (
-                          <span className="text-xs text-slate-600">Global System</span>
+                          <span className="text-xs text-slate-600">Système Global</span>
                         )}
                       </td>
 
@@ -370,21 +370,21 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                             <div className="space-y-1">
                               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-400">
                                 <CheckCircle2 className="w-3.5 h-3.5" />
-                                <span>Indexed</span>
+                                <span>Indexé (IA Prête)</span>
                               </span>
                               <span className="block text-[10px] text-slate-500 font-mono">
-                                {new Date(doc.indexedAt).toLocaleTimeString()}
+                                {new Date(doc.indexedAt).toLocaleTimeString("fr-FR")}
                               </span>
                             </div>
                           ) : (
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 border border-amber-500/25 text-amber-400">
                               <AlertTriangle className="w-3.5 h-3.5 animate-pulse" />
-                              <span>Pending Index</span>
+                              <span>En cours</span>
                             </span>
                           )
                         ) : (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-950 border border-slate-800 text-slate-500">
-                            <span>Non-RAG Format</span>
+                            <span>Format standard</span>
                           </span>
                         )}
                       </td>
@@ -396,11 +396,11 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                             <button
                               onClick={() => handleReindex(doc.id)}
                               disabled={processingId === doc.id}
-                              title="Re-run RAG Vector Ingestion"
-                              className="p-2 bg-slate-950 hover:bg-slate-900 text-slate-400 hover:text-blue-400 border border-slate-800 rounded-xl transition-all disabled:opacity-40 cursor-pointer"
+                              title="Réindexer dans la base vectorielle"
+                              className="p-2 bg-slate-950 hover:bg-slate-900 text-slate-400 hover:text-amber-400 border border-slate-800 rounded-xl transition-all disabled:opacity-40 cursor-pointer"
                             >
                               {processingId === doc.id ? (
-                                <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                                <Loader2 className="w-4 h-4 animate-spin text-amber-500" />
                               ) : (
                                 <RefreshCw className="w-4 h-4" />
                               )}
@@ -409,7 +409,7 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                           <button
                             onClick={() => handleDelete(doc.id)}
                             disabled={processingId === doc.id}
-                            title="Delete Document"
+                            title="Supprimer le document"
                             className="p-2 bg-slate-950 hover:bg-red-500/10 text-slate-400 hover:text-red-400 border border-slate-800 rounded-xl transition-all disabled:opacity-40 cursor-pointer"
                           >
                             {processingId === doc.id ? (
@@ -443,12 +443,12 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
             {/* Modal Header */}
             <div className="px-6 py-5 border-b border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-500">
+                <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500">
                   <Upload className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-lg">Upload New Document</h3>
-                  <p className="text-slate-400 text-xs mt-0.5">Define metadata and index for vector search</p>
+                  <h3 className="font-bold text-white text-lg">Téléverser un Nouveau Document</h3>
+                  <p className="text-slate-400 text-xs mt-0.5">Définissez les métadonnées et l'indexation pour l'assistant IA</p>
                 </div>
               </div>
               <button
@@ -471,7 +471,7 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
               {/* File input */}
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Select Document File
+                  Sélectionner un Fichier Document
                 </label>
                 <div className="border-2 border-dashed border-slate-800 hover:border-slate-700 rounded-2xl p-6 transition-colors relative flex flex-col items-center justify-center bg-slate-950/40">
                   <input
@@ -484,17 +484,17 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                   <Upload className="w-8 h-8 text-slate-600 mb-2" />
                   {selectedFile ? (
                     <div className="text-center">
-                      <p className="text-sm font-semibold text-blue-400 truncate max-w-[250px]">
+                      <p className="text-sm font-semibold text-amber-400 truncate max-w-[250px]">
                         {selectedFile.name}
                       </p>
                       <p className="text-xs text-slate-500 font-mono mt-0.5">
-                        {formatBytes(selectedFile.size)} - {selectedFile.type || "unknown mime"}
+                        {formatBytes(selectedFile.size)} - {selectedFile.type || "mime inconnu"}
                       </p>
                     </div>
                   ) : (
                     <div className="text-center space-y-1">
-                      <p className="text-sm font-medium text-slate-400">Click or drag file to upload</p>
-                      <p className="text-xs text-slate-500">Supports PDF, DOCX, TXT, images (Max 10MB)</p>
+                      <p className="text-sm font-medium text-slate-400">Cliquez ou glissez-déposez le fichier</p>
+                      <p className="text-xs text-slate-500">Formats acceptés : PDF, DOCX, TXT, images (Max 10 Mo)</p>
                     </div>
                   )}
                 </div>
@@ -503,54 +503,54 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
               {/* Title input */}
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Document Title
+                  Titre du Document
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Skyline Penthouse Brochure"
+                  placeholder="ex: Brochure Résidence WAFA"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   disabled={uploading}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors placeholder-slate-700"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors placeholder-slate-700"
                 />
               </div>
 
               {/* Document Type Selector */}
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Document Type
+                  Type de Document
                 </label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                   disabled={uploading}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors"
                 >
                   <option value="BROCHURE">Brochure</option>
-                  <option value="FLOOR_PLAN">Floor Plan</option>
-                  <option value="DESIGN">Architectural Design</option>
-                  <option value="PRICE_SHEET">Price List</option>
-                  <option value="FAQ">Frequently Asked Questions (FAQ)</option>
-                  <option value="LEGAL">Legal / Terms Sheet</option>
+                  <option value="FLOOR_PLAN">Plan de Masse / Étage</option>
+                  <option value="DESIGN">Conception Architecturale</option>
+                  <option value="PRICE_SHEET">Grille Tarifaire</option>
+                  <option value="FAQ">Foire aux Questions (FAQ)</option>
+                  <option value="LEGAL">Documents Juridiques / Cahier des Charges</option>
                 </select>
               </div>
 
               {/* Associated Project dropdown */}
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Associate with Project (Optional)
+                  Associer à un Projet (Optionnel)
                 </label>
                 <select
                   value={selectedProjectId}
                   onChange={(e) => {
                     setSelectedProjectId(e.target.value);
-                    if (e.target.value) setSelectedApartmentId(""); // clear apartment if project chosen
+                    if (e.target.value) setSelectedApartmentId("");
                   }}
                   disabled={uploading}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors"
                 >
-                  <option value="">No Project Association</option>
+                  <option value="">Aucune association de projet</option>
                   {initialProjects.map((proj) => (
                     <option key={proj.id} value={proj.id}>
                       {proj.name}
@@ -562,18 +562,18 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
               {/* Associated Apartment dropdown */}
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Associate with Apartment (Optional)
+                  Associer à un Appartement (Optionnel)
                 </label>
                 <select
                   value={selectedApartmentId}
                   onChange={(e) => {
                     setSelectedApartmentId(e.target.value);
-                    if (e.target.value) setSelectedProjectId(""); // clear project if apartment chosen
+                    if (e.target.value) setSelectedProjectId("");
                   }}
                   disabled={uploading}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors"
                 >
-                  <option value="">No Apartment Association</option>
+                  <option value="">Aucune association d'appartement</option>
                   {initialApartments.map((apt) => (
                     <option key={apt.id} value={apt.id}>
                       [{apt.reference}] {apt.title}
@@ -590,22 +590,22 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
                   disabled={uploading}
                   className="px-5 py-3 border border-slate-800 hover:bg-slate-800 hover:text-white rounded-xl text-slate-400 text-sm font-semibold transition-all disabled:opacity-50 cursor-pointer"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/15 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="flex items-center justify-center gap-2 px-5 py-3 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 text-sm font-bold rounded-xl transition-all shadow-lg shadow-amber-500/15 disabled:opacity-50 cursor-pointer"
                 >
                   {uploading ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Uploading & Indexing...</span>
+                      <span>Téléversement & Indexation...</span>
                     </>
                   ) : (
                     <>
                       <Upload className="w-4 h-4" />
-                      <span>Upload & Index</span>
+                      <span>Téléverser & Indexer</span>
                     </>
                   )}
                 </button>

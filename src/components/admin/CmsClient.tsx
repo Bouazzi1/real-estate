@@ -170,8 +170,8 @@ export default function CmsClient({ initialSections }: CmsClientProps) {
       {/* Header bar actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white">Visual CMS Editor</h2>
-          <p className="text-slate-400 text-xs mt-1">Configure layout sections and preview updates live before publishing</p>
+          <h2 className="text-2xl font-bold text-white">Éditeur CMS Vitrine</h2>
+          <p className="text-slate-400 text-xs mt-1">Personnalisez le contenu de la page d'accueil et prévisualisez vos modifications en direct</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -180,19 +180,19 @@ export default function CmsClient({ initialSections }: CmsClientProps) {
             className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:text-white text-slate-400 text-xs font-semibold rounded-xl transition-all cursor-pointer disabled:opacity-50"
           >
             <XCircle className="w-4 h-4 text-red-500" />
-            <span>Discard Drafts</span>
+            <span>Annuler les Brouillons</span>
           </button>
           <button
             onClick={() => handlePublish("publish")}
             disabled={publishing}
-            className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-600/10 cursor-pointer disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl transition-all shadow-lg shadow-amber-500/10 cursor-pointer disabled:opacity-50"
           >
             {publishing ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <CheckCircle className="w-4 h-4" />
             )}
-            <span>Publish Changes</span>
+            <span>Publier sur le Site</span>
           </button>
         </div>
       </div>
@@ -205,7 +205,7 @@ export default function CmsClient({ initialSections }: CmsClientProps) {
           
           {/* Section tree & sorting */}
           <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-4">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Layout Ordering</h3>
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Ordre des Sections</h3>
             <div className="space-y-2">
               {sections.map((section, idx) => (
                 <div
@@ -213,7 +213,7 @@ export default function CmsClient({ initialSections }: CmsClientProps) {
                   onClick={() => setActiveSectionId(section.id)}
                   className={`flex items-center justify-between p-3.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
                     activeSectionId === section.id
-                      ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/5"
+                      ? "bg-amber-500 border-amber-400 text-slate-950 shadow-lg shadow-amber-500/5 font-bold"
                       : "bg-slate-950/60 border-slate-800/80 text-slate-400 hover:text-slate-200"
                   }`}
                 >
@@ -221,8 +221,8 @@ export default function CmsClient({ initialSections }: CmsClientProps) {
                     <span className="font-mono text-[10px] text-slate-500">#{idx + 1}</span>
                     <span>{section.key}</span>
                     {section.draft && (
-                      <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[8px] font-black border border-amber-500/20 uppercase tracking-wider">
-                        DRAFT
+                      <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[8px] font-black border border-amber-500/30 uppercase tracking-wider">
+                        BROUILLON
                       </span>
                     )}
                   </div>
@@ -260,20 +260,20 @@ export default function CmsClient({ initialSections }: CmsClientProps) {
             <div className="glass border border-slate-800 rounded-3xl p-6 bg-slate-900/40 space-y-6">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <div className="flex items-center gap-2">
-                  <Edit3 className="w-4 h-4 text-blue-500" />
-                  <h3 className="text-sm font-bold text-white">Edit {activeSection.key} Content</h3>
+                  <Edit3 className="w-4 h-4 text-amber-500" />
+                  <h3 className="text-sm font-bold text-white">Éditer la section {activeSection.key}</h3>
                 </div>
                 <button
                   onClick={saveDraft}
                   disabled={saving}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 hover:bg-blue-600 hover:text-white text-blue-500 text-xs font-semibold rounded-xl transition-all cursor-pointer disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500 hover:text-slate-950 text-amber-400 text-xs font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50"
                 >
                   {saving ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <Save className="w-3.5 h-3.5" />
                   )}
-                  <span>Save Draft</span>
+                  <span>Sauvegarder</span>
                 </button>
               </div>
 

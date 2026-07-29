@@ -56,8 +56,8 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
-  const [lat, setLat] = useState("48.8566");
-  const [lng, setLng] = useState("2.3522");
+  const [lat, setLat] = useState("36.8400");
+  const [lng, setLng] = useState("10.2800");
   const [coverImage, setCoverImage] = useState("");
   const [status, setStatus] = useState("ACTIVE");
 
@@ -66,8 +66,8 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
     setSlug("");
     setDescription("");
     setAddress("");
-    setLat("48.8566");
-    setLng("2.3522");
+    setLat("36.8400");
+    setLng("10.2800");
     setCoverImage("");
     setStatus("ACTIVE");
     setErrorMessage("");
@@ -96,9 +96,9 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
         slug: slug || name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         description,
         location: {
-          address: address || "Paris, France",
-          lat: parseFloat(lat) || 48.8566,
-          lng: parseFloat(lng) || 2.3522,
+          address: address || "Les Berges du Lac 2, Tunis",
+          lat: parseFloat(lat) || 36.8400,
+          lng: parseFloat(lng) || 10.2800,
         },
         coverImage: coverImage || "/uploads/aurea-exterior.png",
         gallery: [coverImage || "/uploads/aurea-exterior.png"],
@@ -113,7 +113,7 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || "Failed to create project");
+        throw new Error(err.error || "Impossible de créer le projet");
       }
 
       const created = await res.json();
@@ -121,7 +121,7 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
       setIsModalOpen(false);
       resetForm();
     } catch (err: any) {
-      setErrorMessage(err.message || "An error occurred");
+      setErrorMessage(err.message || "Une erreur est survenue");
     } finally {
       setSubmitting(false);
     }
@@ -139,9 +139,9 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Real Estate Projects</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">Projets Immobiliers</h1>
           <p className="text-slate-400 text-sm mt-1">
-            Manage your architectural developments, luxury towers, and residential complexes.
+            Gérez les résidences, programmes immobiliers et complexes résidentiels haut de gamme.
           </p>
         </div>
         <button
@@ -149,10 +149,10 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
             resetForm();
             setIsModalOpen(true);
           }}
-          className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/15 cursor-pointer self-start md:self-auto group"
+          className="flex items-center justify-center gap-2 px-5 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl transition-all shadow-lg shadow-amber-500/15 cursor-pointer self-start md:self-auto group"
         >
           <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          <span>Add New Project</span>
+          <span>Ajouter un Projet</span>
         </button>
       </div>
 
@@ -162,10 +162,10 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
             type="text"
-            placeholder="Search projects by name, location, or slug..."
+            placeholder="Rechercher par nom, adresse ou identifiant..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-colors"
           />
         </div>
       </div>
@@ -193,7 +193,7 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
                         : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
                     }`}
                   >
-                    {project.status}
+                    {project.status === "ACTIVE" ? "ACTIF" : project.status}
                   </span>
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
 
                 {project.location?.address && (
                   <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <MapPin className="w-4 h-4 text-blue-500 shrink-0" />
+                    <MapPin className="w-4 h-4 text-amber-500 shrink-0" />
                     <span className="truncate">{project.location.address}</span>
                   </div>
                 )}
@@ -222,15 +222,15 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
             <div className="px-6 py-4 border-t border-slate-800/80 bg-slate-950/40 flex items-center justify-between text-xs">
               <div className="flex items-center gap-1.5 text-slate-400">
                 <Layers className="w-4 h-4 text-amber-500" />
-                <span>{project.apartments?.length || 0} Units Listed</span>
+                <span>{project.apartments?.length || 0} Biens Référencés</span>
               </div>
               <a
                 href={`/catalog?project=${project.id}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1 transition-colors"
+                className="text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1 transition-colors"
               >
-                <span>View Units</span>
+                <span>Voir les Biens</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -249,12 +249,12 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
           <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden relative z-10 flex flex-col max-h-[90vh]">
             <div className="px-6 py-5 border-b border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-500">
+                <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500">
                   <Building2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-lg">Add New Real Estate Project</h3>
-                  <p className="text-slate-400 text-xs mt-0.5">Register a new residence development</p>
+                  <h3 className="font-bold text-white text-lg">Ajouter un Projet Immobilier</h3>
+                  <p className="text-slate-400 text-xs mt-0.5">Enregistrer un nouveau programme ou une résidence</p>
                 </div>
               </div>
               <button
@@ -276,43 +276,43 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Project Name *
+                    Nom du Projet *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Résidence Aurea"
+                    placeholder="ex: Résidence WAFA"
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Slug *
+                    Slug (URL) *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="residence-aurea"
+                    placeholder="residence-wafa"
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Address / Location
+                  Adresse / Emplacement
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. 14 Avenue Montaigne, 75008 Paris"
+                  placeholder="ex: Les Berges du Lac 2, Tunis"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -326,7 +326,7 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
                     step="any"
                     value={lat}
                     onChange={(e) => setLat(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-amber-500"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -338,21 +338,21 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
                     step="any"
                     value={lng}
                     onChange={(e) => setLng(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Cover Image URL
+                  URL de l'image de couverture
                 </label>
                 <input
                   type="text"
                   placeholder="/uploads/aurea-exterior.png"
                   value={coverImage}
                   onChange={(e) => setCoverImage(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -362,10 +362,10 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Describe the architectural development, amenities, and location advantages..."
+                  placeholder="Décrivez les atouts de la résidence, son architecture et ses équipements..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -376,17 +376,17 @@ export default function ProjectsClient({ initialProjects }: ProjectsClientProps)
                   disabled={submitting}
                   className="px-5 py-2.5 border border-slate-800 rounded-xl text-slate-400 text-sm font-semibold hover:bg-slate-800 cursor-pointer"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-blue-600/15 cursor-pointer disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-xl shadow-lg shadow-amber-500/15 cursor-pointer disabled:opacity-50"
                 >
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    <span>Create Project</span>
+                    <span>Créer le Projet</span>
                   )}
                 </button>
               </div>
