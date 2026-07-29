@@ -14,7 +14,9 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  CalendarCheck2,
+  CalendarDays
 } from "lucide-react";
 
 interface Lead {
@@ -62,6 +64,10 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
 
   const pendingQueue = appointments.filter((a) => a.status === "PENDING");
   const approvedList = appointments.filter((a) => a.status === "APPROVED");
+
+  // Sorted list of upcoming approved appointments
+  const upcomingApprovedList = [...approvedList]
+    .sort((a, b) => new Date(a.requestedSlot).getTime() - new Date(b.requestedSlot).getTime());
 
   const handleDecision = async (id: string, status: "APPROVED" | "REJECTED" | "RESCHEDULED", extraBody = {}) => {
     setProcessingId(id);
@@ -137,13 +143,15 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
       {/* Title */}
       <div>
         <h2 className="text-2xl font-bold text-white">Gestionnaire des Visites Privées</h2>
-        <p className="text-slate-300 text-xs font-medium mt-1">Validez les demandes de visites et consultez le calendrier des rendez-vous confirmés</p>
+        <p className="text-slate-300 text-xs font-medium mt-1">Validez les demandes de visites et consultez la liste complète des rendez-vous confirmés</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Left column: Pending requests list */}
+        {/* Left column: Pending requests list + Upcoming confirmed appointments */}
         <div className="lg:col-span-4 space-y-6">
+          
+          {/* Box 1: Demandes en Attente */}
           <div className="border border-slate-700/80 rounded-3xl p-6 bg-slate-900/90 shadow-xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
@@ -156,11 +164,11 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
             </div>
 
             {pendingQueue.length === 0 ? (
-              <div className="py-12 text-center text-slate-400 text-xs font-medium">
+              <div className="py-8 text-center text-slate-400 text-xs font-medium">
                 Aucune demande de visite en attente.
               </div>
             ) : (
-              <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+              <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-1">
                 {pendingQueue.map((appt) => {
                   const dateStr = new Date(appt.requestedSlot).toLocaleDateString("fr-FR", {
                     weekday: "short",
@@ -225,6 +233,77 @@ export default function AppointmentsDashboard({ initialAppointments }: Appointme
               </div>
             )}
           </div>
+
+          {/* Box 2: Liste des Prochains Rendez-vous Confirmés (Accès Rapide) */}
+          <div className="border border-slate-700/80 rounded-3xl p-6 bg-slate-900/90 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <CalendarCheck2 className="w-4 h-4 text-emerald-400" />
+                <span>Prochains RDV Confirmés</span>
+              </h3>
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-extrabold">
+                {upcomingApprovedList.length}
+              </span>
+            </div>
+
+            {upcomingApprovedList.length === 0 ? (
+              <div className="py-8 text-center text-slate-400 text-xs font-medium">
+                Aucun rendez-vous confirmé enregistré.
+              </div>
+            ) : (
+              <div className="space-y-3.5 max-h-[50vh] overflow-y-auto pr-1">
+                {upcomingApprovedList.map((appt) => {
+                  const d = new Date(appt.requestedSlot);
+                  const dateStr = d.toLocaleDateString("fr-FR", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                  });
+                  const timeStr = d.toLocaleTimeString("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                  });
+                  const dayKeyStr = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+
+                  return (
+                    <div
+                      key={appt.id}
+                      onClick={() => {
+                        setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
+                        setSelectedDateStr(dayKeyStr);
+                      }}
+                      className="p-3.5 bg-slate-950 border border-slate-700 rounded-2xl space-y-2 hover:border-amber-500 transition-all cursor-pointer group shadow-sm"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-extrabold text-amber-400 capitalize">{dateStr} à {timeStr}</span>
+                        <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase">
+                          CONFIRMÉ
+                        </span>
+                      </div>
+                      <div className="space-y-0.5">
+                        <div className="font-bold text-white text-xs group-hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                          <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="truncate">{appt.lead.name || "Client anonyme"}</span>
+                        </div>
+                        {appt.apartment && (
+                          <div className="text-[11px] text-slate-300 font-medium truncate flex items-center gap-1.5">
+                            <Building className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            <span className="truncate">Réf: <strong className="text-white">{appt.apartment.reference}</strong> - {appt.apartment.title}</span>
+                          </div>
+                        )}
+                        <div className="text-[11px] text-slate-300 pt-1 font-medium border-t border-slate-800/80 mt-1 flex flex-wrap justify-between gap-1">
+                          {appt.lead.phone && <span className="text-slate-200">Tél: <strong className="text-white">{appt.lead.phone}</strong></span>}
+                          {appt.lead.email && <span className="text-slate-400 truncate max-w-[160px]">{appt.lead.email}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
         </div>
 
         {/* Right column: Interactive calendar */}
