@@ -49,14 +49,17 @@ async function getBufferFromUrl(fileUrl: string): Promise<Buffer> {
   }
 }
 
+import { formatPrice } from "../formatters";
+
 // Serialize apartment details for indexing
 export function serializeApartment(apt: any): string {
+  const formattedPrice = formatPrice(apt.price);
   return [
     `Apartment Reference Code: ${apt.reference}.`,
     `Property Title: ${apt.title}.`,
-    `Project Development: ${apt.project?.name || "Elysium Towers"}.`,
+    `Project Development: ${apt.project?.name || "Résidence WAFA"}.`,
     `Address: ${(apt.project?.location as any)?.address || ""}.`,
-    `Price: ${apt.price} TND (DT) (Currency: ${apt.currency || "TND"}).`,
+    `Price: ${formattedPrice} DT (${formattedPrice} Dinars Tunisiens).`,
     `Surface Area: ${apt.surface} m².`,
     `Floor Level: ${apt.floor}.`,
     `Orientation: Facing ${apt.orientation}.`,

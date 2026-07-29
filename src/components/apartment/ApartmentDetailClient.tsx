@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import MortgageCalculator from "./MortgageCalculator";
 import Header from "@/components/navigation/Header";
+import { formatPrice } from "@/lib/formatters";
 
 const MapComponent = dynamic(() => import("./MapComponent"), {
   ssr: false,
@@ -122,7 +123,7 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
           <div className="text-left md:text-right">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Prix Demandé</span>
             <span className="text-3xl font-black text-slate-900 dark:text-white block mt-1">
-              {apartment.price.toLocaleString()} DT
+              {formatPrice(apartment.price)} DT
             </span>
           </div>
         </div>
@@ -231,7 +232,7 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
               <div className="space-y-2">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Prix de la Résidence</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{apartment.price.toLocaleString()} DT</span>
+                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{formatPrice(apartment.price)} DT</span>
                   <span className="text-xs text-slate-500 font-medium">HT</span>
                 </div>
               </div>

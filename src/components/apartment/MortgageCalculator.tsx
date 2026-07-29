@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Calculator, Percent, Calendar, TrendingUp } from "lucide-react";
+import { formatPrice } from "@/lib/formatters";
 
 interface MortgageCalculatorProps {
   price: number;
@@ -71,7 +72,7 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
               Apport Personnel ({downPaymentPct}%)
             </label>
             <span className="text-xs font-semibold text-slate-900 dark:text-white">
-              {downPaymentAmt.toLocaleString()} DT
+              {formatPrice(downPaymentAmt)} DT
             </span>
           </div>
           <div className="flex items-center gap-4">
@@ -139,19 +140,19 @@ export default function MortgageCalculator({ price }: MortgageCalculatorProps) {
         <div className="text-center pb-3 border-b border-slate-200/60">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Mensualité Estimée</span>
           <span className="text-3xl font-extrabold text-amber-500 mt-1 block">
-              {monthlyPayment.toLocaleString(undefined, { maximumFractionDigits: 0 })} DT/mois
+              {formatPrice(monthlyPayment)} DT/mois
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-xs">
           <div>
             <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider block">Capital Emprunté</span>
-            <span className="font-bold text-slate-900 dark:text-slate-200 mt-0.5 block">{loanAmt.toLocaleString()} DT</span>
+            <span className="font-bold text-slate-900 dark:text-slate-200 mt-0.5 block">{formatPrice(loanAmt)} DT</span>
           </div>
           <div>
             <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider block">Intérêts Totaux</span>
             <span className="font-bold text-slate-900 dark:text-slate-200 mt-0.5 block">
-              {totalInterest.toLocaleString(undefined, { maximumFractionDigits: 0 })} DT
+              {formatPrice(totalInterest)} DT
             </span>
           </div>
         </div>

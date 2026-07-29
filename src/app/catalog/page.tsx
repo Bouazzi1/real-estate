@@ -4,6 +4,7 @@ import CatalogFilterPanel from "@/components/catalog/CatalogFilterPanel";
 import Link from "next/link";
 import { Building2, Square, BedDouble, Bath, MapPin, Compass, ArrowRight, MessageCircle } from "lucide-react";
 import Header from "@/components/navigation/Header";
+import { formatPrice } from "@/lib/formatters";
 
 export const revalidate = 0; // Ensure live data updates are fetched on filter change
 
@@ -192,7 +193,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                               REF: {apt.reference}
                             </span>
                             <span className="text-lg font-bold text-slate-900">
-                              {apt.price.toLocaleString()} DT
+                              {formatPrice(apt.price)} DT
                             </span>
                           </div>
                           

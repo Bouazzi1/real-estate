@@ -4,6 +4,7 @@ import { getLLMProvider } from "@/lib/providers/llm";
 import { retrieveContext } from "@/lib/rag/retrieval";
 import { agentTools, executeAgentTool } from "@/lib/agent/tools";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import { formatPrice } from "@/lib/formatters";
 
 export const dynamic = "force-dynamic";
 
@@ -55,13 +56,30 @@ export async function POST(request: NextRequest) {
     const conversationPromise = prisma.conversation.findUnique({
       where: { sessionId },
     });
-
-    // Execute ALL in parallel
-    const [apt, retrievalResults, allApartments, existingConversation] = await Promise.all([
-      apartmentPromise,
-      ragPromise,
-      catalogPromise,
-      conversationPromise,
+    const [retrievalResults, apt, allApartments, existingConversation] = await Promise.all([
+      retrieveContext(lastUserMessage, { apartmentId: undefined, limit: 4 }),
+      apartmentReference
+        ? prisma.apartment.findUnique({ where: { reference: apartmentReference } })
+        : Promise.resolve(null),
+      prisma.apartment.findMany({
+        where: { status: "AVAILABLE" },
+        select: {
+          reference: true,
+          title: true,
+          price: true,
+          surface: true,
+          rooms: true,
+          bedrooms: true,
+          bathrooms: true,
+          floor: true,
+          orientation: true,
+          description: true,
+          status: true,
+        },
+      }),
+      prisma.conversation.findUnique({
+        where: { sessionId },
+      }),
     ]);
 
     // Resolve apartment context
@@ -71,13 +89,13 @@ export async function POST(request: NextRequest) {
       apartmentId = apt.id;
       apartmentContextInfo = `\n[Context: The user is currently viewing apartment ${apt.reference} (${apt.title}). Apartment Database ID: ${apt.id}, Reference Code: ${apt.reference}. Prioritize details and scheduling tours for this unit.]`;
     }
-    
+
     const contextText = retrievalResults.map((r, i) => `[Source ${i + 1}]: ${r.content}`).join("\n\n");
 
     const fullCatalogText = allApartments
       .map(
         (a) =>
-          `• [Réf: ${a.reference}] ${a.title} | Prix: ${a.price.toLocaleString()} DT (TND) | Surface: ${a.surface} m² | ${a.bedrooms} chambres, ${a.bathrooms} SDB | Étage ${a.floor} (${a.orientation}) | Statut: ${a.status}.\n  Description: ${a.description}`
+          `• [Réf: ${a.reference}] ${a.title} | Prix: ${formatPrice(a.price)} DT | Surface: ${a.surface} m² | ${a.bedrooms} chambres, ${a.bathrooms} SDB | Étage ${a.floor} (${a.orientation}) | Statut: ${a.status}.\n  Description: ${a.description}`
       )
       .join("\n\n");
 
@@ -110,6 +128,7 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
 4. FORMAT DES DATES ET HORAIRES : Présentez TOUJOURS les dates en format lisible et élégant (ex: "Mardi 29 juillet à 9h00, 10h00, 14h00"). Regroupez les créneaux par journée. N'affichez JAMAIS de format ISO ou technique.
 5. QUALIFICATION CLIENT : Recueillez avec courtoisie le nom, l'email, le téléphone et le budget du prospect.
 6. RÉSERVATION DE VISITE : Les visites privées sont ouvertes 7 jours sur 7 (du lundi au dimanche, de 9h à 18h en semaine, et 10h à 17h le week-end). Pour réserver une visite privée ou vérifier une date, proposez des créneaux et enregistrez la réservation avec l'outil create_appointment.
+7. FORMAT STRICT DES PRIX : Présentez TOUJOURS les prix en Dinars Tunisiens (DT) avec des espaces comme séparateurs de milliers (ex: 790 000 DT, 1 850 000 DT, 380 000 DT). N'utilisez JAMAIS de virgule ni de point comme séparateur de milliers (ne dites JAMAIS 790,000 DT ni 790.000 DT).
 
 PROTOCOLE OBLIGATOIRE DE RÉSERVATION DE VISITE (IMPORTANT) :
 Quand un client souhaite réserver une visite, vous DEVEZ TOUJOURS suivre ces étapes dans cet ordre EXACT :

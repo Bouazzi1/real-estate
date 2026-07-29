@@ -13,6 +13,7 @@ import {
   CalendarCheck2
 } from "lucide-react";
 import Link from "next/link";
+import { formatPrice } from "@/lib/formatters";
 
 export const revalidate = 0; // Disable caching for the admin overview dashboard
 
@@ -181,7 +182,7 @@ export default async function AdminDashboardOverview() {
                       {(lead.budgetMin || lead.budgetMax) && (
                         <div className="text-right hidden sm:block">
                           <p className="text-xs text-white font-bold">
-                            {lead.budgetMin ? `${(lead.budgetMin / 1000).toFixed(0)}k` : "0"} - {lead.budgetMax ? `${(lead.budgetMax / 1000).toFixed(0)}k` : "Max"} DT
+                            {lead.budgetMin ? formatPrice(lead.budgetMin) : "0"} - {lead.budgetMax ? formatPrice(lead.budgetMax) : "Max"} DT
                           </p>
                           <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Budget</p>
                         </div>

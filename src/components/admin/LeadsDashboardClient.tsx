@@ -17,6 +17,7 @@ import {
   XCircle,
   HelpCircle as QuestionIcon
 } from "lucide-react";
+import { formatPrice } from "@/lib/formatters";
 
 interface Message {
   id: string;
@@ -206,8 +207,8 @@ export default function LeadsDashboardClient({ initialLeads }: LeadsDashboardCli
                       <td className="py-4 px-6 font-semibold text-white">
                         {lead.budgetMin || lead.budgetMax ? (
                           <span>
-                            {lead.budgetMin ? `${(lead.budgetMin / 1000).toFixed(0)}k` : "0"} -{" "}
-                            {lead.budgetMax ? `${(lead.budgetMax / 1000).toFixed(0)}k` : "Max"} DT
+                            {lead.budgetMin ? `${formatPrice(lead.budgetMin)}` : "0"} -{" "}
+                            {lead.budgetMax ? `${formatPrice(lead.budgetMax)}` : "Max"} DT
                           </span>
                         ) : (
                           <span className="text-slate-600 font-normal">—</span>
@@ -291,7 +292,7 @@ export default function LeadsDashboardClient({ initialLeads }: LeadsDashboardCli
                   <span className="text-[9px] font-bold text-slate-500 uppercase block">Capacité Budgétaire</span>
                   <span className="text-xs font-semibold text-white">
                     {selectedLead.budgetMin || selectedLead.budgetMax
-                      ? `${selectedLead.budgetMin ? `${selectedLead.budgetMin.toLocaleString()} DT` : "0"} à ${selectedLead.budgetMax ? `${selectedLead.budgetMax.toLocaleString()} DT` : "Illimité"}`
+                      ? `${selectedLead.budgetMin ? `${formatPrice(selectedLead.budgetMin)} DT` : "0"} à ${selectedLead.budgetMax ? `${formatPrice(selectedLead.budgetMax)} DT` : "Illimité"}`
                       : "Non abordé"}
                   </span>
                 </div>

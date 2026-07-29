@@ -20,6 +20,8 @@ import {
   Sparkles
 } from "lucide-react";
 
+import { formatPrice } from "@/lib/formatters";
+
 export const revalidate = 60; // ISR cache revalidation (60 seconds)
 
 interface PageProps {
@@ -213,9 +215,9 @@ export default async function LandingPage({ searchParams }: PageProps) {
                                       <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-wider">
                                         REF: {apt.reference}
                                       </span>
-                                      <span className="text-base font-bold text-slate-900 dark:text-white">
-                                      {apt.price.toLocaleString()} DT
-                                    </span>
+                                       <span className="text-base font-bold text-slate-900 dark:text-white">
+                                       {formatPrice(apt.price)} DT
+                                     </span>
                                   </div>
                                   <Link href={`/apartments/${apt.slug}`} className="block">
                                       <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-blue-500 transition-colors">

@@ -17,6 +17,7 @@ import {
   Image as ImageIcon,
   Building
 } from "lucide-react";
+import { formatPrice } from "@/lib/formatters";
 
 interface Project {
   id: string;
@@ -435,7 +436,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                     </td>
                     <td className="py-4 px-6 text-slate-400">{apt.project.name}</td>
                     <td className="py-4 px-6 font-semibold text-white">
-                      {apt.price.toLocaleString()} DT
+                      {formatPrice(apt.price)} DT
                     </td>
                     <td className="py-4 px-6 text-slate-400">{apt.surface} m²</td>
                     <td className="py-4 px-6 text-slate-400">
