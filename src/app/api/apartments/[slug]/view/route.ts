@@ -11,21 +11,19 @@ export async function POST(
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
 
-    const updated = await prisma.apartment.update({
-      where: { slug },
-      data: {
-        views: {
-          increment: 1,
-        },
-      },
-      select: {
-        id: true,
-        slug: true,
-        views: true,
-      },
-    });
+    try {
+      await prisma.$executeRawUnsafe(
+        'UPDATE "Apartment" SET "views" = COALESCE("views", 0) + 1 WHERE "slug" = $1',
+        slug
+      );
+    } catch {
+      await prisma.apartment.update({
+        where: { slug },
+        data: { views: { increment: 1 } },
+      });
+    }
 
-    return NextResponse.json({ success: true, views: updated.views });
+    return NextResponse.json({ success: true });
   } catch (e: any) {
     console.error("Failed to increment apartment view:", e);
     return NextResponse.json({ error: "Failed to increment view" }, { status: 500 });

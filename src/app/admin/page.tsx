@@ -36,14 +36,20 @@ export default async function AdminDashboardOverview() {
   const totalLeads = await prisma.lead.count();
   const totalConversations = await prisma.conversation.count();
 
-  // Fetch apartments with views and calculate total views
-  const allApartmentsWithViews = await prisma.apartment.findMany({
-    select: { id: true, reference: true, title: true, slug: true, price: true, views: true, project: true },
-    orderBy: { views: "desc" },
+  // Fetch all apartments with project details and sort by views safely in JS
+  const allApartmentsRaw = await prisma.apartment.findMany({
+    include: { project: true },
+    orderBy: { createdAt: "desc" },
   });
 
-  const totalViews = allApartmentsWithViews.reduce((sum, apt) => sum + (apt.views || 0), 0);
-  const topVisitedApartments = allApartmentsWithViews.slice(0, 5);
+  const apartmentsWithViews = allApartmentsRaw.map((apt: any) => ({
+    ...apt,
+    views: typeof apt.views === "number" ? apt.views : 0,
+  }));
+
+  const sortedApartments = [...apartmentsWithViews].sort((a, b) => b.views - a.views);
+  const totalViews = sortedApartments.reduce((sum, apt) => sum + apt.views, 0);
+  const topVisitedApartments = sortedApartments.slice(0, 5);
 
   // Fetch top 5 hot leads
   const hotLeads = await prisma.lead.findMany({
