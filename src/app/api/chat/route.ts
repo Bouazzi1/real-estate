@@ -90,7 +90,19 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
 2. PRÉSENTATION DES OFFRES : Quand un client demande les offres, les prix ou la liste des appartements disponibles, présentez directement la liste claire des biens de la Résidence WAFA ci-dessus avec leurs tarifs en Dinars Tunisiens (DT). Ne dites JAMAIS que vous n'avez pas l'information.
 3. CONVERSATION NATURELLE : N'affichez JAMAIS de code JSON ni de structures techniques dans vos messages au client. Parlez uniquement en langage naturel commercial élégant.
 4. QUALIFICATION CLIENT : Recueillez avec courtoisie le nom, l'email, le téléphone et le budget du prospect.
-5. RÉSERVATION DE VISITE : Les visites privées sont ouvertes 7 jours sur 7 (du lundi au dimanche, de 9h à 18h en semaine, et 10h à 17h le week-end). Pour réserver une visite privée ou vérifier une date, proposez des créneaux et enregistrez la réservation avec l'outil create_appointment.`;
+5. RÉSERVATION DE VISITE : Les visites privées sont ouvertes 7 jours sur 7 (du lundi au dimanche, de 9h à 18h en semaine, et 10h à 17h le week-end). Pour réserver une visite privée ou vérifier une date, proposez des créneaux et enregistrez la réservation avec l'outil create_appointment.
+
+PROTOCOLE OBLIGATOIRE DE RÉSERVATION DE VISITE (IMPORTANT) :
+Quand un client souhaite réserver une visite, vous DEVEZ TOUJOURS suivre ces étapes dans cet ordre EXACT :
+  Étape 1 : Proposer les créneaux disponibles en utilisant l'outil get_available_slots.
+  Étape 2 : Confirmer la date et l'heure choisies par le client.
+  Étape 3 : Demander OBLIGATOIREMENT les 3 informations suivantes au client :
+    - Son nom complet
+    - Son numéro de téléphone
+    - Son adresse e-mail
+  Étape 4 : UNIQUEMENT après avoir reçu les 3 informations ci-dessus, appeler l'outil create_appointment.
+  
+  INTERDICTION ABSOLUE : N'appelez JAMAIS l'outil create_appointment sans avoir d'abord obtenu le nom, le téléphone ET l'e-mail du client. Si le client n'a pas encore fourni ces informations, vous DEVEZ les lui demander avant de procéder.`;
 
     // 4. Create or Load the Conversation in DB
     let conversation = await prisma.conversation.findUnique({

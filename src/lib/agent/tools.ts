@@ -74,19 +74,20 @@ export const agentTools = [
     type: "function" as const,
     function: {
       name: "create_appointment",
-      description: "Réserve et enregistre une visite privée ou un rendez-vous prospect pour la Résidence WAFA dans le tableau de bord Admin.",
+      description: "Réserve et enregistre une visite privée pour la Résidence WAFA. IMPORTANT : Vous DEVEZ d'abord demander au client son nom complet, numéro de téléphone et adresse e-mail AVANT d'appeler cette fonction. Ne jamais appeler cette fonction sans ces 3 informations.",
       parameters: {
         type: "object",
         properties: {
+          name: { type: "string", description: "Nom complet du prospect (OBLIGATOIRE — demander au client avant d'appeler)" },
+          phone: { type: "string", description: "Numéro de téléphone du prospect (OBLIGATOIRE — demander au client avant d'appeler)" },
+          email: { type: "string", description: "Adresse e-mail du prospect (OBLIGATOIRE — demander au client avant d'appeler)" },
           slot: { type: "string", description: "Date et heure du rendez-vous (ex: 2026-07-30T14:00:00.000Z)" },
           date: { type: "string", description: "Date au format YYYY-MM-DD" },
           time: { type: "string", description: "Heure (ex: 14:00)" },
           type: { type: "string", enum: ["VISIT", "VIDEO_CALL", "OFFICE"], description: "Type de la visite (par défaut VISIT)" },
-          name: { type: "string", description: "Nom du prospect" },
-          email: { type: "string", description: "Adresse e-mail du prospect" },
-          phone: { type: "string", description: "Numéro de téléphone du prospect" },
           apartmentId: { type: "string", description: "Référence (ex: WAF-101) ou ID de l'appartement" },
         },
+        required: ["name", "phone", "email"],
       },
     },
   },
@@ -236,9 +237,23 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
     }
 
     case "create_appointment": {
-      const name = args.name || args.clientName || "Prospect Résidence WAFA";
-      const email = args.email || args.clientEmail || null;
-      const phone = args.phone || args.clientPhone || null;
+      const name = args.name || args.clientName || "";
+      const email = args.email || args.clientEmail || "";
+      const phone = args.phone || args.clientPhone || "";
+      
+      // BACKEND GUARD: Reject if contact info is missing — force the model to ask the client
+      const missingFields: string[] = [];
+      if (!name || name === "Prospect Résidence WAFA" || name.length < 2) missingFields.push("nom complet");
+      if (!phone || phone.length < 4) missingFields.push("numéro de téléphone");
+      if (!email || !email.includes("@")) missingFields.push("adresse e-mail");
+      
+      if (missingFields.length > 0) {
+        return {
+          success: false,
+          error: `INFORMATIONS MANQUANTES : Vous devez d'abord demander au client les informations suivantes avant de créer le rendez-vous : ${missingFields.join(", ")}. Veuillez poser la question au client et rappeler cette fonction avec toutes les informations.`,
+        };
+      }
+      
       const aptInput = args.apartmentId || args.apartmentRef || args.reference || null;
 
       // Smart relative date parsing
