@@ -175,11 +175,11 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                             apt.status === "AVAILABLE" ? "bg-emerald-500/90 text-white backdrop-blur-md" :
                             "bg-slate-900/90 text-slate-100 backdrop-blur-md"
                           }`}>
-                            {apt.status}
+                            {apt.status === "AVAILABLE" ? "DISPONIBLE" : apt.status === "RESERVED" ? "RÉSERVÉ" : apt.status === "SOLD" ? "VENDU" : apt.status}
                           </span>
                           {apt.featured && (
-                            <span className="px-2.5 py-1 rounded-full bg-amber-500/90 text-slate-955 text-[9px] font-bold uppercase tracking-wider backdrop-blur-md">
-                              FEATURED
+                            <span className="px-2.5 py-1 rounded-full bg-amber-500/90 text-slate-950 text-[9px] font-bold uppercase tracking-wider backdrop-blur-md">
+                              EN VEDETTE
                             </span>
                           )}
                         </div>
@@ -190,7 +190,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold tracking-widest text-amber-500 uppercase">
-                              REF: {apt.reference}
+                              RÉF: {apt.reference}
                             </span>
                             <span className="text-lg font-bold text-slate-900 dark:text-white">
                               {formatPrice(apt.price)} DT
@@ -217,7 +217,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                           </div>
                           <div className="flex items-center gap-1.5 justify-center">
                             <BedDouble className="w-3.5 h-3.5 text-slate-400" />
-                            <span>{apt.bedrooms} Bed</span>
+                            <span>{apt.bedrooms} chambres</span>
                           </div>
                           <div className="flex items-center gap-1.5 justify-center">
                             <Compass className="w-3.5 h-3.5 text-slate-400" />

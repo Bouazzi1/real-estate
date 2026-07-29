@@ -183,7 +183,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
 
                     {featuredApartments.length === 0 ? (
                       <div className="text-center text-slate-500 text-xs py-10">
-                        No featured listings available at the moment.
+                        Aucun bien en vedette disponible pour le moment.
                       </div>
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -204,7 +204,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                                 />
                                 <div className="absolute top-4 left-4">
                                   <span className="px-2.5 py-1 rounded-full bg-emerald-500/90 text-white text-[9px] font-bold uppercase tracking-wider backdrop-blur-md">
-                                    AVAILABLE
+                                    DISPONIBLE
                                   </span>
                                 </div>
                               </div>
@@ -213,14 +213,14 @@ export default async function LandingPage({ searchParams }: PageProps) {
                                 <div className="space-y-1">
                                   <div className="flex items-center justify-between">
                                       <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-wider">
-                                        REF: {apt.reference}
+                                        RÉF: {apt.reference}
                                       </span>
                                        <span className="text-base font-bold text-slate-900 dark:text-white">
                                        {formatPrice(apt.price)} DT
                                      </span>
                                   </div>
                                   <Link href={`/apartments/${apt.slug}`} className="block">
-                                      <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-blue-500 transition-colors">
+                                      <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-amber-500 transition-colors">
                                       {apt.title}
                                     </h3>
                                   </Link>
@@ -232,12 +232,12 @@ export default async function LandingPage({ searchParams }: PageProps) {
                                     <span className="text-[9px] text-slate-500 block mt-0.5">Surface</span>
                                   </div>
                                   <div>
-                                    <span className="font-bold text-slate-900 dark:text-slate-100 block">{apt.bedrooms} Bed</span>
-                                    <span className="text-[9px] text-slate-500 block mt-0.5">Rooms</span>
+                                    <span className="font-bold text-slate-900 dark:text-slate-100 block">{apt.bedrooms} ch.</span>
+                                    <span className="text-[9px] text-slate-500 block mt-0.5">Chambres</span>
                                   </div>
                                   <div>
                                     <span className="font-bold text-slate-900 dark:text-slate-100 block">{apt.orientation}</span>
-                                    <span className="text-[9px] text-slate-500 block mt-0.5">Facing</span>
+                                    <span className="text-[9px] text-slate-500 block mt-0.5">Orientation</span>
                                   </div>
                                 </div>
 
@@ -246,7 +246,7 @@ export default async function LandingPage({ searchParams }: PageProps) {
                                     href={`/apartments/${apt.slug}`}
                                     className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
                                   >
-                                    <span>Details</span>
+                                    <span>Voir Détails</span>
                                     <ArrowRight className="w-3.5 h-3.5" />
                                   </Link>
                                 </div>

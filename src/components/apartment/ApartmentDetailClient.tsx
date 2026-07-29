@@ -166,20 +166,20 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
 
             {/* Core specs strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl shadow-xs backdrop-blur-xl">
-              <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50 last:border-none">
+              <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50">
                 <Square className="w-5 h-5 text-amber-500 mx-auto mb-2" />
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Surface Area</span>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Superficie</span>
                 <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.surface} m²</span>
               </div>
-              <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50 last:border-none">
+              <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50">
                 <BedDouble className="w-5 h-5 text-amber-500 mx-auto mb-2" />
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Bedrooms</span>
-                <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.bedrooms} Bed</span>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Chambres</span>
+                <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.bedrooms} ch.</span>
               </div>
-              <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50 last:border-none">
+              <div className="text-center p-3 border-r border-slate-100 dark:border-slate-800/50">
                 <Bath className="w-5 h-5 text-amber-500 mx-auto mb-2" />
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Bathrooms</span>
-                <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.bathrooms} Bath</span>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Salles de bain</span>
+                <span className="text-sm font-bold text-slate-900 dark:text-white block mt-1">{apartment.bathrooms} sdb</span>
               </div>
               <div className="text-center p-3 last:border-none">
                 <Compass className="w-5 h-5 text-amber-500 mx-auto mb-2" />
