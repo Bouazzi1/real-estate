@@ -76,36 +76,41 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
           </button>
 
           {/* Language Selector Dropdown Button */}
-          <button
-            onClick={() => setShowLang(!showLang)}
-            className="flex items-center gap-2 px-3.5 py-2 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-[11px] font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
-          >
-            <Globe className="w-3.5 h-3.5 text-amber-500" />
-            <span>{locale}</span>
-          </button>
-          
-          {showLang && (
-            <div className="absolute right-36 top-12 w-32 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden py-1 z-50 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-              <button
-                onClick={() => { setLocale("fr"); setShowLang(false); }}
-                className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer block hover:text-amber-600 dark:hover:text-amber-400"
-              >
-                Français
-              </button>
-              <button
-                onClick={() => { setLocale("en"); setShowLang(false); }}
-                className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer block hover:text-amber-600 dark:hover:text-amber-400"
-              >
-                English
-              </button>
-              <button
-                onClick={() => { setLocale("ar"); setShowLang(false); }}
-                className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer block hover:text-amber-600 dark:hover:text-amber-400"
-              >
-                العربية (RTL)
-              </button>
-            </div>
-          )}
+          <div className="relative">
+            <button
+              onClick={() => setShowLang(!showLang)}
+              className="flex items-center gap-2 px-3.5 py-2 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-[11px] font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
+            >
+              <Globe className="w-3.5 h-3.5 text-amber-500" />
+              <span>{locale === "fr" ? "FR" : locale === "en" ? "EN" : "AR"}</span>
+            </button>
+            
+            {showLang && (
+              <div className="absolute right-0 top-12 w-36 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden py-1 z-50 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                <button
+                  onClick={() => { setLocale("fr"); setShowLang(false); }}
+                  className={`w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer flex items-center justify-between ${locale === "fr" ? "text-amber-500 font-bold" : ""}`}
+                >
+                  <span>Français</span>
+                  {locale === "fr" && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+                </button>
+                <button
+                  onClick={() => { setLocale("en"); setShowLang(false); }}
+                  className={`w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer flex items-center justify-between ${locale === "en" ? "text-amber-500 font-bold" : ""}`}
+                >
+                  <span>English</span>
+                  {locale === "en" && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+                </button>
+                <button
+                  onClick={() => { setLocale("ar"); setShowLang(false); }}
+                  className={`w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer flex items-center justify-between ${locale === "ar" ? "text-amber-500 font-bold" : ""}`}
+                >
+                  <span>العربية (RTL)</span>
+                  {locale === "ar" && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+                </button>
+              </div>
+            )}
+          </div>
 
           <Link
             href="/catalog"

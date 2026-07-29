@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { SlidersHorizontal, RefreshCw, ChevronDown, Check } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface Project {
   id: string;
@@ -17,6 +18,7 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { t } = useTranslation();
 
   // Filter states
   const [project, setProject] = useState(searchParams.get("project") || "");
@@ -76,14 +78,14 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/60 pb-4">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="w-4 h-4 text-amber-500" />
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Filtres de Recherche</h3>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t("searchFilters")}</h3>
         </div>
         <button
           onClick={resetFilters}
           className="text-xs text-slate-500 hover:text-amber-500 flex items-center gap-1 transition-colors cursor-pointer"
         >
           <RefreshCw className="w-3.5 h-3.5" />
-          <span>Réinitialiser</span>
+          <span>{t("reset")}</span>
         </button>
       </div>
 
@@ -91,14 +93,14 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
         {/* Project select */}
         <div>
           <label className="block text-[10px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
-            Projet Résidentiel
+            {t("adminProjects")}
           </label>
           <select
             value={project}
             onChange={(e) => setProject(e.target.value)}
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 cursor-pointer"
           >
-            <option value="">Tous les Projets</option>
+            <option value="">{t("all")}</option>
             {projects.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
@@ -110,34 +112,34 @@ export default function CatalogFilterPanel({ projects }: CatalogFilterPanelProps
         {/* Status selection */}
         <div>
           <label className="block text-[10px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
-            Statut du Bien
+            Statut
           </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 cursor-pointer"
           >
-            <option value="AVAILABLE">AVAILABLE</option>
-            <option value="RESERVED">RESERVED</option>
-            <option value="SOLD">SOLD</option>
-            <option value="all">ALL UNITS</option>
+            <option value="AVAILABLE">{t("available")}</option>
+            <option value="RESERVED">{t("reserved")}</option>
+            <option value="SOLD">{t("sold")}</option>
+            <option value="all">{t("all")}</option>
           </select>
         </div>
 
         {/* Sort by option */}
         <div>
           <label className="block text-[10px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
-            Trier les Biens
+            {t("sortBy")}
           </label>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 cursor-pointer"
           >
-            <option value="newest">Plus Récents</option>
-            <option value="price_asc">Prix : Croissant</option>
-            <option value="price_desc">Prix : Décroissant</option>
-            <option value="surface_desc">Superficie : Décroissant</option>
+            <option value="newest">{t("newest")}</option>
+            <option value="price_asc">{t("priceAsc")}</option>
+            <option value="price_desc">{t("priceDesc")}</option>
+            <option value="surface_desc">{t("surfaceDesc")}</option>
           </select>
         </div>
 
