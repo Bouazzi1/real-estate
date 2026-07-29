@@ -233,7 +233,21 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
     case "get_available_slots": {
       const targetDate = resolveRelativeDate(args.date);
       const slots = await getAvailableSlotsForDate(targetDate);
-      return slots.map((s) => s.toISOString());
+      
+      // Format slots as human-readable French text for the model to present naturally
+      const dayName = targetDate.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+      const formattedSlots = slots.map((s) => {
+        const time = s.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+        const iso = s.toISOString();
+        return `${time} (ISO: ${iso})`;
+      });
+      
+      return {
+        date: dayName,
+        availableSlots: formattedSlots,
+        totalSlots: formattedSlots.length,
+        instructions: "Présentez ces créneaux au client de manière élégante et naturelle. Utilisez uniquement le format horaire lisible (ex: 9h00, 14h00). Ne montrez JAMAIS les valeurs ISO au client."
+      };
     }
 
     case "create_appointment": {
