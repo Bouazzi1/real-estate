@@ -17,29 +17,24 @@ export async function POST(request: NextRequest) {
 
     const lastUserMessage = messages[messages.length - 1]?.content || "";
 
-    // 1. Resolve apartment context if provided
-    let apartmentId: string | undefined;
-    let apartmentContextInfo = "";
-    if (apartmentReference) {
-      const apt = await prisma.apartment.findUnique({
-        where: { reference: apartmentReference },
-      });
-      if (apt) {
-        apartmentId = apt.id;
-        apartmentContextInfo = `\n[Context: The user is currently viewing apartment ${apt.reference} (${apt.title}). Apartment Database ID: ${apt.id}, Reference Code: ${apt.reference}. Prioritize details and scheduling tours for this unit.]`;
-      }
-    }
+    // ─── PERFORMANCE: Run all pre-LLM tasks in parallel ───
+    // Smart RAG skip: Don't call the embedding API for short conversational messages
+    // The full catalog is already injected in the system prompt, so RAG is only needed
+    // for deep technical document queries (finitions, cahier des charges, etc.)
+    const needsRag = lastUserMessage.length > 20 && !/^(oui|non|ok|merci|d'accord|super|parfait|bonjour|bonsoir|salut|hello|hi|hey|ca va|ça va|c'est bon|entendu|compris|je comprends|exactement|bien sûr|absolument|tout à fait|pas de souci)\b/i.test(lastUserMessage.trim());
 
-    // 2. Fetch RAG context
-    const retrievalResults = await retrieveContext(lastUserMessage, {
-      apartmentId,
-      limit: 6,
-    });
-    
-    const contextText = retrievalResults.map((r, i) => `[Source ${i + 1}]: ${r.content}`).join("\n\n");
+    // 1. Apartment reference resolution (only if provided)
+    const apartmentPromise = apartmentReference
+      ? prisma.apartment.findUnique({ where: { reference: apartmentReference } })
+      : Promise.resolve(null);
 
-    // 2b. Fetch full catalog summary to guarantee 100% accurate availability awareness
-    const allApartments = await prisma.apartment.findMany({
+    // 2. RAG context retrieval (skip for short messages to save ~1s)
+    const ragPromise = needsRag
+      ? retrieveContext(lastUserMessage, { apartmentId: undefined, limit: 4 })
+      : Promise.resolve([]);
+
+    // 3. Full catalog (cached per request — this is small data)
+    const catalogPromise = prisma.apartment.findMany({
       select: {
         reference: true,
         title: true,
@@ -56,6 +51,29 @@ export async function POST(request: NextRequest) {
       orderBy: { price: "asc" },
     });
 
+    // 4. Conversation load/create
+    const conversationPromise = prisma.conversation.findUnique({
+      where: { sessionId },
+    });
+
+    // Execute ALL in parallel
+    const [apt, retrievalResults, allApartments, existingConversation] = await Promise.all([
+      apartmentPromise,
+      ragPromise,
+      catalogPromise,
+      conversationPromise,
+    ]);
+
+    // Resolve apartment context
+    let apartmentId: string | undefined;
+    let apartmentContextInfo = "";
+    if (apt) {
+      apartmentId = apt.id;
+      apartmentContextInfo = `\n[Context: The user is currently viewing apartment ${apt.reference} (${apt.title}). Apartment Database ID: ${apt.id}, Reference Code: ${apt.reference}. Prioritize details and scheduling tours for this unit.]`;
+    }
+    
+    const contextText = retrievalResults.map((r, i) => `[Source ${i + 1}]: ${r.content}`).join("\n\n");
+
     const fullCatalogText = allApartments
       .map(
         (a) =>
@@ -71,7 +89,7 @@ export async function POST(request: NextRequest) {
       year: "numeric",
     });
 
-    // 3. Construct System Prompt tailored for Résidence WAFA
+    // 5. Construct System Prompt tailored for Résidence WAFA
     const systemPrompt = `Vous êtes le Conseiller Commercial d'Exception pour la Résidence WAFA (Les Berges du Lac 2, Tunis).
 DATE ET ANNÉE ACTUELLES : Nous sommes aujourd'hui le ${currentDateFormatted} (${now.toISOString().substring(0, 10)}).
 Toutes les dates relatives ("ce jeudi", "cette semaine", "demain", "vendredi prochain") DOIVENT se référer à l'année en cours ${now.getFullYear()}. N'utilisez JAMAIS une année passée comme 2025.
@@ -104,10 +122,8 @@ Quand un client souhaite réserver une visite, vous DEVEZ TOUJOURS suivre ces é
   
   INTERDICTION ABSOLUE : N'appelez JAMAIS l'outil create_appointment sans avoir d'abord obtenu le nom, le téléphone ET l'e-mail du client. Si le client n'a pas encore fourni ces informations, vous DEVEZ les lui demander avant de procéder.`;
 
-    // 4. Create or Load the Conversation in DB
-    let conversation = await prisma.conversation.findUnique({
-      where: { sessionId },
-    });
+    // Create or load conversation (non-blocking for the LLM call)
+    let conversation = existingConversation;
 
     if (!conversation) {
       // Create associated Lead record for instant visibility in Admin Leads dashboard
@@ -129,14 +145,14 @@ Quand un client souhaite réserver une visite, vous DEVEZ TOUJOURS suivre ces é
       });
     }
 
-    // Save the User's Message in the database
-    await prisma.message.create({
+    // Save the User's Message in the database (fire-and-forget, don't block)
+    prisma.message.create({
       data: {
         conversationId: conversation.id,
         role: "USER",
         content: lastUserMessage,
       },
-    });
+    }).catch((e) => console.error("Failed to save user message:", e));
 
     const llm = getLLMProvider();
 
