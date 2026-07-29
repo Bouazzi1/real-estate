@@ -192,7 +192,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                             <span className="text-[10px] font-bold tracking-widest text-amber-500 uppercase">
                               REF: {apt.reference}
                             </span>
-                            <span className="text-lg font-bold text-slate-900">
+                            <span className="text-lg font-bold text-slate-900 dark:text-white">
                               {formatPrice(apt.price)} DT
                             </span>
                           </div>
