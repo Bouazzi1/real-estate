@@ -150,54 +150,56 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
             <div className="space-y-4">
               
               {/* Media Switcher Bar */}
-              <div className="flex items-center justify-between bg-white dark:bg-slate-900/60 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => { setActiveTab("photos"); setIsPlayingVideo(false); }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      activeTab === "photos"
-                        ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                        : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                    }`}
-                  >
-                    <ImageIcon className="w-4 h-4" />
-                    <span>Photos ({images.length})</span>
-                  </button>
-
-                  <button
-                    onClick={() => { setActiveTab("video"); setIsPlayingVideo(true); }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      activeTab === "video"
-                        ? "bg-rose-500 text-white shadow-md shadow-rose-500/20"
-                        : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                    }`}
-                  >
-                    <Video className="w-4 h-4 text-rose-400" />
-                    <span>Vidéo de Présentation</span>
-                    {videoSource && (
-                      <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping inline-block" />
-                    )}
-                  </button>
-
-                  {apartment.floorPlanUrl && (
+              {(videoSource || apartment.floorPlanUrl) && (
+                <div className="flex items-center justify-between bg-white dark:bg-slate-900/60 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl">
+                  <div className="flex items-center gap-2">
                     <button
-                      onClick={() => { setActiveTab("plan"); setIsPlayingVideo(false); }}
+                      onClick={() => { setActiveTab("photos"); setIsPlayingVideo(false); }}
                       className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        activeTab === "plan"
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                        activeTab === "photos"
+                          ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
                           : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                       }`}
                     >
-                      <FileText className="w-4 h-4" />
-                      <span>Plan 2D/3D</span>
+                      <ImageIcon className="w-4 h-4" />
+                      <span>Photos ({images.length})</span>
                     </button>
-                  )}
-                </div>
 
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hidden sm:inline-block pr-3">
-                  Qualité HD / 4K
-                </span>
-              </div>
+                    {videoSource && (
+                      <button
+                        onClick={() => { setActiveTab("video"); setIsPlayingVideo(true); }}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          activeTab === "video"
+                            ? "bg-rose-500 text-white shadow-md shadow-rose-500/20"
+                            : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                        }`}
+                      >
+                        <Video className="w-4 h-4 text-rose-400" />
+                        <span>Vidéo de Présentation</span>
+                        <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping inline-block" />
+                      </button>
+                    )}
+
+                    {apartment.floorPlanUrl && (
+                      <button
+                        onClick={() => { setActiveTab("plan"); setIsPlayingVideo(false); }}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          activeTab === "plan"
+                            ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                            : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                        }`}
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>Plan 2D/3D</span>
+                      </button>
+                    )}
+                  </div>
+
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hidden sm:inline-block pr-3">
+                    Qualité HD
+                  </span>
+                </div>
+              )}
 
               {/* Main Media Frame */}
               <div className="relative aspect-video rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 shadow-2xl group">
@@ -212,57 +214,23 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
                 )}
 
                 {/* 2. Video Tab */}
-                {activeTab === "video" && (
+                {activeTab === "video" && videoSource && (
                   <div className="w-full h-full relative bg-slate-950 flex items-center justify-center">
-                    {videoSource ? (
-                      videoSource.endsWith(".mp4") || videoSource.includes("/uploads/") ? (
-                        <video
-                          src={videoSource}
-                          controls
-                          autoPlay
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <iframe
-                          src={videoSource.includes("youtube.com") ? videoSource.replace("watch?v=", "embed/") : videoSource}
-                          title="Visite Vidéo"
-                          className="w-full h-full border-0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        />
-                      )
+                    {videoSource.endsWith(".mp4") || videoSource.includes("/uploads/") ? (
+                      <video
+                        src={videoSource}
+                        controls
+                        autoPlay
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
-                      /* Luxury Video Preview Placeholder if no video URL is provided yet */
-                      <div className="relative w-full h-full flex flex-col items-center justify-center text-center p-8 overflow-hidden">
-                        <img
-                          src={images[0]}
-                          alt="Video Cover"
-                          className="absolute inset-0 w-full h-full object-cover opacity-30 blur-xs"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/40" />
-
-                        <div className="relative z-10 space-y-4 max-w-md">
-                          <div className="w-16 h-16 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center mx-auto shadow-2xl shadow-rose-500/30">
-                            <Play className="w-7 h-7 text-rose-400 ml-1" />
-                          </div>
-                          <div>
-                            <span className="px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold uppercase tracking-widest inline-block mb-2">
-                              Visite Vidéo Privée 4K
-                            </span>
-                            <h3 className="text-xl font-extrabold text-white">Présentation Vidéo Immersive</h3>
-                            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                              Une visite vidéo guidée de cet appartement ({apartment.reference}) est disponible sur demande auprès de notre conseiller commercial.
-                            </p>
-                          </div>
-                          <Link
-                            href={`/chat?apartment=${apartment.reference}`}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-bold text-xs shadow-lg shadow-rose-500/20 transition-all cursor-pointer"
-                          >
-                            <MessageCircle className="w-4 h-4" />
-                            <span>Demander la Vidéo HD à l'IA</span>
-                          </Link>
-                        </div>
-                      </div>
+                      <iframe
+                        src={videoSource.includes("youtube.com") ? videoSource.replace("watch?v=", "embed/") : videoSource}
+                        title="Visite Vidéo"
+                        className="w-full h-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
                     )}
                   </div>
                 )}
@@ -294,16 +262,18 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
                   </button>
                 ))}
 
-                {/* Video thumbnail trigger */}
-                <button
-                  onClick={() => { setActiveTab("video"); setIsPlayingVideo(true); }}
-                  className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-rose-950/40 border-rose-500/40 flex flex-col items-center justify-center text-rose-400 hover:scale-95 ${
-                    activeTab === "video" ? "border-rose-500 ring-2 ring-rose-500/20" : ""
-                  }`}
-                >
-                  <Video className="w-5 h-5 mb-1" />
-                  <span className="text-[9px] font-bold uppercase tracking-wider">Vidéo</span>
-                </button>
+                {/* Video thumbnail trigger (only shown if videoSource exists) */}
+                {videoSource && (
+                  <button
+                    onClick={() => { setActiveTab("video"); setIsPlayingVideo(true); }}
+                    className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-rose-950/40 border-rose-500/40 flex flex-col items-center justify-center text-rose-400 hover:scale-95 ${
+                      activeTab === "video" ? "border-rose-500 ring-2 ring-rose-500/20" : ""
+                    }`}
+                  >
+                    <Video className="w-5 h-5 mb-1" />
+                    <span className="text-[9px] font-bold uppercase tracking-wider">Vidéo</span>
+                  </button>
+                )}
               </div>
             </div>
 
