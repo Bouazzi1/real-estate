@@ -27,36 +27,36 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-slate-950/80 border-b border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl transition-all shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 md:h-24 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 h-20 md:h-24 flex items-center justify-between gap-4">
         
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-4 group shrink-0">
-          <div className="relative p-2 md:p-3 rounded-2xl bg-white/95 dark:bg-slate-900 shadow-md shadow-amber-500/5 border border-amber-500/20 group-hover:border-amber-500/50 transition-all duration-300">
+        <Link href="/" className="flex items-center gap-3.5 group shrink-0">
+          <div className="relative p-1.5 md:p-2 rounded-2xl bg-white/95 dark:bg-slate-900 shadow-md shadow-amber-500/5 border border-amber-500/20 group-hover:border-amber-500/50 transition-all duration-300">
             <img
               src={displayLogo}
               alt={agencyName}
-              className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto max-w-[200px] sm:max-w-[260px] md:max-w-[320px] lg:max-w-[380px] object-contain rounded-lg"
+              className="h-10 sm:h-11 md:h-12 lg:h-13 w-auto max-w-[180px] sm:max-w-[220px] md:max-w-[250px] object-contain rounded-lg"
             />
           </div>
-          <span className="font-black text-base md:text-xl text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-500 transition-colors hidden xl:inline-block">
+          <span className="font-black text-base lg:text-lg text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-500 transition-colors hidden 2xl:inline-block">
             {agencyName}
           </span>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
-          <Link href="/catalog" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[11px] xl:text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300 shrink-0">
+          <Link href="/catalog" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors whitespace-nowrap">
             {t("navApartments")}
           </Link>
-          <Link href="/#about" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+          <Link href="/#about" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors whitespace-nowrap">
             {t("navAbout")}
           </Link>
-          <Link href="/#testimonials" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+          <Link href="/#testimonials" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors whitespace-nowrap">
             {t("navTestimonials")}
           </Link>
           <Link
             href="/chat"
-            className="hover:text-amber-600 transition-all flex items-center gap-2 text-rose-600 dark:text-amber-400 font-extrabold px-3.5 py-1.5 rounded-full bg-rose-50 dark:bg-amber-500/10 border border-rose-200/80 dark:border-amber-500/20 shadow-xs"
+            className="hover:text-amber-600 transition-all flex items-center gap-2 text-rose-600 dark:text-amber-400 font-extrabold px-3.5 py-1.5 rounded-full bg-rose-50 dark:bg-amber-500/10 border border-rose-200/80 dark:border-amber-500/20 shadow-xs whitespace-nowrap"
           >
             <Sparkles className="w-3.5 h-3.5 text-rose-500 dark:text-amber-400 animate-pulse" />
             <span>{t("navAiAdvisor")}</span>
@@ -64,7 +64,7 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
         </nav>
 
         {/* Actions, Theme Toggle & Language Selector */}
-        <div className="hidden md:flex items-center gap-3 relative">
+        <div className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0 relative">
           
           {/* Theme Switcher Button */}
           <button
@@ -79,7 +79,7 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
           <div className="relative">
             <button
               onClick={() => setShowLang(!showLang)}
-              className="flex items-center gap-2 px-3.5 py-2 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-[11px] font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
+              className="flex items-center gap-2 px-3.5 py-2 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl text-[11px] font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 transition-all cursor-pointer whitespace-nowrap"
             >
               <Globe className="w-3.5 h-3.5 text-amber-500" />
               <span>{locale === "fr" ? "FR" : locale === "en" ? "EN" : "AR"}</span>
@@ -114,14 +114,14 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
 
           <Link
             href="/catalog"
-            className="flex items-center justify-center py-2.5 px-5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/20 cursor-pointer active:scale-95"
+            className="flex items-center justify-center py-2.5 px-5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/20 cursor-pointer active:scale-95 whitespace-nowrap"
           >
             {t("exploreBtn")}
           </Link>
         </div>
 
         {/* Mobile menu toggle */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="lg:hidden flex items-center gap-2">
           <button
             onClick={toggleTheme}
             className="p-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-700 dark:text-amber-400 cursor-pointer"
@@ -146,7 +146,7 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
 
       {/* Mobile drop menu */}
       {isOpen && (
-        <div className="md:hidden bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 shadow-lg px-6 py-6 space-y-4 text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <div className="lg:hidden bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 shadow-lg px-6 py-6 space-y-4 text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           <Link href="/catalog" onClick={toggleMenu} className="block py-2 hover:text-amber-600 dark:hover:text-amber-400">
             {t("navApartments")}
           </Link>
