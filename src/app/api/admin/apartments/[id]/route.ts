@@ -77,6 +77,7 @@ export async function PUT(
         gallery: body.gallery,
         floorPlanUrl: body.floorPlanUrl,
         virtualTourUrl: body.virtualTourUrl,
+        videoUrl: body.videoUrl !== undefined ? body.videoUrl : undefined,
       },
     });
 

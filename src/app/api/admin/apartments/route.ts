@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
         gallery: body.gallery || [],
         floorPlanUrl: body.floorPlanUrl || null,
         virtualTourUrl: body.virtualTourUrl || null,
+        videoUrl: body.videoUrl || null,
       },
     });
 

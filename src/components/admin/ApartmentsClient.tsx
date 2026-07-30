@@ -16,7 +16,8 @@ import {
   Loader2,
   Image as ImageIcon,
   Building,
-  Eye
+  Eye,
+  Video
 } from "lucide-react";
 import { formatPrice } from "@/lib/formatters";
 
@@ -47,6 +48,7 @@ interface Apartment {
   gallery: string[];
   floorPlanUrl: string | null;
   virtualTourUrl: string | null;
+  videoUrl?: string | null;
   views?: number;
   project: Project;
 }
@@ -85,6 +87,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
   const [description, setDescription] = useState("");
   const [gallery, setGallery] = useState<string[]>([]);
   const [floorPlanUrl, setFloorPlanUrl] = useState<string | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
   
   // Upload states
   const [uploading, setUploading] = useState(false);
@@ -125,6 +128,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
     setDescription("");
     setGallery([]);
     setFloorPlanUrl(null);
+    setVideoUrl(null);
     setError("");
     setIsFormOpen(true);
   };
@@ -149,11 +153,12 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
     setDescription(apt.description);
     setGallery(apt.gallery);
     setFloorPlanUrl(apt.floorPlanUrl);
+    setVideoUrl(apt.videoUrl || null);
     setError("");
     setIsFormOpen(true);
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "gallery" | "floorplan") => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "gallery" | "floorplan" | "video") => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -175,6 +180,8 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
 
       if (type === "gallery") {
         setGallery((prev) => [...prev, data.url]);
+      } else if (type === "video") {
+        setVideoUrl(data.url);
       } else {
         setFloorPlanUrl(data.url);
       }
@@ -209,6 +216,7 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
       status,
       gallery,
       floorPlanUrl,
+      videoUrl,
     };
 
     try {
@@ -767,6 +775,65 @@ export default function ApartmentsClient({ initialApartments, projects }: Apartm
                       <button
                         type="button"
                         onClick={() => setFloorPlanUrl(null)}
+                        className="text-slate-500 hover:text-red-400 p-1"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Upload Section: Video Presentation */}
+                <div className="md:col-span-2 border-t border-slate-800/60 pt-6">
+                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                        <Video className="w-4 h-4 text-rose-400" />
+                        <span>Vidéo de Présentation (MP4 ou URL)</span>
+                      </h4>
+                      <p className="text-slate-500 text-[10px] mt-0.5">Téléverser une vidéo MP4 ou coller un lien YouTube / Visite 3D</p>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) => handleFileUpload(e, "video")}
+                        className="hidden"
+                        id="video-upload"
+                      />
+                      <label
+                        htmlFor="video-upload"
+                        className="flex items-center gap-2 px-3.5 py-2 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all cursor-pointer"
+                      >
+                        {uploading ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
+                        ) : (
+                          <Upload className="w-4 h-4 text-rose-400" />
+                        )}
+                        <span>Téléverser Vidéo MP4</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      placeholder="Ou lien vidéo YouTube / Vimeo / Visite Virtuelle (https://...)"
+                      value={videoUrl || ""}
+                      onChange={(e) => setVideoUrl(e.target.value || null)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-rose-500 font-mono"
+                    />
+                  </div>
+
+                  {videoUrl && (
+                    <div className="mt-3 p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl flex items-center justify-between">
+                      <div className="flex items-center gap-2 truncate pr-4">
+                        <Video className="w-4 h-4 text-rose-400 shrink-0" />
+                        <span className="text-xs text-slate-300 truncate font-mono">{videoUrl}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setVideoUrl(null)}
                         className="text-slate-500 hover:text-red-400 p-1"
                       >
                         <X className="w-4 h-4" />

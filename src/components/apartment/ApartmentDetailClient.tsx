@@ -15,7 +15,11 @@ import {
   MapPin,
   Sparkles,
   ArrowLeft,
-  DollarSign
+  DollarSign,
+  Video,
+  Play,
+  Image as ImageIcon,
+  Film
 } from "lucide-react";
 import MortgageCalculator from "./MortgageCalculator";
 import Header from "@/components/navigation/Header";
@@ -25,7 +29,7 @@ const MapComponent = dynamic(() => import("./MapComponent"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-80 bg-slate-200 dark:bg-slate-900 rounded-3xl animate-pulse flex items-center justify-center text-slate-500 text-xs">
-      Loading map coordinates...
+      Chargement de la carte...
     </div>
   ),
 });
@@ -46,6 +50,7 @@ interface Document {
 
 interface Apartment {
   id: string;
+  projectId: string;
   reference: string;
   title: string;
   slug: string;
@@ -64,6 +69,7 @@ interface Apartment {
   gallery: string[];
   floorPlanUrl: string | null;
   virtualTourUrl: string | null;
+  videoUrl?: string | null;
   project: Project;
   documents: Document[];
 }
@@ -74,7 +80,9 @@ interface ApartmentDetailClientProps {
 }
 
 export default function ApartmentDetailClient({ apartment, similarApartments }: ApartmentDetailClientProps) {
+  const [activeTab, setActiveTab] = useState<"photos" | "video" | "plan">("photos");
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const [showFloorPlan, setShowFloorPlan] = useState(false);
 
   const images = apartment.gallery.length > 0 
@@ -84,6 +92,8 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
   const address = apartment.project?.location?.address || "";
   const lat = apartment.project?.location?.lat || 48.8566;
   const lng = apartment.project?.location?.lng || 2.3522;
+
+  const videoSource = apartment.videoUrl || apartment.virtualTourUrl;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-24">
@@ -103,13 +113,13 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[10px] font-bold uppercase tracking-wider">
-                REF: {apartment.reference}
+                RÉF: {apartment.reference}
               </span>
               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                 apartment.status === "AVAILABLE" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
                 "bg-slate-500/10 text-slate-400 border border-slate-500/20"
               }`}>
-                {apartment.status}
+                {apartment.status === "AVAILABLE" ? "DISPONIBLE" : apartment.status === "RESERVED" ? "RÉSERVÉ" : apartment.status === "SOLD" ? "VENDU" : apartment.status}
               </span>
             </div>
             <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white font-display sm:text-4xl leading-tight">
@@ -136,32 +146,165 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
           {/* Left 2 Columns: Media, Description, Map */}
           <div className="lg:col-span-2 space-y-8">
             
-            {/* Gallery Section */}
+            {/* Media Gallery Section with Video & Plan Tabs */}
             <div className="space-y-4">
-              <div className="relative aspect-video rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-900 shadow-lg">
-                <img
-                  src={images[activeImageIdx]}
-                  alt={apartment.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
               
-              {/* Thumbnails grid */}
-              {images.length > 1 && (
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-                  {images.map((img, idx) => (
+              {/* Media Switcher Bar */}
+              <div className="flex items-center justify-between bg-white dark:bg-slate-900/60 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => { setActiveTab("photos"); setIsPlayingVideo(false); }}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      activeTab === "photos"
+                        ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                        : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <ImageIcon className="w-4 h-4" />
+                    <span>Photos ({images.length})</span>
+                  </button>
+
+                  <button
+                    onClick={() => { setActiveTab("video"); setIsPlayingVideo(true); }}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      activeTab === "video"
+                        ? "bg-rose-500 text-white shadow-md shadow-rose-500/20"
+                        : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <Video className="w-4 h-4 text-rose-400" />
+                    <span>Vidéo de Présentation</span>
+                    {videoSource && (
+                      <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping inline-block" />
+                    )}
+                  </button>
+
+                  {apartment.floorPlanUrl && (
                     <button
-                      key={idx}
-                      onClick={() => setActiveImageIdx(idx)}
-                      className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                        activeImageIdx === idx ? "border-blue-500 scale-95" : "border-transparent opacity-60 hover:opacity-100"
+                      onClick={() => { setActiveTab("plan"); setIsPlayingVideo(false); }}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        activeTab === "plan"
+                          ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                          : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                       }`}
                     >
-                      <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                      <FileText className="w-4 h-4" />
+                      <span>Plan 2D/3D</span>
                     </button>
-                  ))}
+                  )}
                 </div>
-              )}
+
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hidden sm:inline-block pr-3">
+                  Qualité HD / 4K
+                </span>
+              </div>
+
+              {/* Main Media Frame */}
+              <div className="relative aspect-video rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 shadow-2xl group">
+                
+                {/* 1. Photos Tab */}
+                {activeTab === "photos" && (
+                  <img
+                    src={images[activeImageIdx]}
+                    alt={apartment.title}
+                    className="w-full h-full object-cover transition-all duration-300"
+                  />
+                )}
+
+                {/* 2. Video Tab */}
+                {activeTab === "video" && (
+                  <div className="w-full h-full relative bg-slate-950 flex items-center justify-center">
+                    {videoSource ? (
+                      videoSource.endsWith(".mp4") || videoSource.includes("/uploads/") ? (
+                        <video
+                          src={videoSource}
+                          controls
+                          autoPlay
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <iframe
+                          src={videoSource.includes("youtube.com") ? videoSource.replace("watch?v=", "embed/") : videoSource}
+                          title="Visite Vidéo"
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      )
+                    ) : (
+                      /* Luxury Video Preview Placeholder if no video URL is provided yet */
+                      <div className="relative w-full h-full flex flex-col items-center justify-center text-center p-8 overflow-hidden">
+                        <img
+                          src={images[0]}
+                          alt="Video Cover"
+                          className="absolute inset-0 w-full h-full object-cover opacity-30 blur-xs"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/40" />
+
+                        <div className="relative z-10 space-y-4 max-w-md">
+                          <div className="w-16 h-16 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center mx-auto shadow-2xl shadow-rose-500/30">
+                            <Play className="w-7 h-7 text-rose-400 ml-1" />
+                          </div>
+                          <div>
+                            <span className="px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold uppercase tracking-widest inline-block mb-2">
+                              Visite Vidéo Privée 4K
+                            </span>
+                            <h3 className="text-xl font-extrabold text-white">Présentation Vidéo Immersive</h3>
+                            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                              Une visite vidéo guidée de cet appartement ({apartment.reference}) est disponible sur demande auprès de notre conseiller commercial.
+                            </p>
+                          </div>
+                          <Link
+                            href={`/chat?apartment=${apartment.reference}`}
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-bold text-xs shadow-lg shadow-rose-500/20 transition-all cursor-pointer"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            <span>Demander la Vidéo HD à l'IA</span>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 3. Plan Tab */}
+                {activeTab === "plan" && apartment.floorPlanUrl && (
+                  <div className="w-full h-full bg-slate-950 p-4 flex items-center justify-center">
+                    <img
+                      src={apartment.floorPlanUrl}
+                      alt="Plan de l'appartement"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                )}
+              </div>
+              
+              {/* Thumbnails Strip */}
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+                {/* Photo thumbnails */}
+                {images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => { setActiveImageIdx(idx); setActiveTab("photos"); }}
+                    className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                      activeTab === "photos" && activeImageIdx === idx ? "border-amber-500 scale-95" : "border-slate-800 opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+
+                {/* Video thumbnail trigger */}
+                <button
+                  onClick={() => { setActiveTab("video"); setIsPlayingVideo(true); }}
+                  className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-rose-950/40 border-rose-500/40 flex flex-col items-center justify-center text-rose-400 hover:scale-95 ${
+                    activeTab === "video" ? "border-rose-500 ring-2 ring-rose-500/20" : ""
+                  }`}
+                >
+                  <Video className="w-5 h-5 mb-1" />
+                  <span className="text-[9px] font-bold uppercase tracking-wider">Vidéo</span>
+                </button>
+              </div>
             </div>
 
             {/* Core specs strip */}
