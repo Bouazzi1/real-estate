@@ -77,11 +77,6 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [showFloorPlan, setShowFloorPlan] = useState(false);
 
-  useEffect(() => {
-    // Record page view asynchronously
-    fetch(`/api/apartments/${apartment.slug}/view`, { method: "POST" }).catch(console.error);
-  }, [apartment.slug]);
-
   const images = apartment.gallery.length > 0 
     ? apartment.gallery 
     : ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&h=600&q=80"];
