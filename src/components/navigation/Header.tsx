@@ -27,18 +27,18 @@ export default function Header({ agencyName, logoUrl }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-slate-950/80 border-b border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl transition-all shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 md:h-24 flex items-center justify-between">
         
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3.5 group">
-          <div className="relative p-1.5 rounded-2xl bg-white/95 dark:bg-slate-900 shadow-md shadow-amber-500/5 border border-amber-500/20 group-hover:border-amber-500/50 transition-all duration-300">
+        <Link href="/" className="flex items-center gap-4 group shrink-0">
+          <div className="relative p-2 md:p-3 rounded-2xl bg-white/95 dark:bg-slate-900 shadow-md shadow-amber-500/5 border border-amber-500/20 group-hover:border-amber-500/50 transition-all duration-300">
             <img
               src={displayLogo}
               alt={agencyName}
-              className="h-9 w-auto max-w-[140px] object-contain rounded-lg"
+              className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto max-w-[200px] sm:max-w-[260px] md:max-w-[320px] lg:max-w-[380px] object-contain rounded-lg"
             />
           </div>
-          <span className="font-extrabold text-base text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-500 transition-colors hidden sm:inline-block">
+          <span className="font-black text-base md:text-xl text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-500 transition-colors hidden xl:inline-block">
             {agencyName}
           </span>
         </Link>
