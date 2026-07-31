@@ -22,7 +22,21 @@ export class LocalStorageProvider implements StorageProvider {
       await fs.writeFile(filePath, file);
       return `/uploads/${uniqueFilename}`;
     } catch (err: any) {
-      console.error("LocalStorageProvider upload error:", err);
+      console.warn("LocalStorageProvider local write failed (serverless/read-only env):", err?.message);
+
+      // If read-only filesystem (EROFS error code or Vercel serverless environment), fallback to Base64 Data URL
+      if (
+        err?.code === "EROFS" ||
+        err?.code === "EACCES" ||
+        err?.message?.includes("read-only") ||
+        process.env.VERCEL ||
+        process.env.NEXT_PUBLIC_VERCEL_ENV
+      ) {
+        const type = mimeType || "image/png";
+        const base64 = file.toString("base64");
+        return `data:${type};base64,${base64}`;
+      }
+
       throw new Error(`Erreur d'écriture sur le disque local: ${err?.message || err}`);
     }
   }
