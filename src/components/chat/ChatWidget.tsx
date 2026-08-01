@@ -2,11 +2,48 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
-import { MessageSquare, X, Send, Sparkles, Loader2, Calendar, User, MessageCircle, RefreshCw } from "lucide-react";
+import { MessageSquare, X, Send, Sparkles, Loader2, Calendar, User, MessageCircle, RefreshCw, ExternalLink } from "lucide-react";
 
 interface Message {
   role: "USER" | "ASSISTANT";
   content: string;
+}
+
+function FormattedWidgetText({ content }: { content: string }) {
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = linkRegex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(content.substring(lastIndex, match.index));
+    }
+
+    const label = match[1];
+    const url = match[2];
+
+    parts.push(
+      <a
+        key={match.index}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 text-amber-500 font-bold underline underline-offset-2 hover:text-amber-400 transition-colors my-0.5 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20"
+      >
+        <span>{label}</span>
+        <ExternalLink className="w-3 h-3 text-amber-500" />
+      </a>
+    );
+
+    lastIndex = linkRegex.lastIndex;
+  }
+
+  if (lastIndex < content.length) {
+    parts.push(content.substring(lastIndex));
+  }
+
+  return <>{parts.length > 0 ? parts : content}</>;
 }
 
 export default function ChatWidget() {
@@ -214,7 +251,9 @@ export default function ChatWidget() {
                           : "bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-855 text-slate-800 dark:text-slate-200 shadow-sm rounded-bl-none"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap">{m.content}</p>
+                      <div className="whitespace-pre-wrap">
+                        <FormattedWidgetText content={m.content} />
+                      </div>
                     </div>
                   </div>
                 );

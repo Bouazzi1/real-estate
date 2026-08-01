@@ -17,7 +17,8 @@ import {
   Phone,
   Mail,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  FileText
 } from "lucide-react";
 
 import { formatPrice } from "@/lib/formatters";
@@ -72,6 +73,17 @@ export default async function LandingPage({ searchParams }: PageProps) {
     });
   } catch (e) {
     console.error("Failed to load site settings:", e);
+  }
+
+  // 4. Fetch Global Brochure Document
+  let globalBrochure: any = null;
+  try {
+    globalBrochure = await prisma.document.findFirst({
+      where: { type: "BROCHURE" },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (e) {
+    console.error("Failed to load global brochure:", e);
   }
 
   const agencyPhone = settings?.contactPhone || "+1 (555) 019-2834";
@@ -133,10 +145,21 @@ export default async function LandingPage({ searchParams }: PageProps) {
                           <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
                         </Link>
                       )}
+                      {globalBrochure && (
+                        <a
+                          href={globalBrochure.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2 py-3.5 px-6 bg-slate-900/90 hover:bg-slate-950 border border-amber-500/30 text-amber-400 shadow-md text-xs font-extrabold rounded-2xl transition-all cursor-pointer hover:border-amber-500/60"
+                        >
+                          <FileText className="w-4 h-4 text-amber-400" />
+                          <span>Brochure Officielle (PDF)</span>
+                        </a>
+                      )}
                       {content.secondaryCta && (
                         <Link
                           href="/chat"
-                          className="w-full sm:w-auto flex items-center justify-center gap-2 py-3.5 px-8 bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-xs text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2 py-3.5 px-8 bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-xs text-xs font-bold rounded-2xl transition-colors cursor-pointer"
                         >
                           <MessageCircle className="w-4 h-4 text-amber-400" />
                           <span>{content.secondaryCta.text}</span>

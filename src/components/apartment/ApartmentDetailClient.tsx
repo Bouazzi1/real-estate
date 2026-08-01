@@ -309,6 +309,48 @@ export default function ApartmentDetailClient({ apartment, similarApartments }: 
               </div>
             </div>
 
+            {/* Associated Documents Section */}
+            {apartment.documents && apartment.documents.length > 0 && (
+              <div className="bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 shadow-xs backdrop-blur-xl space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">Documents & Brochures Téléchargeables</h3>
+                    <p className="text-xs text-slate-500">Consultez et téléchargez la documentation officielle de cet appartement</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  {apartment.documents.map((doc) => (
+                    <a
+                      key={doc.id}
+                      href={doc.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-500/50 transition-all duration-300 group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
+                            {doc.title}
+                          </p>
+                          <span className="text-[10px] text-slate-500 font-mono block mt-0.5">
+                            {doc.type} • PDF
+                          </span>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Floor plan drawing toggle */}
             {apartment.floorPlanUrl && (
               <div className="bg-white dark:bg-slate-900/20 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 shadow-xs backdrop-blur-xl space-y-4">

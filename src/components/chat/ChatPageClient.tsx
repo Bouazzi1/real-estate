@@ -19,7 +19,8 @@ import {
   Menu,
   X,
   Mic,
-  Volume2
+  Volume2,
+  ExternalLink
 } from "lucide-react";
 
 interface Message {
@@ -29,6 +30,43 @@ interface Message {
 
 interface ChatPageClientProps {
   agencyName: string;
+}
+
+function FormattedMessageText({ content }: { content: string }) {
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = linkRegex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(content.substring(lastIndex, match.index));
+    }
+
+    const label = match[1];
+    const url = match[2];
+
+    parts.push(
+      <a
+        key={match.index}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 text-amber-500 dark:text-amber-400 font-bold underline underline-offset-2 hover:text-amber-400 transition-colors my-1 bg-amber-500/10 px-2.5 py-1 rounded-xl border border-amber-500/20"
+      >
+        <span>{label}</span>
+        <ExternalLink className="w-3.5 h-3.5 text-amber-500" />
+      </a>
+    );
+
+    lastIndex = linkRegex.lastIndex;
+  }
+
+  if (lastIndex < content.length) {
+    parts.push(content.substring(lastIndex));
+  }
+
+  return <>{parts.length > 0 ? parts : content}</>;
 }
 
 export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
@@ -432,7 +470,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
                       : "bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none shadow-xs backdrop-blur-md"
                   }`}
                 >
-                  {m.content}
+                  <FormattedMessageText content={m.content} />
                 </div>
 
                 {/* Copy Button for Assistant responses */}
