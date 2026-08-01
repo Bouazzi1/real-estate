@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const isBrochureQuery = /^(brochure|document|catalogue|donnez.*(brochure|document|catalogue)|telecharger|télécharger|pdf|fiche)/i.test(lowerMsg);
     if (isBrochureQuery) {
       const docs = await prisma.document.findMany({
-        select: { title: true, fileUrl: true, type: true, apartment: { select: { reference: true } } },
+        select: { id: true, title: true, fileUrl: true, type: true, apartment: { select: { reference: true } } },
         orderBy: { createdAt: "desc" },
         take: 10,
       });
@@ -62,7 +62,8 @@ export async function POST(request: NextRequest) {
       if (docs.length > 0) {
         const docLines = docs.map((d) => {
           const aptRef = d.apartment?.reference ? ` (Apt. ${d.apartment.reference})` : " (Général)";
-          return `📄 [${d.title}${aptRef}](${d.fileUrl})`;
+          const cleanUrl = d.fileUrl.startsWith("data:") ? `/api/documents/${d.id}/view` : d.fileUrl;
+          return `📄 [${d.title}${aptRef}](${cleanUrl})`;
         }).join("\n");
         instantReply = `Voici les brochures et documents disponibles pour la Résidence WAFA :\n\n${docLines}\n\nCliquez sur un lien pour ouvrir le document dans un nouvel onglet. Souhaitez-vous d'autres informations ?`;
       } else {
@@ -172,9 +173,19 @@ export async function POST(request: NextRequest) {
       )
       .join("\n\n");
 
+    const getCleanDocumentUrl = (doc: { id?: string; fileUrl: string }) => {
+      if (doc.fileUrl.startsWith("data:") && doc.id) {
+        return `/api/documents/${doc.id}/view`;
+      }
+      return doc.fileUrl;
+    };
+
     const availableDocsText = allDocuments.length > 0
       ? allDocuments
-          .map((d) => `• [${d.type}] "${d.title}" ${d.apartment ? `(Appartement Réf: ${d.apartment.reference})` : "(Général Résidence WAFA)"} => Link: ${d.fileUrl}`)
+          .map((d) => {
+            const cleanUrl = getCleanDocumentUrl(d);
+            return `• [${d.type}] "${d.title}" ${d.apartment ? `(Appartement Réf: ${d.apartment.reference})` : "(Général Résidence WAFA)"} => Lien Markdown: [Télécharger ${d.title}](${cleanUrl})`;
+          })
           .join("\n")
       : "Aucun document supplémentaire.";
 
