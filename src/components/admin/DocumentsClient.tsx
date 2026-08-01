@@ -103,10 +103,22 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
     }
   };
 
+  const parseJsonResponse = async (res: Response) => {
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await res.json();
+    }
+    const text = await res.text();
+    if (res.status === 401) {
+      throw new Error("Session expirée. Veuillez vous reconnecter à l'espace d'administration.");
+    }
+    throw new Error(`Erreur serveur (${res.status}): ${text.substring(0, 100) || "Réponse invalide du serveur"}`);
+  };
+
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFile) {
-      setUploadError("Please select a document file to upload.");
+      setUploadError("Veuillez sélectionner un fichier à téléverser.");
       return;
     }
 
@@ -123,19 +135,19 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
         body: uploadFormData,
       });
 
+      const uploadData = await parseJsonResponse(uploadRes);
       if (!uploadRes.ok) {
-        const err = await uploadRes.json();
-        throw new Error(err.error || "File upload failed");
+        throw new Error(uploadData.error || "Téléversement du fichier échoué.");
       }
 
-      const { url: fileUrl } = await uploadRes.json();
+      const fileUrl = uploadData.url;
 
       // 2. Save document specs & trigger indexer
       const docPayload = {
         title,
         type,
         fileUrl,
-        mimeType: selectedFile.type,
+        mimeType: selectedFile.type || "application/pdf",
         sizeBytes: selectedFile.size,
         apartmentId: selectedApartmentId || null,
         projectId: selectedProjectId || null,
@@ -147,9 +159,9 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
         body: JSON.stringify(docPayload),
       });
 
+      const docData = await parseJsonResponse(docRes);
       if (!docRes.ok) {
-        const err = await docRes.json();
-        throw new Error(err.error || "Document creation failed");
+        throw new Error(docData.error || "Création du document échouée.");
       }
 
       // Success
@@ -157,7 +169,7 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
       resetForm();
       fetchDocuments();
     } catch (err: any) {
-      setUploadError(err.message || "An unexpected error occurred during upload.");
+      setUploadError(err.message || "Une erreur inattendue est survenue lors du téléversement.");
     } finally {
       setUploading(false);
     }
@@ -173,7 +185,7 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this document? This will remove all associated AI RAG vector chunks.")) {
+    if (!confirm("Voulez-vous vraiment supprimer ce document ? Cela supprimera également tous les vecteurs associés.")) {
       return;
     }
 
@@ -186,11 +198,12 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
       if (res.ok) {
         setDocuments(documents.filter((doc) => doc.id !== id));
       } else {
-        alert("Failed to delete document.");
+        const err = await parseJsonResponse(res).catch(() => ({ error: "Échec de la suppression" }));
+        alert(err.error || "Échec de la suppression du document.");
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Error deleting document.");
+      alert(e.message || "Erreur lors de la suppression du document.");
     } finally {
       setProcessingId(null);
     }
@@ -205,16 +218,15 @@ export default function DocumentsClient({ initialProjects, initialApartments }: 
         body: JSON.stringify({ action: "reindex" }),
       });
 
+      const data = await parseJsonResponse(res);
       if (res.ok) {
-        const updatedDoc = await res.json();
-        setDocuments(documents.map((doc) => (doc.id === id ? updatedDoc : doc)));
+        setDocuments(documents.map((doc) => (doc.id === id ? (data.document || data) : doc)));
       } else {
-        const err = await res.json();
-        alert(err.error || "Indexing failed.");
+        alert(data.error || "L'indexation a échoué.");
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Error triggering reindex.");
+      alert(e.message || "Erreur lors du déclenchement de la réindexation.");
     } finally {
       setProcessingId(null);
     }

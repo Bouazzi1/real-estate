@@ -36,11 +36,24 @@ export function chunkText(text: string, chunkSize = 2000, overlap = 200): string
   return chunks;
 }
 
-// Retrieve Buffer from local upload path or remote URL
+// Retrieve Buffer from Data URI, local upload path, or remote URL
 async function getBufferFromUrl(fileUrl: string): Promise<Buffer> {
-  if (fileUrl.startsWith("/uploads/")) {
+  if (fileUrl.startsWith("data:")) {
+    // Extract base64 payload from Data URI (e.g. data:application/pdf;base64,JVBERi0xLj...)
+    const commaIndex = fileUrl.indexOf(",");
+    const base64Data = commaIndex !== -1 ? fileUrl.slice(commaIndex + 1) : fileUrl;
+    return Buffer.from(base64Data, "base64");
+  } else if (fileUrl.startsWith("/uploads/")) {
     const filePath = path.join(process.cwd(), "public", fileUrl);
-    return await fs.readFile(filePath);
+    try {
+      return await fs.readFile(filePath);
+    } catch (err) {
+      const host = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
+      const res = await fetch(`${host}${fileUrl}`);
+      if (!res.ok) throw new Error(`Failed to fetch document from server: ${res.statusText}`);
+      const arrayBuffer = await res.arrayBuffer();
+      return Buffer.from(arrayBuffer);
+    }
   } else {
     const res = await fetch(fileUrl);
     if (!res.ok) throw new Error(`Failed to fetch remote document: ${res.statusText}`);
