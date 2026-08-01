@@ -49,6 +49,70 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // ─── INSTANT BROCHURE / DOCUMENT FAST-PATH (~50ms DB-ONLY, NO LLM) ───
+    const isBrochureQuery = /^(brochure|document|catalogue|donnez.*(brochure|document|catalogue)|telecharger|télécharger|pdf|fiche)/i.test(lowerMsg);
+    if (isBrochureQuery) {
+      const docs = await prisma.document.findMany({
+        select: { title: true, fileUrl: true, type: true, apartment: { select: { reference: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      });
+
+      let instantReply: string;
+      if (docs.length > 0) {
+        const docLines = docs.map((d) => {
+          const aptRef = d.apartment?.reference ? ` (Apt. ${d.apartment.reference})` : " (Général)";
+          return `📄 [${d.title}${aptRef}](${d.fileUrl})`;
+        }).join("\n");
+        instantReply = `Voici les brochures et documents disponibles pour la Résidence WAFA :\n\n${docLines}\n\nCliquez sur un lien pour ouvrir le document dans un nouvel onglet. Souhaitez-vous d'autres informations ?`;
+      } else {
+        instantReply = `Je n'ai pas encore de brochure téléchargeable pour le moment. Souhaitez-vous que je vous présente nos appartements disponibles ou que je vous aide à réserver une visite privée ?`;
+      }
+
+      // Background DB log
+      (async () => {
+        try {
+          let conv = await prisma.conversation.findUnique({ where: { sessionId } });
+          if (!conv) conv = await prisma.conversation.create({ data: { sessionId } });
+          await prisma.message.createMany({ data: [
+            { conversationId: conv.id, role: "USER", content: lastUserMessage },
+            { conversationId: conv.id, role: "ASSISTANT", content: instantReply },
+          ]});
+        } catch (err) { console.warn("Background DB log warning:", err); }
+      })();
+
+      return NextResponse.json({
+        message: instantReply,
+        history: [...messages, { role: "ASSISTANT", content: instantReply }],
+      });
+    }
+
+    // ─── INSTANT SHORT-REPLY FAST-PATH (oui, non, ok, merci, d'accord — 0ms) ───
+    const isShortAck = /^(oui|non|ok|merci|d'accord|super|parfait|entendu|compris|c'est bon|exactement|bien sûr|absolument|tout à fait|pas de souci)(\s|\.|\!|\?)*$/i.test(lowerMsg);
+    if (isShortAck) {
+      const ackReplies: Record<string, string> = {
+        merci: "Avec plaisir ! N'hésitez pas si vous avez d'autres questions sur nos appartements ou si vous souhaitez réserver une visite privée.",
+        default: "Parfait ! Comment puis-je vous aider davantage ? Souhaitez-vous consulter nos appartements, télécharger une brochure ou réserver un créneau de visite ?",
+      };
+      const instantReply = lowerMsg.includes("merci") ? ackReplies.merci : ackReplies.default;
+
+      (async () => {
+        try {
+          let conv = await prisma.conversation.findUnique({ where: { sessionId } });
+          if (!conv) conv = await prisma.conversation.create({ data: { sessionId } });
+          await prisma.message.createMany({ data: [
+            { conversationId: conv.id, role: "USER", content: lastUserMessage },
+            { conversationId: conv.id, role: "ASSISTANT", content: instantReply },
+          ]});
+        } catch (err) { console.warn("Background DB log warning:", err); }
+      })();
+
+      return NextResponse.json({
+        message: instantReply,
+        history: [...messages, { role: "ASSISTANT", content: instantReply }],
+      });
+    }
+
     // ─── PERFORMANCE: Skip RAG vector search for direct brochure, catalog, and general queries ───
     const isDirectQuery = /(brochure|catalogue|document|plan|tarifs|prix|offres|appartements|disponib|visite|bonjour|bonsoir|salut|merci|donnez)/i.test(lastUserMessage);
     const needsRag = lastUserMessage.length > 35 && !isDirectQuery;
