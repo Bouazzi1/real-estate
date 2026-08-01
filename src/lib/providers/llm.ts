@@ -72,6 +72,7 @@ export class GeminiProvider implements LLMProvider {
         messages,
         tools: tools && tools.length > 0 ? tools : undefined,
         temperature: 0.2,
+        max_tokens: 600,
       });
     } catch (e: any) {
       console.warn(`Gemini Chat Completion failed (${e.status || e.message}), falling back to NVIDIA NIM Llama 3.1 70B...`);
@@ -89,6 +90,7 @@ export class GeminiProvider implements LLMProvider {
         messages,
         tools: tools && tools.length > 0 ? tools : undefined,
         temperature: 0.2,
+        max_tokens: 600,
         stream: true,
       });
     } catch (e: any) {

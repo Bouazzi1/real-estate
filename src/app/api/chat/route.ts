@@ -17,9 +17,40 @@ export async function POST(request: NextRequest) {
     }
 
     const lastUserMessage = messages[messages.length - 1]?.content || "";
+    const lowerMsg = lastUserMessage.toLowerCase().trim();
+
+    // ─── INSTANT GREETINGS FAST-PATH (0ms LATENCY) ───
+    const greetingMatch = /^(bonjour|bonsoir|salut|hello|hi|hey|coucou)(\s|\.|\!|\?)*$/i.test(lowerMsg);
+    if (greetingMatch) {
+      const greetingPrefix = lowerMsg.includes("bonsoir") ? "Bonsoir" : "Bonjour";
+      const instantReply = `${greetingPrefix} ! Je suis le Conseiller Commercial Dédié pour la Résidence WAFA. Comment puis-je vous accompagner aujourd'hui ? Souhaitez-vous découvrir nos appartements disponibles, consulter la brochure officielle ou réserver une visite privée ?`;
+
+      // Asynchronously log to database in background
+      (async () => {
+        try {
+          let conv = await prisma.conversation.findUnique({ where: { sessionId } });
+          if (!conv) {
+            conv = await prisma.conversation.create({ data: { sessionId } });
+          }
+          await prisma.message.createMany({
+            data: [
+              { conversationId: conv.id, role: "USER", content: lastUserMessage },
+              { conversationId: conv.id, role: "ASSISTANT", content: instantReply },
+            ],
+          });
+        } catch (err) {
+          console.warn("Background DB log warning:", err);
+        }
+      })();
+
+      return NextResponse.json({
+        message: instantReply,
+        history: [...messages, { role: "ASSISTANT", content: instantReply }],
+      });
+    }
 
     // ─── PERFORMANCE: Skip RAG vector search for direct brochure, catalog, and general queries ───
-    const isDirectQuery = /(brochure|catalogue|document|plan|tarifs|prix|offres|appartements|disponib|visite|bonjour|salut|merci|donnez)/i.test(lastUserMessage);
+    const isDirectQuery = /(brochure|catalogue|document|plan|tarifs|prix|offres|appartements|disponib|visite|bonjour|bonsoir|salut|merci|donnez)/i.test(lastUserMessage);
     const needsRag = lastUserMessage.length > 35 && !isDirectQuery;
 
     // 3. Parallel fetching of RAG context, active apartment, catalog, documents, and conversation
