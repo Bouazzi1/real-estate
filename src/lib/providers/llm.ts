@@ -25,7 +25,12 @@ export class GeminiProvider implements LLMProvider {
 
   constructor() {
     this.apiKey = process.env.GEMINI_API_KEY || "";
-    this.chatModel = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+    let rawModel = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+    // Sanitize model name: default to gemini-1.5-flash if invalid model string
+    if (!/gemini-(1\.5|2\.0)-(flash|pro)/i.test(rawModel)) {
+      rawModel = "gemini-1.5-flash";
+    }
+    this.chatModel = rawModel;
     this.fallbackProvider = new NvidiaNimProvider();
 
     this.client = new OpenAI({

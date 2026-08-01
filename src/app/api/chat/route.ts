@@ -18,8 +18,9 @@ export async function POST(request: NextRequest) {
 
     const lastUserMessage = messages[messages.length - 1]?.content || "";
 
-    // ─── PERFORMANCE: Run all pre-LLM tasks in parallel with smart RAG timeout ───
-    const needsRag = lastUserMessage.length > 25 && !/^(oui|non|ok|merci|d'accord|super|parfait|bonjour|bonsoir|salut|hello|hi|hey|ca va|ça va|c'est bon|entendu|compris|je comprends|exactement|bien sûr|absolument|tout à fait|pas de souci|donnez|brochure|catalogue|appartements|prix)\b/i.test(lastUserMessage.trim());
+    // ─── PERFORMANCE: Skip RAG vector search for direct brochure, catalog, and general queries ───
+    const isDirectQuery = /(brochure|catalogue|document|plan|tarifs|prix|offres|appartements|disponib|visite|bonjour|salut|merci|donnez)/i.test(lastUserMessage);
+    const needsRag = lastUserMessage.length > 35 && !isDirectQuery;
 
     // 3. Parallel fetching of RAG context, active apartment, catalog, documents, and conversation
     const [retrievalResults, apt, allApartments, allDocuments, existingConversation] = await Promise.all([
