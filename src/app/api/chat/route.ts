@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getLLMProvider } from "@/lib/providers/llm";
-import { retrieveContext } from "@/lib/rag/retrieval";
+import { retrieveContextWithTimeout } from "@/lib/rag/retrieval";
 import { agentTools, executeAgentTool } from "@/lib/agent/tools";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { formatPrice } from "@/lib/formatters";
@@ -18,25 +18,14 @@ export async function POST(request: NextRequest) {
 
     const lastUserMessage = messages[messages.length - 1]?.content || "";
 
-    // ─── PERFORMANCE: Run all pre-LLM tasks in parallel ───
-    // Smart RAG skip: Don't call the embedding API for short conversational messages
-    // The full catalog is already injected in the system prompt, so RAG is only needed
-    // for deep technical document queries (finitions, cahier des charges, etc.)
-    const needsRag = lastUserMessage.length > 20 && !/^(oui|non|ok|merci|d'accord|super|parfait|bonjour|bonsoir|salut|hello|hi|hey|ca va|ça va|c'est bon|entendu|compris|je comprends|exactement|bien sûr|absolument|tout à fait|pas de souci)\b/i.test(lastUserMessage.trim());
-
-    // 1. Apartment reference resolution (only if provided)
-    const apartmentPromise = apartmentReference
-      ? prisma.apartment.findUnique({ where: { reference: apartmentReference } })
-      : Promise.resolve(null);
-
-    // 2. RAG context retrieval (skip for short messages to save ~1s)
-    const ragPromise = needsRag
-      ? retrieveContext(lastUserMessage, { apartmentId: undefined, limit: 4 })
-      : Promise.resolve([]);
+    // ─── PERFORMANCE: Run all pre-LLM tasks in parallel with smart RAG timeout ───
+    const needsRag = lastUserMessage.length > 25 && !/^(oui|non|ok|merci|d'accord|super|parfait|bonjour|bonsoir|salut|hello|hi|hey|ca va|ça va|c'est bon|entendu|compris|je comprends|exactement|bien sûr|absolument|tout à fait|pas de souci|donnez|brochure|catalogue|appartements|prix)\b/i.test(lastUserMessage.trim());
 
     // 3. Parallel fetching of RAG context, active apartment, catalog, documents, and conversation
     const [retrievalResults, apt, allApartments, allDocuments, existingConversation] = await Promise.all([
-      retrieveContext(lastUserMessage, { apartmentId: undefined, limit: 4 }),
+      needsRag
+        ? retrieveContextWithTimeout(lastUserMessage, { apartmentId: undefined, limit: 3 }, 1000)
+        : Promise.resolve([]),
       apartmentReference
         ? prisma.apartment.findUnique({ where: { reference: apartmentReference } })
         : Promise.resolve(null),

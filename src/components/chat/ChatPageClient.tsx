@@ -474,7 +474,7 @@ export default function ChatPageClient({ agencyName }: ChatPageClientProps) {
               </div>
               <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 shadow-xs rounded-3xl rounded-bl-none px-4 py-3.5 text-xs sm:text-sm flex items-center gap-3">
                 <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
-                <span>Analyse du catalogue & vectorisation pgvector...</span>
+                <span>Le Conseiller IA prépare sa réponse...</span>
               </div>
             </div>
           )}

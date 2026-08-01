@@ -66,10 +66,20 @@ export async function retrieveContext(
         limit
       );
     }
-
     return results;
   } catch (e) {
     console.error("Cosine distance vector retrieval failed:", e);
     return [];
   }
+}
+
+export async function retrieveContextWithTimeout(
+  query: string,
+  options: { apartmentId?: string; limit?: number; minSimilarity?: number } = {},
+  timeoutMs = 1200
+): Promise<RetrievalResult[]> {
+  const timeoutPromise = new Promise<RetrievalResult[]>((resolve) =>
+    setTimeout(() => resolve([]), timeoutMs)
+  );
+  return Promise.race([retrieveContext(query, options), timeoutPromise]);
 }
