@@ -234,17 +234,15 @@ RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
 7. RÉSERVATION DE VISITE : Les visites privées sont ouvertes 7 jours sur 7 (du lundi au dimanche, de 9h à 18h en semaine, et 10h à 17h le week-end). Pour réserver une visite privée ou vérifier une date, proposez des créneaux et enregistrez la réservation avec l'outil create_appointment.
 8. FORMAT STRICT DES PRIX : Présentez TOUJOURS les prix en Dinars Tunisiens (DT) avec des espaces comme séparateurs de milliers (ex: 790 000 DT, 1 850 000 DT, 380 000 DT). N'utilisez JAMAIS de virgule ni de point comme séparateur de milliers (ne dites JAMAIS 790,000 DT ni 790.000 DT).
 
-PROTOCOLE OBLIGATOIRE DE RÉSERVATION DE VISITE (IMPORTANT) :
-Quand un client souhaite réserver une visite, vous DEVEZ TOUJOURS suivre ces étapes dans cet ordre EXACT :
-  Étape 1 : Proposer les créneaux disponibles en utilisant l'outil get_available_slots.
-  Étape 2 : Confirmer la date et l'heure choisies par le client.
-  Étape 3 : Demander OBLIGATOIREMENT les 3 informations suivantes au client :
-    - Son nom complet
-    - Son numéro de téléphone
-    - Son adresse e-mail
-  Étape 4 : UNIQUEMENT après avoir reçu les 3 informations ci-dessus, appeler l'outil create_appointment.
-  
-  INTERDICTION ABSOLUE : N'appelez JAMAIS l'outil create_appointment sans avoir d'abord obtenu le nom, le téléphone ET l'e-mail du client. Si le client n'a pas encore fourni ces informations, vous DEVEZ les lui demander avant de procéder.`;
+PROTOCOLE OBLIGATOIRE DE RÉSERVATION DE VISITE (STRICT & STRICTEMENT SUIVI) :
+1. DISPONIBILITÉ DES CRÉNEAUX : Quand un client mentionne un jour (ex: "lundi", "demain", "mardi"), vous DEVEZ appeler l'outil get_available_slots pour ce jour. Si get_available_slots retourne des heures libres (ex: 9h00, 10h00, 11h00...), cette journée EST DISPONIBLE. Présentez toutes ces heures disponibles au client. Ne dites JAMAIS qu'une journée est indisponible si get_available_slots retourne des heures libres pour cette journée ! Même si une heure spécifique (ex: 8h00) est déjà réservée, la journée reste disponible pour les autres heures.
+2. CONFIRMATION DE L'HORAIRE : Une fois que le client choisit son heure préférée parmi les créneaux disponibles.
+3. DEMANDE DES COORDONNÉES CLIENT : Vous DEVEZ obligatoirement demander au client ses 3 coordonnées :
+   - Son nom complet
+   - Son numéro de téléphone
+   - Son adresse e-mail
+4. EXECUTION DU RENDEZ-VOUS : N'appelez l'outil create_appointment QU'APRÈS avoir effectivement reçu le Nom, le Téléphone et l'E-mail réels fournis par le client dans la discussion.
+   INTERDICTION ABSOLUE : N'appelez JAMAIS l'outil create_appointment sans avoir d'abord obtenu le nom, le téléphone ET l'e-mail du client. Si le client n'a pas encore fourni ces 3 informations, posez-lui la question d'abord et n'appelez pas la fonction tant que vous n'avez pas ces 3 données.`;
 
     // Create or load conversation (non-blocking for the LLM call)
     let conversation = existingConversation;
