@@ -41,18 +41,18 @@ export const agentTools = [
     type: "function" as const,
     function: {
       name: "get_documents",
-      description: "Fetch downloadable document links (brochures, floor plans, design sheets) for a specific apartment.",
+      description: "Fetch downloadable document links (brochures, floor plans, design sheets, price lists) for the project or specific apartments.",
       parameters: {
         type: "object",
         properties: {
-          apartmentId: { type: "string", description: "The ID of the target apartment" },
+          apartmentId: { type: "string", description: "Optional ID of a specific apartment" },
           type: { 
             type: "string", 
             enum: ["BROCHURE", "FLOOR_PLAN", "DESIGN", "PRICE_SHEET", "FAQ", "LEGAL"], 
             description: "Optional document type tag to filter results" 
           },
         },
-        required: ["apartmentId"],
+        required: [],
       },
     },
   },

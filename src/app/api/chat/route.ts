@@ -34,29 +34,8 @@ export async function POST(request: NextRequest) {
       ? retrieveContext(lastUserMessage, { apartmentId: undefined, limit: 4 })
       : Promise.resolve([]);
 
-    // 3. Full catalog (cached per request — this is small data)
-    const catalogPromise = prisma.apartment.findMany({
-      select: {
-        reference: true,
-        title: true,
-        price: true,
-        surface: true,
-        rooms: true,
-        bedrooms: true,
-        bathrooms: true,
-        floor: true,
-        orientation: true,
-        status: true,
-        description: true,
-      },
-      orderBy: { price: "asc" },
-    });
-
-    // 4. Conversation load/create
-    const conversationPromise = prisma.conversation.findUnique({
-      where: { sessionId },
-    });
-    const [retrievalResults, apt, allApartments, existingConversation] = await Promise.all([
+    // 3. Parallel fetching of RAG context, active apartment, catalog, documents, and conversation
+    const [retrievalResults, apt, allApartments, allDocuments, existingConversation] = await Promise.all([
       retrieveContext(lastUserMessage, { apartmentId: undefined, limit: 4 }),
       apartmentReference
         ? prisma.apartment.findUnique({ where: { reference: apartmentReference } })
@@ -75,6 +54,15 @@ export async function POST(request: NextRequest) {
           orientation: true,
           description: true,
           status: true,
+        },
+      }),
+      prisma.document.findMany({
+        select: {
+          id: true,
+          title: true,
+          type: true,
+          fileUrl: true,
+          apartment: { select: { reference: true } },
         },
       }),
       prisma.conversation.findUnique({
@@ -99,6 +87,12 @@ export async function POST(request: NextRequest) {
       )
       .join("\n\n");
 
+    const availableDocsText = allDocuments.length > 0
+      ? allDocuments
+          .map((d) => `• [${d.type}] "${d.title}" ${d.apartment ? `(Appartement Réf: ${d.apartment.reference})` : "(Général Résidence WAFA)"} => Link: ${d.fileUrl}`)
+          .join("\n")
+      : "Aucun document supplémentaire.";
+
     const now = new Date();
     const currentDateFormatted = now.toLocaleDateString("fr-FR", {
       weekday: "long",
@@ -117,18 +111,22 @@ Votre mission est d'accueillir chaleureusement les prospects, de présenter la l
 CATALOGUE OFFICIEL ET DISPONIBILITÉS REELLES — RÉSIDENCE WAFA (DONNÉES EN DINARS TUNISIENS TND / DT) :
 ${fullCatalogText || "Aucun appartement enregistré pour le moment."}
 
+DOCUMENTATION ET BROCHURES OFFICIELLES TÉLÉCHARGEABLES :
+${availableDocsText}
+
 RAG CONTEXT & DOCUMENTS SPÉCIFIQUES :
-${contextText || "Aucun document supplémentaire."}
+${contextText || "Aucun extrait textuel supplémentaire."}
 ${apartmentContextInfo}
 
 RÈGLES STRICTES DE DIALOGUE COMMERCIAL :
 1. LANGUE : Adaptez-vous naturellement à la langue de l'utilisateur (Français, Anglais, Arabe).
 2. PRÉSENTATION DES OFFRES : Quand un client demande les offres, les prix ou la liste des appartements disponibles, présentez directement la liste claire des biens de la Résidence WAFA ci-dessus avec leurs tarifs en Dinars Tunisiens (DT). Ne dites JAMAIS que vous n'avez pas l'information.
-3. CONVERSATION NATURELLE : N'affichez JAMAIS de code JSON, de dates ISO (ex: 2026-07-29T08:00:00.000Z), ni de structures techniques dans vos messages au client. Parlez uniquement en langage naturel commercial élégant.
-4. FORMAT DES DATES ET HORAIRES : Présentez TOUJOURS les dates en format lisible et élégant (ex: "Mardi 29 juillet à 9h00, 10h00, 14h00"). Regroupez les créneaux par journée. N'affichez JAMAIS de format ISO ou technique.
-5. QUALIFICATION CLIENT : Recueillez avec courtoisie le nom, l'email, le téléphone et le budget du prospect.
-6. RÉSERVATION DE VISITE : Les visites privées sont ouvertes 7 jours sur 7 (du lundi au dimanche, de 9h à 18h en semaine, et 10h à 17h le week-end). Pour réserver une visite privée ou vérifier une date, proposez des créneaux et enregistrez la réservation avec l'outil create_appointment.
-7. FORMAT STRICT DES PRIX : Présentez TOUJOURS les prix en Dinars Tunisiens (DT) avec des espaces comme séparateurs de milliers (ex: 790 000 DT, 1 850 000 DT, 380 000 DT). N'utilisez JAMAIS de virgule ni de point comme séparateur de milliers (ne dites JAMAIS 790,000 DT ni 790.000 DT).
+3. BROCHURES ET DOCUMENTS : Quand un client demande une brochure, un plan ou un document, fournissez-lui DIRECTEMENT le lien de téléchargement Markdown correspondant figurant dans la section "DOCUMENTATION ET BROCHURES OFFICIELLES TÉLÉCHARGEABLES" ci-dessus (ex: "[Télécharger la Brochure Officielle Résidence WAFA](URL)"). Ne dites JAMAIS que vous n'avez pas la brochure si elle est répertoriée ci-dessus.
+4. CONVERSATION NATURELLE : N'affichez JAMAIS de code JSON, de dates ISO (ex: 2026-07-29T08:00:00.000Z), ni de structures techniques dans vos messages au client. Parlez uniquement en langage naturel commercial élégant.
+5. FORMAT DES DATES ET HORAIRES : Présentez TOUJOURS les dates en format lisible et élégant (ex: "Mardi 29 juillet à 9h00, 10h00, 14h00"). Regroupez les créneaux par journée. N'affichez JAMAIS de format ISO ou technique.
+6. QUALIFICATION CLIENT : Recueillez avec courtoisie le nom, l'email, le téléphone et le budget du prospect.
+7. RÉSERVATION DE VISITE : Les visites privées sont ouvertes 7 jours sur 7 (du lundi au dimanche, de 9h à 18h en semaine, et 10h à 17h le week-end). Pour réserver une visite privée ou vérifier une date, proposez des créneaux et enregistrez la réservation avec l'outil create_appointment.
+8. FORMAT STRICT DES PRIX : Présentez TOUJOURS les prix en Dinars Tunisiens (DT) avec des espaces comme séparateurs de milliers (ex: 790 000 DT, 1 850 000 DT, 380 000 DT). N'utilisez JAMAIS de virgule ni de point comme séparateur de milliers (ne dites JAMAIS 790,000 DT ni 790.000 DT).
 
 PROTOCOLE OBLIGATOIRE DE RÉSERVATION DE VISITE (IMPORTANT) :
 Quand un client souhaite réserver une visite, vous DEVEZ TOUJOURS suivre ces étapes dans cet ordre EXACT :
