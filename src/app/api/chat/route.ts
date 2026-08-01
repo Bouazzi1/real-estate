@@ -19,6 +19,25 @@ export async function POST(request: NextRequest) {
     const lastUserMessage = messages[messages.length - 1]?.content || "";
     const lowerMsg = lastUserMessage.toLowerCase().trim();
 
+    // Helper to return fast-path text responses compatible with the chat stream client
+    const createTextStreamResponse = (text: string) => {
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode(text));
+          controller.close();
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+        },
+      });
+    };
+
     // ─── INSTANT GREETINGS FAST-PATH (0ms LATENCY) ───
     const greetingMatch = /^(bonjour|bonsoir|salut|hello|hi|hey|coucou)(\s|\.|\!|\?)*$/i.test(lowerMsg);
     if (greetingMatch) {
@@ -43,10 +62,7 @@ export async function POST(request: NextRequest) {
         }
       })();
 
-      return NextResponse.json({
-        message: instantReply,
-        history: [...messages, { role: "ASSISTANT", content: instantReply }],
-      });
+      return createTextStreamResponse(instantReply);
     }
 
     // ─── INSTANT BROCHURE / DOCUMENT FAST-PATH (~50ms DB-ONLY, NO LLM) ───
@@ -62,7 +78,7 @@ export async function POST(request: NextRequest) {
       if (docs.length > 0) {
         const docLines = docs.map((d) => {
           const aptRef = d.apartment?.reference ? ` (Apt. ${d.apartment.reference})` : " (Général)";
-          const cleanUrl = d.fileUrl.startsWith("data:") ? `/api/documents/${d.id}/view` : d.fileUrl;
+          const cleanUrl = `/api/documents/${d.id}/view`;
           return `📄 [${d.title}${aptRef}](${cleanUrl})`;
         }).join("\n");
         instantReply = `Voici les brochures et documents disponibles pour la Résidence WAFA :\n\n${docLines}\n\nCliquez sur un lien pour ouvrir le document dans un nouvel onglet. Souhaitez-vous d'autres informations ?`;
@@ -82,10 +98,7 @@ export async function POST(request: NextRequest) {
         } catch (err) { console.warn("Background DB log warning:", err); }
       })();
 
-      return NextResponse.json({
-        message: instantReply,
-        history: [...messages, { role: "ASSISTANT", content: instantReply }],
-      });
+      return createTextStreamResponse(instantReply);
     }
 
     // ─── INSTANT SHORT-REPLY FAST-PATH (oui, non, ok, merci, d'accord — 0ms) ───
@@ -108,10 +121,7 @@ export async function POST(request: NextRequest) {
         } catch (err) { console.warn("Background DB log warning:", err); }
       })();
 
-      return NextResponse.json({
-        message: instantReply,
-        history: [...messages, { role: "ASSISTANT", content: instantReply }],
-      });
+      return createTextStreamResponse(instantReply);
     }
 
     // ─── PERFORMANCE: Skip RAG vector search for direct brochure, catalog, and general queries ───
