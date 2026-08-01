@@ -1,19 +1,36 @@
 import { prisma } from "../prisma";
 import { getLLMProvider } from "../providers/llm";
-import * as pdfParseModule from "pdf-parse";
-const pdfParse = ((pdfParseModule as any).default || pdfParseModule) as any;
 import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
+import { formatPrice } from "../formatters";
 
 // Extract raw text from a PDF Buffer
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
+    const pdfParse = require("pdf-parse");
     const data = await pdfParse(buffer);
-    return data.text || "";
+    if (data && data.text && data.text.trim()) {
+      return data.text;
+    }
   } catch (e) {
-    console.error("Failed to parse PDF:", e);
-    throw e;
+    console.warn("pdf-parse extraction warning, trying raw stream extractor:", e);
+  }
+
+  try {
+    const raw = buffer.toString("utf-8");
+    const textMatches: string[] = [];
+    const tjRegex = /\(([^)]+)\)\s*TJ?/gi;
+    let match;
+    while ((match = tjRegex.exec(raw)) !== null) {
+      if (match[1] && match[1].length > 1) {
+        textMatches.push(match[1]);
+      }
+    }
+    return textMatches.join(" ");
+  } catch (err) {
+    console.error("PDF raw text extraction failed:", err);
+    return "";
   }
 }
 
@@ -62,8 +79,6 @@ async function getBufferFromUrl(fileUrl: string): Promise<Buffer> {
   }
 }
 
-import { formatPrice } from "../formatters";
-
 // Serialize apartment details for indexing
 export function serializeApartment(apt: any): string {
   const formattedPrice = formatPrice(apt.price);
@@ -104,25 +119,29 @@ export async function indexApartment(apartmentId: string): Promise<void> {
   );
 
   for (const chunk of chunks) {
-    const embedding = await llm.generateEmbedding(chunk, "passage");
-    const id = crypto.randomUUID();
-    const metadata = {
-      apartmentId,
-      reference: apt.reference,
-      type: "apartment_specs",
-    };
+    try {
+      const embedding = await llm.generateEmbedding(chunk, "passage");
+      const id = crypto.randomUUID();
+      const metadata = {
+        apartmentId,
+        reference: apt.reference,
+        type: "apartment_specs",
+      };
 
-    // Prisma doesn't natively support vector types, so insert via raw query
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO "DocumentChunk" (id, "documentId", "apartmentId", content, embedding, metadata)
-       VALUES ($1, $2, $3, $4, $5::vector, $6)`,
-      id,
-      null,
-      apartmentId,
-      chunk,
-      `[${embedding.join(",")}]`,
-      JSON.stringify(metadata)
-    );
+      // Prisma doesn't natively support vector types, so insert via raw query
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO "DocumentChunk" (id, "documentId", "apartmentId", content, embedding, metadata)
+         VALUES ($1, $2, $3, $4, $5::vector, $6)`,
+        id,
+        null,
+        apartmentId,
+        chunk,
+        `[${embedding.join(",")}]`,
+        JSON.stringify(metadata)
+      );
+    } catch (e) {
+      console.warn("Failed to create embedding chunk for apartment:", apartmentId, e);
+    }
   }
 }
 
@@ -141,47 +160,55 @@ export async function indexDocument(documentId: string): Promise<void> {
     return;
   }
 
-  const buffer = await getBufferFromUrl(doc.fileUrl);
-  const text = await extractTextFromPDF(buffer);
-  
-  if (!text.trim()) {
-    console.warn(`Extracted text from document ${doc.title} is empty`);
-    return;
+  try {
+    const buffer = await getBufferFromUrl(doc.fileUrl);
+    const text = await extractTextFromPDF(buffer);
+    
+    if (!text.trim()) {
+      console.warn(`Extracted text from document ${doc.title} is empty`);
+      return;
+    }
+
+    const chunks = chunkText(text, 2000, 200);
+    const llm = getLLMProvider();
+
+    // Delete previous chunks
+    await prisma.documentChunk.deleteMany({
+      where: { documentId },
+    });
+
+    for (const chunk of chunks) {
+      try {
+        const embedding = await llm.generateEmbedding(chunk, "passage");
+        const id = crypto.randomUUID();
+        const metadata = {
+          documentId,
+          apartmentId: doc.apartmentId,
+          title: doc.title,
+          type: doc.type,
+        };
+
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO "DocumentChunk" (id, "documentId", "apartmentId", content, embedding, metadata)
+           VALUES ($1, $2, $3, $4, $5::vector, $6)`,
+          id,
+          documentId,
+          doc.apartmentId,
+          chunk,
+          `[${embedding.join(",")}]`,
+          JSON.stringify(metadata)
+        );
+      } catch (chunkErr) {
+        console.warn(`Failed to store vector chunk for document ${documentId}:`, chunkErr);
+      }
+    }
+
+    // Update indexedAt timestamp
+    await prisma.document.update({
+      where: { id: documentId },
+      data: { indexedAt: new Date() },
+    });
+  } catch (err) {
+    console.error(`Failed to index document ${documentId}:`, err);
   }
-
-  const chunks = chunkText(text, 2000, 200);
-  const llm = getLLMProvider();
-
-  // Delete previous chunks
-  await prisma.documentChunk.deleteMany({
-    where: { documentId },
-  });
-
-  for (const chunk of chunks) {
-    const embedding = await llm.generateEmbedding(chunk, "passage");
-    const id = crypto.randomUUID();
-    const metadata = {
-      documentId,
-      apartmentId: doc.apartmentId,
-      title: doc.title,
-      type: doc.type,
-    };
-
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO "DocumentChunk" (id, "documentId", "apartmentId", content, embedding, metadata)
-       VALUES ($1, $2, $3, $4, $5::vector, $6)`,
-      id,
-      documentId,
-      doc.apartmentId,
-      chunk,
-      `[${embedding.join(",")}]`,
-      JSON.stringify(metadata)
-    );
-  }
-
-  // Update indexedAt timestamp
-  await prisma.document.update({
-    where: { id: documentId },
-    data: { indexedAt: new Date() },
-  });
 }

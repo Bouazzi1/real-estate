@@ -85,20 +85,13 @@ export async function POST(request: NextRequest) {
       try {
         await indexDocument(document.id);
       } catch (err) {
-        console.error(`RAG indexing failed for document ${document.id}:`, err);
-        return NextResponse.json(
-          {
-            document,
-            warning: "Document created but RAG vector indexing failed. Trigger indexing again manually.",
-          },
-          { status: 201 }
-        );
+        console.warn(`RAG indexing warning for document ${document.id}:`, err);
       }
     }
 
     return NextResponse.json(document, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to create document:", error);
-    return NextResponse.json({ error: "Failed to create document" }, { status: 500 });
+    return NextResponse.json({ error: error?.message || "Failed to create document" }, { status: 500 });
   }
 }
