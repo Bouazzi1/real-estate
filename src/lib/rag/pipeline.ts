@@ -34,23 +34,49 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   }
 }
 
-// Chunks text into ~500 tokens (approx. 2000 chars) with 50 tokens (approx. 200 chars) overlap
-export function chunkText(text: string, chunkSize = 2000, overlap = 200): string[] {
-  const cleanText = text.replace(/\s+/g, " ").trim();
+// Semantic & Structure-Aware Chunker: Splits by Markdown sections, paragraphs, and sentence boundaries
+export function chunkText(text: string, maxChunkSize = 1800, overlap = 200): string[] {
+  const cleanText = text.replace(/\r\n/g, "\n").trim();
+  if (!cleanText) return [];
+
+  // Split by structural blocks (Headers #, ##, ###, double newlines)
+  const rawBlocks = cleanText.split(/(?=\n#{1,4}\s|\n\n)/g);
   const chunks: string[] = [];
-  
-  if (cleanText.length <= chunkSize) {
-    return [cleanText];
+  let currentChunk = "";
+
+  for (const block of rawBlocks) {
+    const trimmedBlock = block.trim();
+    if (!trimmedBlock) continue;
+
+    if ((currentChunk + "\n\n" + trimmedBlock).length <= maxChunkSize) {
+      currentChunk = currentChunk ? `${currentChunk}\n\n${trimmedBlock}` : trimmedBlock;
+    } else {
+      if (currentChunk) {
+        chunks.push(currentChunk);
+        const overlapText = currentChunk.slice(-overlap);
+        currentChunk = `${overlapText}\n\n${trimmedBlock}`.slice(0, maxChunkSize);
+      } else {
+        // Block is larger than maxChunkSize, split by sentence boundaries
+        const sentences = trimmedBlock.split(/(?<=[.!?])\s+/);
+        let sentenceChunk = "";
+        for (const sentence of sentences) {
+          if ((sentenceChunk + " " + sentence).length <= maxChunkSize) {
+            sentenceChunk = sentenceChunk ? `${sentenceChunk} ${sentence}` : sentence;
+          } else {
+            if (sentenceChunk) chunks.push(sentenceChunk);
+            sentenceChunk = sentence;
+          }
+        }
+        if (sentenceChunk) currentChunk = sentenceChunk;
+      }
+    }
   }
 
-  let index = 0;
-  while (index < cleanText.length) {
-    const chunk = cleanText.substring(index, index + chunkSize);
-    chunks.push(chunk);
-    index += chunkSize - overlap;
+  if (currentChunk.trim()) {
+    chunks.push(currentChunk.trim());
   }
 
-  return chunks;
+  return chunks.length > 0 ? chunks : [cleanText];
 }
 
 // Retrieve Buffer from Data URI, local upload path, or remote URL
