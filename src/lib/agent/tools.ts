@@ -243,10 +243,10 @@ export async function executeAgentTool(name: string, args: any): Promise<any> {
       });
       
       return {
-        date: dayName,
+        dateExacte: dayName,
         availableSlots: formattedSlots,
         totalSlots: formattedSlots.length,
-        instructions: "Présentez ces créneaux au client de manière élégante et naturelle. Utilisez uniquement le format horaire lisible (ex: 9h00, 14h00). Ne montrez JAMAIS les valeurs ISO au client."
+        instructions: `EXACTITUDE DE LA DATE : La date exacte est "${dayName}". Vous DEVEZ écrire exactement "${dayName}" (et NON "lundi 4") dans votre réponse. Présentez uniquement les heures lisibles (ex: 8h00, 9h00, 14h00). Ne montrez jamais les valeurs ISO.`
       };
     }
 
