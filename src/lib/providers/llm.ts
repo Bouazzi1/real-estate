@@ -40,6 +40,9 @@ export class GeminiProvider implements LLMProvider {
 
   async generateEmbedding(text: string, inputType: "query" | "passage" = "passage"): Promise<number[]> {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1200);
+
       const res = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${this.apiKey}`,
         {
@@ -49,16 +52,19 @@ export class GeminiProvider implements LLMProvider {
             model: "models/gemini-embedding-001",
             content: { parts: [{ text }] },
           }),
+          signal: controller.signal,
         }
       );
+      clearTimeout(timeoutId);
+
       const data = (await res.json()) as any;
       if (data.embedding?.values) {
         return data.embedding.values;
       }
-      return await this.fallbackProvider.generateEmbedding(text, inputType);
+      return new Array(3072).fill(0);
     } catch (e) {
-      console.warn("Gemini Embedding failure, falling back to NVIDIA NIM:", e);
-      return await this.fallbackProvider.generateEmbedding(text, inputType);
+      console.warn("Gemini Embedding timeout or error, returning zero vector fallback:", e);
+      return new Array(3072).fill(0);
     }
   }
 

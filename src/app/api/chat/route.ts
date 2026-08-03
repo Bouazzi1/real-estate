@@ -124,9 +124,10 @@ export async function POST(request: NextRequest) {
       return createTextStreamResponse(instantReply);
     }
 
-    // ─── PERFORMANCE: Skip RAG vector search for direct brochure, catalog, and general queries ───
+    // ─── PERFORMANCE: Skip RAG vector search for contact info, booking steps & catalog queries ───
+    const isContactOrBookingInfo = /(@|\d{6,}|gmail|yahoo|hotmail|outlook|tele|tél|phone|nom|email|mail|adresse|réserv|rdv)/i.test(lastUserMessage);
     const isDirectQuery = /(brochure|catalogue|document|plan|tarifs|prix|offres|appartements|disponib|visite|bonjour|bonsoir|salut|merci|donnez)/i.test(lastUserMessage);
-    const needsRag = lastUserMessage.length > 35 && !isDirectQuery;
+    const needsRag = lastUserMessage.length > 35 && !isDirectQuery && !isContactOrBookingInfo;
 
     // 3. Parallel fetching of RAG context, active apartment, catalog, documents, and conversation
     const [retrievalResults, apt, allApartments, allDocuments, existingConversation] = await Promise.all([
